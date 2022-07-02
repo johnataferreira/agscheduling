@@ -21,7 +21,7 @@ public class AGScheduling {
 	public static final double 	BEST_SLENGTH 							= 16.0;
 	public static final double 	BEST_LOAD_BALANCE 						= 1.0851063829787235;
 	public static final double 	BEST_FLOW_TIME 							= 30.0;
-	public static final double 	COMPUTATIONAL_COST						= 0.0;
+	public static final double 	COMPUTATIONAL_COST						= 0.1;
 
 	private Random generator 				= new Random();
 	private List<Chromosome> chromosomeList = new ArrayList<>();
