@@ -21,6 +21,7 @@ public class AGScheduling {
 	public static final double 	BEST_SLENGTH 							= 16.0;
 	public static final double 	BEST_LOAD_BALANCE 						= 1.0851063829787235;
 	public static final double 	BEST_FLOW_TIME 							= 30.0;
+	public static final double 	BEST_COMMUNICATION_COST					= 0.0;
 
 	private Random generator 				= new Random();
 	private List<Chromosome> chromosomeList = new ArrayList<>();
@@ -40,6 +41,7 @@ public class AGScheduling {
 	private double totalSLenghtOfBestChromosomes;
 	private double totalLoadBalanceOfBestChromosomes;
 	private double totalFlowTimeOfBestChromosomes;
+	private double totalCommunicationCostOfBestChromosomes;
 	private double totalFitnessOfBestChromosomes;
 	private int totalNumberOfChromosomes;
 
@@ -371,6 +373,12 @@ public class AGScheduling {
 				}
 				break;
 
+			case COMMUNICATION_COST:
+				if (BEST_COMMUNICATION_COST < bestChromosome.getCommunicationCost()) {
+					return false;
+				}
+				break;
+
 			default:
 				throw new IllegalArgumentException("Metric type not implemented.");
 			}
@@ -391,6 +399,7 @@ public class AGScheduling {
 		totalSLenghtOfBestChromosomes += chromosome.getSLength();
 		totalLoadBalanceOfBestChromosomes += chromosome.getLoadBalance();
 		totalFlowTimeOfBestChromosomes += chromosome.getFlowTime();
+		totalCommunicationCostOfBestChromosomes += chromosome.getCommunicationCost();
 		totalFitnessOfBestChromosomes += chromosome.getFitness();
 		totalNumberOfChromosomes += 1;
 	}
@@ -412,6 +421,7 @@ public class AGScheduling {
 		result.setTotalSLenght(totalSLenghtOfBestChromosomes);
 		result.setTotalLoadBalance(totalLoadBalanceOfBestChromosomes);
 		result.setTotalFlowTime(totalFlowTimeOfBestChromosomes);
+		result.setTotalCommunicationCost(totalCommunicationCostOfBestChromosomes);
 		result.setTotalFitness(totalFitnessOfBestChromosomes);
 		result.setTotalNumberOfChromosomes(totalNumberOfChromosomes);
 

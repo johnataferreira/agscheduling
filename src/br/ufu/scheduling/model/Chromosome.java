@@ -54,6 +54,10 @@ public class Chromosome {
 		return metrics.getFlowTime();
 	}
 
+	public double getCommunicationCost() {
+		return metrics.getCommunicationCost();
+	}
+
 	public int getFitnessAdjusted() {
 		return metrics.getFitnessAjusted();
 	}

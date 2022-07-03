@@ -18,10 +18,11 @@ import br.ufu.scheduling.utils.Printer;
 public class Metrics {
 	private static final int MAXIMIZATION_PROBLEM = 0; 
 
-	private double fitness = 0.0;
-	private double sLength = 0; /* makespan */
-	private double loadBalance = 0.0;
-	private double flowTime = 0; /* sum of processor times */
+	private double fitness;
+	private double sLength; /* makespan */
+	private double loadBalance;
+	private double flowTime; /* sum of processor times */
+	private double communicationCost;
 
 	public Metrics() {
 	}
@@ -42,6 +43,10 @@ public class Metrics {
 		return flowTime;
 	}
 
+	public double getCommunicationCost() {
+		return communicationCost;
+	}
+
 	public void setFitness(double fitness) {
 		this.fitness = fitness;
 	}
@@ -58,6 +63,10 @@ public class Metrics {
 		this.flowTime = flowTime;
 	}
 
+	public void setCommunicationCost(double communicationCost) {
+		this.communicationCost = communicationCost;
+	}
+
 	public int getFitnessAjusted() {
 		return Long.valueOf(Math.round(Math.abs(fitness) * AGScheduling.ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE)).intValue();
 	}
@@ -69,20 +78,16 @@ public class Metrics {
 		int [] readinessTime = new int[config.getTotalProcessors() + 1]; 
 
 		for (int taskIndex = 1; taskIndex <= graph.getNumberOfVertices(); taskIndex++) {
-			//Need to subtract one because the scheduling vector starts from index 0
+			//Need to subtract one because the scheduling/mapping vector starts from index 0
 			int task = scheduling[taskIndex - 1];
+			int processor = mapping[task - 1];
 
-			for (int processor = 1; processor <= config.getTotalProcessors(); processor++) {
-				//Need to subtract one because the mapping vector starts from index 0
-				if (mapping[task - 1] == processor) {
-					startTimeTask[task] = Integer.max(readinessTime[processor], dat(graph, finalTimeTask, task, processor, mapping));
-					finalTimeTask[task] = startTimeTask[task] + graph.getVertex(task).getComputationalCost();
-					readinessTime[processor] = finalTimeTask[task];
+			startTimeTask[task] = Integer.max(readinessTime[processor], dat(graph, finalTimeTask, task, processor, mapping));
+			finalTimeTask[task] = startTimeTask[task] + graph.getVertex(task).getComputationalCost();
+			readinessTime[processor] = finalTimeTask[task];
 
-					if (config.isTestMode()) {
-						Printer.printExecutionOrder(startTimeTask, finalTimeTask, readinessTime, task, config.getTotalProcessors());
-					}
-				}
+			if (config.isTestMode()) {
+				Printer.printExecutionOrder(startTimeTask, finalTimeTask, readinessTime, task, config.getTotalProcessors());
 			}
 		}
 
@@ -90,6 +95,7 @@ public class Metrics {
 		calculateLoadBalance(readinessTime, config.getTotalProcessors());
 		calculateFlowTime(readinessTime);
 		calculateFitness(config);
+		calculateCommunicationCost(0.0);
 	}
 
 	private int dat(Graph graph, int [] finalTimeTask, int task, int processor, int[] mapping) {
@@ -123,14 +129,14 @@ public class Metrics {
 	}
 
 	private void calculateSLenght(int[] finalTimeTask) {
-		sLength = max(finalTimeTask);
+		sLength = maxValueFromVector(finalTimeTask);
 
 		if (sLength < AGScheduling.BEST_SLENGTH) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLength: " + sLength + ".");
 		}
 	}
 
-	private int max(int[] finalTimeTask) {
+	private int maxValueFromVector(int[] finalTimeTask) {
 		return Arrays.stream(finalTimeTask)
 				.max()
 				.getAsInt();
@@ -161,6 +167,14 @@ public class Metrics {
 		if (flowTime < AGScheduling.BEST_FLOW_TIME) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. FlowTime: " + flowTime + ".");
 		}		
+	}
+
+	private void calculateCommunicationCost(double accumulatedCommunicationCost) {
+		communicationCost = accumulatedCommunicationCost;
+		
+		if (communicationCost < AGScheduling.BEST_COMMUNICATION_COST) {
+			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. CommunicationCost: " + communicationCost + ".");
+		}
 	}
 
 	private void calculateFitness(Configuration config) {
@@ -208,7 +222,7 @@ public class Metrics {
 			int this_ST = 0;
 
 			for (int processor = 1; processor <= totalProcessors; processor++) {
-				//Precisa subtrair um pois o vetor mapping inicia do indice 0
+				//Need to subtract one because the mapping vector starts from index 0
 				if (mapping[taskIndex - 1] == processor) {
 					startTimeTask[taskIndex] = Integer.max(readinessTime[processor], dat(graph, finalTimeTask, taskIndex, processor, mapping));
 					finalTimeTask[taskIndex] = startTimeTask[taskIndex] + graph.getVertex(taskIndex).getComputationalCost();

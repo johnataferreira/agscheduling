@@ -34,6 +34,7 @@ public class Printer {
 		System.out.println("SLenght : " + chromosome.getSLength());
 		System.out.println("LoadBalance: " + chromosome.getLoadBalance());
 		System.out.println("FlowTime: " + chromosome.getFlowTime());
+		System.out.println("CommunicationCost: " + chromosome.getCommunicationCost());
 		System.out.println("Fitness : " + chromosome.getFitness());
 	}
 
@@ -78,6 +79,7 @@ public class Printer {
 		append(builder, "Average S_Length: " + ( ((double) result.getTotalSLenght()) / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average Load_Balance: " + (result.getTotalLoadBalance() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average FlowTime: " + (result.getTotalFlowTime() / result.getTotalNumberOfChromosomes()));
+		append(builder, "Average CommunicationCost: " + (result.getTotalCommunicationCost() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average Fitness: " + (result.getTotalFitness() / result.getTotalNumberOfChromosomes()));
 
 		System.out.println(builder.toString());
