@@ -153,8 +153,12 @@ public class Configuration {
 			metricType = MetricType.FLOW_TIME;
 			break;
 
+		case 3:
+			metricType = MetricType.COMMUNICATION_COST;
+			break;
+
 		default:
-			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2).toString());
+			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3).toString());
 		}
 	}
 
