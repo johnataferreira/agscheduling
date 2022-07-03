@@ -21,7 +21,6 @@ public class AGScheduling {
 	public static final double 	BEST_SLENGTH 							= 16.0;
 	public static final double 	BEST_LOAD_BALANCE 						= 1.0851063829787235;
 	public static final double 	BEST_FLOW_TIME 							= 30.0;
-	public static final double 	COMPUTATIONAL_COST						= 0.0;
 
 	private Random generator 				= new Random();
 	private List<Chromosome> chromosomeList = new ArrayList<>();
@@ -34,10 +33,10 @@ public class AGScheduling {
 	private Chromosome bestChromosomeFound;
 
 	private boolean firstGeneration = true;
-	private boolean findBestChromosome = false;
+	private boolean findBestChromosomeInGeneration = false;
 
 	//Variables for the average calculation
-	private int totalSuccess = 0;
+	private int totalSuccess;
 	private double totalSLenghtOfBestChromosomes;
 	private double totalLoadBalanceOfBestChromosomes;
 	private double totalFlowTimeOfBestChromosomes;
@@ -64,24 +63,22 @@ public class AGScheduling {
 
 			int generation = 0;
 
-			while (generation < config.getGenerations() && !(config.isStopGenerationIfFindBestSolution() && findBestChromosome)) {
+			while (generation < config.getGenerations() && !(config.isStopGenerationIfFindBestSolution() && findBestChromosomeInGeneration)) {
 				if (config.isPrintIterationsAndGenerations()) {
 					System.out.println("##### GENERATION: " + (generation + 1) + " #####\n");
 				}
 
 				resetGeneration();
 				executeAG();
+				processGenerationResult();
 
 				generation++;
 			}
 
-			iteration++;
-
-			if (findBestChromosome) {
-				totalSuccess++;
-			}
-
+			processIterationResult();
 			populateAverageDataOfBestChromosomes(chromosomeList.get(INDEX_BEST_CHROMOSOME));
+
+			iteration++;
 		}
 
 		showResult(initialTime);
@@ -89,7 +86,6 @@ public class AGScheduling {
 
 	private void resetIteration() {
 		firstGeneration = true;
-		findBestChromosome = false;
 		chromosomeList.clear();
 	}
 
@@ -97,6 +93,7 @@ public class AGScheduling {
 		roulette = null;
 		parentList.clear();
 		childrenList.clear();
+		findBestChromosomeInGeneration = false;
 	}
 
 	private void executeAG() throws Exception {
@@ -111,8 +108,6 @@ public class AGScheduling {
 
 		executeSelection();
 		selectBestChromosomesForReinsertion();
-
-		processGenerationResult();
 	}
 
 	private void addChromosomeInGeneralList(Chromosome chromosome) {
@@ -342,6 +337,56 @@ public class AGScheduling {
 		});
 	}
 
+	private void processGenerationResult() throws Exception {
+		Chromosome bestChromosomeOfGeneration = chromosomeList.get(INDEX_BEST_CHROMOSOME);
+		findBestChromosomeInGeneration = findBestChromosome(bestChromosomeOfGeneration);
+
+		if (config.isPrintBestChromosomeOfGeneration()) {
+			System.out.println("Best Chromosome of Generation: ");
+			bestChromosomeOfGeneration.printChromosome();
+		}
+
+		updateBestChromosome(bestChromosomeOfGeneration);
+	}
+
+	private boolean findBestChromosome(Chromosome bestChromosome) {
+		//If this flag is true, it has to reach the optimal solution
+		if (config.isConvergenceForTheBestSolution()) {
+			switch (config.getMetricType()) {
+			case MAKESPAN:
+				if (BEST_SLENGTH < bestChromosome.getSLength()) {
+					return false;
+				}
+				break;
+
+			case LOAD_BALANCE:
+				if (BEST_LOAD_BALANCE < bestChromosome.getLoadBalance()) {
+					return false;
+				}
+				break;
+
+			case FLOW_TIME:
+				if (BEST_FLOW_TIME < bestChromosome.getFlowTime()) {
+					return false;
+				}
+				break;
+
+			default:
+				throw new IllegalArgumentException("Metric type not implemented.");
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private void updateBestChromosome(Chromosome bestChromosome) {
+		if (bestChromosomeFound == null || bestChromosome.getFitness() > bestChromosomeFound.getFitness()) {
+			bestChromosomeFound = bestChromosome;
+		}
+	}
+
 	private void populateAverageDataOfBestChromosomes(Chromosome chromosome) {
 		totalSLenghtOfBestChromosomes += chromosome.getSLength();
 		totalLoadBalanceOfBestChromosomes += chromosome.getLoadBalance();
@@ -350,45 +395,14 @@ public class AGScheduling {
 		totalNumberOfChromosomes += 1;
 	}
 
-	private void processGenerationResult() throws Exception {
-		Chromosome bestChromosomeOfGeneration = chromosomeList.get(INDEX_BEST_CHROMOSOME);
+	private void processIterationResult() throws Exception {
+		Chromosome bestChromosomeOfIteration = chromosomeList.get(INDEX_BEST_CHROMOSOME);
 
-		//If this flag is true, it has to reach the optimal solution
-		if (config.isConvergenceForTheBestSolution()) {
-			switch (config.getMetricType()) {
-			case MAKESPAN:
-				if (BEST_SLENGTH < bestChromosomeOfGeneration.getSLength()) {
-					return;
-				}
-				break;
-
-			case LOAD_BALANCE:
-				if (BEST_LOAD_BALANCE < bestChromosomeOfGeneration.getLoadBalance()) {
-					return;
-				}
-				break;
-
-			case FLOW_TIME:
-				if (BEST_FLOW_TIME < bestChromosomeOfGeneration.getFlowTime()) {
-					return;
-				}
-				break;
-
-			default:
-				throw new IllegalArgumentException("Metric type not implemented.");
-			}
-
-			findBestChromosome = true;
+		if (findBestChromosome(bestChromosomeOfIteration)) {
+			totalSuccess++;
 		}
 
-		if (config.isPrintBestChromosomeOfGeneration()) {
-			System.out.println("Best Chromosome of Generation: ");
-			bestChromosomeOfGeneration.printChromosome();
-		}
-
-		if (bestChromosomeFound == null || bestChromosomeOfGeneration.getFitness() > bestChromosomeFound.getFitness()) {
-			bestChromosomeFound = bestChromosomeOfGeneration;
-		}
+		updateBestChromosome(bestChromosomeOfIteration);
 	}
 
 	private void showResult(long initialTime) {
