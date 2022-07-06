@@ -15,7 +15,7 @@ public class AGScheduling {
 	public static final double 	RANDOM_NUMBER_FIXED_IN_ARTICLE 			= 0.5;
 	public static final String 	QUEBRA_LINHA 							= "\n";
 	public static final int 	INDEX_BEST_CHROMOSOME					= 0;
-	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 1000.0;
+	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 10000.0;
 
 	//Best result of metrics from the graph used
 	public static final double 	BEST_SLENGTH 							= 16.0;
@@ -31,6 +31,7 @@ public class AGScheduling {
 	private Configuration config;
 	private Graph graph;
 	private int[] roulette;
+	private int totalChromosomeScoreForSorting;
 	private Chromosome bestChromosomeFound;
 
 	private boolean firstGeneration = true;
@@ -161,18 +162,19 @@ public class AGScheduling {
 		Chromosome chromosome = null;
 
 		if (roulette == null) {
+			totalChromosomeScoreForSorting = getTotalChromosomeScoreForSorting();
 			roulette = populateRoulette();
 		}
 
 		//If it's the first individual of the pair to be chosen, I'll raffle anyone
 		//For the second individual of the pair, we will try x times until an individual different from the first is drawn, or we will use a repeated one even
 		if (chromosomeAlreadyChosen == null) {
-			chromosome = raffleChromosomeByRoulette();
+			chromosome = raffleChromosomeByRoulette(totalChromosomeScoreForSorting);
 		} else {
 			int currentAttemptSelectParentNotRepeated = 0;
 
 			while (currentAttemptSelectParentNotRepeated < config.getAttemptSelectParentNotRepeated() && (chromosome == null || chromosomeAlreadyChosen.equals(chromosome))) {
-				chromosome = raffleChromosomeByRoulette();
+				chromosome = raffleChromosomeByRoulette(totalChromosomeScoreForSorting);
 
 				currentAttemptSelectParentNotRepeated++;
 			}
@@ -181,9 +183,34 @@ public class AGScheduling {
 		return chromosome;
 	}
 
-	//TODO: rewrite this method
+	private int getTotalChromosomeScoreForSorting() {
+		return chromosomeList
+				.stream()
+				.mapToInt(Chromosome::getFitnessAdjusted)
+				.sum();
+	}
+
 	private int [] populateRoulette() {
-		int [] roulette = new int[getTotalChromosomeScoreForSorting()];
+		int [] roulette = new int[chromosomeList.size()];
+		int accumulatedValue = 0;
+
+		for (int chromsomeIndex = 0; chromsomeIndex < chromosomeList.size(); chromsomeIndex++) {
+			Chromosome chromosome = chromosomeList.get(chromsomeIndex);
+			accumulatedValue += chromosome.getFitnessAdjusted();
+			roulette[chromsomeIndex] = accumulatedValue;
+		}
+
+		return roulette;
+	}
+
+	private Chromosome raffleChromosomeByRoulette(int totalChromosomeScoreForSorting) {
+		int indexForSearch = raffleRouletteIndex(totalChromosomeScoreForSorting);
+		return chromosomeList.get(getRealRouletteIndex(indexForSearch));
+	}
+
+	@Deprecated
+	private int [] populateRoulette(int totalChromosomeScoreForSorting) {
+		int [] roulette = new int[totalChromosomeScoreForSorting];
 
 		int initialIndex = 0;
 		int finalIndex = 0;
@@ -202,15 +229,34 @@ public class AGScheduling {
 		return roulette;
 	}
 
-	private int getTotalChromosomeScoreForSorting() {
-		return chromosomeList
-				.stream()
-				.mapToInt(Chromosome::getFitnessAdjusted)
-				.sum();
-	}
-
+	@Deprecated
 	private Chromosome raffleChromosomeByRoulette() {
 		return chromosomeList.get(roulette[raffleRouletteIndex(roulette.length)]);
+	}
+	
+	private int getRealRouletteIndex(int indexForSearch) {
+		int begin = 0;
+		int end = roulette.length - 1;
+		int firstIndice = 0;
+		
+
+		while (begin <= end) {
+			int middle = (begin + end) / 2;
+			
+			if (roulette[middle] == indexForSearch 
+					|| (middle == firstIndice && roulette[middle] > indexForSearch) 
+					|| (roulette[middle - 1] < indexForSearch && roulette[middle] > indexForSearch )) {
+				return middle;
+			}
+
+			if (roulette[middle] < indexForSearch) { /* Item is in the sub-vector on the right */
+				begin = middle + 1;
+			} else { /* Item is in the sub-vector on the right */
+				end = middle;
+			}
+		}
+
+		throw new IllegalStateException("It was not possible to fetch the value found in Roulette: " + indexForSearch + ".");
 	}
 
 	private int raffleRouletteIndex(int rouletteLength) {
