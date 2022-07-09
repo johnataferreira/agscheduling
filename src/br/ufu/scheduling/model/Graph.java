@@ -1,5 +1,8 @@
 package br.ufu.scheduling.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Graph {
+	private static final int TASK_NUMBER				= 0;
+	private static final int COMPUTATIONAL_COST			= 1;
+	private static final int TOTAL_PREDECESSORS			= 2;
+
     private Map<Integer, Vertex> vertices;
     private List<Edge> edges;
     private int firstTask;
@@ -50,8 +57,88 @@ public class Graph {
     }
 
     //TODO
-    public static Graph initializeGraphByStgExtension() {
+    public static Graph initializeGraph(String fileName) throws Exception {
     	Graph graph = new Graph();
+
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+			String line = null;
+
+			int totalTasks = -1;
+			int counter = 0;
+
+			while ((line = buffer.readLine()) != null && counter != totalTasks) {
+				if (totalTasks == -1) { //First Line
+					totalTasks = Integer.parseInt(line.trim()) + 1; //We need to add 1 because the stg graph does not consider task 0 in the total tasks
+					continue;
+				}
+
+				String[] vector = line.split(" ");
+
+				int taskNumber = 0;
+				int computationalCost = 0;
+				int totalPredecessors = 0;
+
+				int totalPositionsAnalyzed = 0;
+				int totalPredecessorsAnalyzed = 0;
+				List<Integer> listPredecessors = new ArrayList<>();
+
+				for (int position = 0; position < vector.length; position++) {
+					String value = vector[position];
+					if (value == null || Arrays.asList("", " ").contains(value)) {
+						continue;	
+					}
+
+					switch (totalPositionsAnalyzed) {
+					case TASK_NUMBER:
+						taskNumber = Integer.parseInt(value) + 1; //FIXME: verificar se vamos tratar assim, para não deixar começar uma tarefa em zero 
+						break;
+
+					case COMPUTATIONAL_COST:
+						computationalCost = Integer.parseInt(value);
+						break;
+
+					case TOTAL_PREDECESSORS:
+						totalPredecessors = Integer.parseInt(value);
+						break;
+
+					default:
+						listPredecessors.add(Integer.parseInt(value) + 1); //FIXME: verificar se vamos tratar assim, para não deixar começar uma tarefa em zero
+						totalPredecessorsAnalyzed++;
+						break;
+					}
+
+					totalPositionsAnalyzed++;
+
+					if (totalPredecessors == totalPredecessorsAnalyzed && totalPredecessors > 0) {
+						break;
+					}
+				}
+
+				Vertex vertex = graph.addVertex(taskNumber, computationalCost);
+
+				if (listPredecessors.isEmpty()) {
+					vertex.setEntries(null);
+					graph.firstTask = vertex.getTask();
+				} else {
+					vertex.setEntries(listPredecessors);
+					listPredecessors.forEach(predecessor -> graph.addEdge(graph.getVertex(predecessor), vertex, 0)); //Without communication cost
+				}
+
+
+				counter++;
+			}
+		} catch (Exception e) {
+			Exception e2 = new Exception("Error loading " + fileName + "  task graph file: " + e.getMessage());
+			e2.initCause(e);
+			throw e2;
+		}
+
+		//FIXME: rancar esse cara depois
+		boolean debug = false;
+		if (debug) {
+			System.out.println(graph.toString());
+		}
+
     	return graph;
     }
 

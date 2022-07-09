@@ -31,6 +31,7 @@ public class Configuration {
 	private Boolean allowApplyingMutationOnRepeatedChild;
 	private Boolean printBestChromosomeOfGeneration;
 	private Boolean convergenceForTheBestSolution;
+	private String taskGraphFileName;
 
 	//Auxiliaries
 	private int metric;
@@ -111,6 +112,10 @@ public class Configuration {
 
 	public Boolean isConvergenceForTheBestSolution() {
 		return convergenceForTheBestSolution;
+	}
+
+	public String getTaskGraphFileName() {
+		return taskGraphFileName;
 	}
 
 	//The sets methods are used by the Java Reflection lib to populate the configuration
@@ -242,6 +247,10 @@ public class Configuration {
 		this.convergenceForTheBestSolution = convergenceForTheBestSolution;
 	}
 
+	private void setTaskGraphFileName(String taskGraphFileName) {
+		this.taskGraphFileName = taskGraphFileName;
+	}
+
 	private void readConfiguration() throws Exception {
 		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(READ_ME_FILE_NAME)))) {
 			String line = null;
@@ -257,7 +266,7 @@ public class Configuration {
 				method.invoke(this, getConvertedValue(vector[2], vector[1]));
 			}
 		} catch (Exception e) {
-			Exception e2 = new Exception("");
+			Exception e2 = new Exception("Error loading README.conf configuration file: " + e.getMessage());
 			e2.initCause(e);
 			throw e2;
 		}

@@ -16,6 +16,7 @@ public class AGScheduling {
 	public static final String 	QUEBRA_LINHA 							= "\n";
 	public static final int 	INDEX_BEST_CHROMOSOME					= 0;
 	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 10000.0;
+	public static final String 	USE_DEFAULT_GRAPH						= "-1";
 
 	//Best result of metrics from the graph used
 	public static final double 	BEST_SLENGTH 							= 16.0;
@@ -49,7 +50,12 @@ public class AGScheduling {
 
 	public AGScheduling() throws Exception {
 		config = new Configuration();
-		graph = Graph.initializeGraph();
+		
+		if (USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
+			graph = Graph.initializeGraph();
+		} else {
+			graph = Graph.initializeGraph(config.getTaskGraphFileName());
+		}
 	}
 
 	public void execute(long initialTime) throws Exception {

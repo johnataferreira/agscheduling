@@ -91,11 +91,11 @@ public class Metrics {
 			}
 		}
 
-		calculateSLenght(finalTimeTask);
-		calculateLoadBalance(readinessTime, config.getTotalProcessors());
-		calculateFlowTime(readinessTime);
+		calculateSLenght(finalTimeTask, config);
+		calculateLoadBalance(readinessTime, config);
+		calculateFlowTime(readinessTime, config);
+		calculateCommunicationCost(0.0, config);
 		calculateFitness(config);
-		calculateCommunicationCost(0.0);
 	}
 
 	private int dat(Graph graph, int [] finalTimeTask, int task, int processor, int[] mapping) {
@@ -128,10 +128,10 @@ public class Metrics {
 		return max;
 	}
 
-	private void calculateSLenght(int[] finalTimeTask) {
+	private void calculateSLenght(int[] finalTimeTask, Configuration config) {
 		sLength = maxValueFromVector(finalTimeTask);
 
-		if (sLength < AGScheduling.BEST_SLENGTH) {
+		if (config.isConvergenceForTheBestSolution() && sLength < AGScheduling.BEST_SLENGTH) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLength: " + sLength + ".");
 		}
 	}
@@ -142,21 +142,21 @@ public class Metrics {
 				.getAsInt();
 	}
 
-	private void calculateLoadBalance(int[] readinessTime, Integer totalProcessors) {
+	private void calculateLoadBalance(int[] readinessTime, Configuration config) {
 		double avg = (double) Arrays.stream(readinessTime)
 								.boxed()
 								.collect(Collectors.toList())
 								.stream()
 								.mapToInt(Integer::intValue)
-								.sum() / totalProcessors; 
+								.sum() / config.getTotalProcessors(); 
 		loadBalance = sLength / avg;
 
-		if (loadBalance < AGScheduling.BEST_LOAD_BALANCE) {
+		if (config.isConvergenceForTheBestSolution() && loadBalance < AGScheduling.BEST_LOAD_BALANCE) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. LoadBalance: " + loadBalance + ".");
 		}
 	}
 
-	private void calculateFlowTime(int[] readinessTime) {
+	private void calculateFlowTime(int[] readinessTime, Configuration config) {
 		flowTime = Arrays.stream(readinessTime)
 					.boxed()
 					.collect(Collectors.toList())
@@ -164,15 +164,15 @@ public class Metrics {
 					.mapToInt(Integer::intValue)
 					.sum();
 
-		if (flowTime < AGScheduling.BEST_FLOW_TIME) {
+		if (config.isConvergenceForTheBestSolution() && flowTime < AGScheduling.BEST_FLOW_TIME) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. FlowTime: " + flowTime + ".");
 		}		
 	}
 
-	private void calculateCommunicationCost(double accumulatedCommunicationCost) {
+	private void calculateCommunicationCost(double accumulatedCommunicationCost, Configuration config) {
 		communicationCost = accumulatedCommunicationCost;
 		
-		if (communicationCost < AGScheduling.BEST_COMMUNICATION_COST) {
+		if (config.isConvergenceForTheBestSolution() && communicationCost < AGScheduling.BEST_COMMUNICATION_COST) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. CommunicationCost: " + communicationCost + ".");
 		}
 	}
