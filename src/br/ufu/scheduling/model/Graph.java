@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.ufu.scheduling.utils.Configuration;
+
 public class Graph {
 	private static final int TASK_NUMBER				= 0;
 	private static final int COMPUTATIONAL_COST			= 1;
@@ -56,8 +58,15 @@ public class Graph {
     	return vertices.size();
     }
 
-    //TODO
-    public static Graph initializeGraph(String fileName) throws Exception {
+    public static Graph initializeGraph(Configuration config) throws Exception {
+    	if (config.isGraphWithCommunicationCost()) {
+    		return initializeGraphWithCommunicationCost(config.getTaskGraphFileName());
+    	} else {
+    		return initializeGraphWithoutCommunicationCost(config.getTaskGraphFileName());
+    	}
+    }
+
+    private static Graph initializeGraphWithCommunicationCost(String fileName) throws Exception {
     	Graph graph = new Graph();
 
 		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
@@ -65,6 +74,124 @@ public class Graph {
 
 			int totalTasks = -1;
 			int counter = 0;
+			int firstTask = -1;
+
+			boolean handlePredecessor = false;
+
+			int taskNumber = 0;
+			int computationalCost = 0;
+			int totalPredecessors = 0;
+			int totalPredecessorsAnalyzed = 0;
+			Map<Integer, Integer> mapPredecessors = new HashMap<>();
+
+			while ((line = buffer.readLine()) != null && counter != totalTasks) {
+				if (totalTasks == -1) { //First Line
+					totalTasks = Integer.parseInt(line.trim()) + 1; //We need to add 1 because the stg graph does not consider task 0 in the total tasks
+					continue;
+				}
+
+				String[] vector = line.split(" ");
+
+				int totalPositionsAnalyzed = 0;
+
+				for (int position = 0; position < vector.length; position++) {
+					String value = vector[position];
+					if (value == null || Arrays.asList("", " ").contains(value)) {
+						continue;	
+					}
+
+					int convertedValue = Integer.parseInt(value);
+					if (firstTask == -1) {
+						firstTask = convertedValue;
+					}
+
+					if (handlePredecessor) {
+						int taskPredecessor = handleTask(firstTask, convertedValue);
+						int communicationCost = -1;
+
+						for (int newPosition = position + 1; newPosition < vector.length; newPosition++, position++) {
+							value = vector[newPosition];
+							if (value == null || Arrays.asList("", " ").contains(value)) {
+								continue;	
+							}
+
+							communicationCost = Integer.parseInt(value);
+							break;
+						}
+
+						mapPredecessors.put(taskPredecessor, communicationCost);
+						totalPredecessorsAnalyzed++;
+						break;
+					} else {
+
+						switch (totalPositionsAnalyzed) {
+						case TASK_NUMBER:
+							taskNumber = handleTask(firstTask, convertedValue); 
+							break;
+
+						case COMPUTATIONAL_COST:
+							computationalCost = convertedValue;
+							break;
+
+						case TOTAL_PREDECESSORS:
+							totalPredecessors = convertedValue;
+							handlePredecessor = true;
+							break;
+
+						default:
+							break;
+						}
+
+						totalPositionsAnalyzed++;
+					}
+				}
+
+				if (totalPredecessors == totalPredecessorsAnalyzed) {
+					Vertex vertex = graph.addVertex(taskNumber, computationalCost);
+
+					if (mapPredecessors.isEmpty()) {
+						vertex.setEntries(null);
+						graph.firstTask = vertex.getTask();
+					} else {
+						for (Map.Entry<Integer, Integer> map : mapPredecessors.entrySet()) {
+							int taskPredecessor = map.getKey();
+							int communicationCost = map.getValue();
+
+							vertex.addEntry(taskPredecessor);
+							graph.addEdge(graph.getVertex(taskPredecessor), vertex, communicationCost); //With communication cost
+						}
+					}
+
+					handlePredecessor = false;
+					mapPredecessors.clear();
+					totalPredecessorsAnalyzed = 0;
+					counter++;
+				}
+			}
+		} catch (Exception e) {
+			Exception e2 = new Exception("Error loading " + fileName + "  task graph file: " + e.getMessage());
+			e2.initCause(e);
+			throw e2;
+		}
+
+		//FIXME: delete this parte of code
+		boolean debug = true;
+		if (debug) {
+			System.out.println(graph.toString());
+		}
+
+    	return graph;
+    }
+
+    private static Graph initializeGraphWithoutCommunicationCost(String fileName) throws Exception {
+    	Graph graph = new Graph();
+
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+			String line = null;
+
+			int totalTasks = -1;
+			int counter = 0;
+			int firstTask = -1;
 
 			while ((line = buffer.readLine()) != null && counter != totalTasks) {
 				if (totalTasks == -1) { //First Line
@@ -88,21 +215,26 @@ public class Graph {
 						continue;	
 					}
 
+					int convertedValue = Integer.parseInt(value);
+					if (firstTask == -1) {
+						firstTask = convertedValue;
+					}
+
 					switch (totalPositionsAnalyzed) {
 					case TASK_NUMBER:
-						taskNumber = Integer.parseInt(value) + 1; //FIXME: verificar se vamos tratar assim, para não deixar começar uma tarefa em zero 
+						taskNumber = handleTask(firstTask, convertedValue); 
 						break;
 
 					case COMPUTATIONAL_COST:
-						computationalCost = Integer.parseInt(value);
+						computationalCost = convertedValue;
 						break;
 
 					case TOTAL_PREDECESSORS:
-						totalPredecessors = Integer.parseInt(value);
+						totalPredecessors = convertedValue;
 						break;
 
 					default:
-						listPredecessors.add(Integer.parseInt(value) + 1); //FIXME: verificar se vamos tratar assim, para não deixar começar uma tarefa em zero
+						listPredecessors.add(handleTask(firstTask, convertedValue));
 						totalPredecessorsAnalyzed++;
 						break;
 					}
@@ -133,13 +265,18 @@ public class Graph {
 			throw e2;
 		}
 
-		//FIXME: rancar esse cara depois
+		//FIXME: delete this parte of code
 		boolean debug = false;
 		if (debug) {
 			System.out.println(graph.toString());
 		}
 
     	return graph;
+    }
+
+    private static int handleTask(int firstTask, int convertedValue) {
+    	//The first task cannot be 0, so let's add 1 to each task.
+    	return convertedValue + (firstTask == 0 ? 1 : 0);
     }
 
     public static Graph initializeGraph() {
@@ -216,7 +353,7 @@ public class Graph {
 
             for (Edge e : vertex.getAdjacency()) {
                 Vertex v = e.getDestination();
-                formattedText += v.getTask() + ", ";
+                formattedText += v.getTask() + "[" + e.getComputationalCost() + "], ";
             }
 
             formattedText += "\n";

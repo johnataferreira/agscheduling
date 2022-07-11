@@ -54,7 +54,7 @@ public class AGScheduling {
 		if (USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
 			graph = Graph.initializeGraph();
 		} else {
-			graph = Graph.initializeGraph(config.getTaskGraphFileName());
+			graph = Graph.initializeGraph(config);
 		}
 	}
 

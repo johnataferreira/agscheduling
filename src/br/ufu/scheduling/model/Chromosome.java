@@ -129,7 +129,7 @@ public class Chromosome {
 	}
 
 	private boolean isEdgeUsed(List<String> listOfRaffledEdges, int raffledSourceNode, int raffledDestinationNode) {
-		return listOfRaffledEdges.contains(getNameOfEdge(raffledSourceNode, raffledDestinationNode)) /*|| listOfRaffledEdges.contains(raffledDestinationNode + "-" + raffledSourceNode)*/; 
+		return listOfRaffledEdges.contains(getNameOfEdge(raffledSourceNode, raffledDestinationNode)); 
 	}
 
 	//A node can be the destination of only one origin, so if it is already in the tree, it cannot be selected again

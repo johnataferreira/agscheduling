@@ -32,6 +32,7 @@ public class Configuration {
 	private Boolean printBestChromosomeOfGeneration;
 	private Boolean convergenceForTheBestSolution;
 	private String taskGraphFileName;
+	private Boolean graphWithCommunicationCost;
 
 	//Auxiliaries
 	private int metric;
@@ -116,6 +117,10 @@ public class Configuration {
 
 	public String getTaskGraphFileName() {
 		return taskGraphFileName;
+	}
+
+	public Boolean isGraphWithCommunicationCost() {
+		return graphWithCommunicationCost;
 	}
 
 	//The sets methods are used by the Java Reflection lib to populate the configuration
@@ -249,6 +254,10 @@ public class Configuration {
 
 	private void setTaskGraphFileName(String taskGraphFileName) {
 		this.taskGraphFileName = taskGraphFileName;
+	}
+
+	private void setGraphWithCommunicationCost(Boolean graphWithCommunicationCost) {
+		this.graphWithCommunicationCost = graphWithCommunicationCost;
 	}
 
 	private void readConfiguration() throws Exception {
