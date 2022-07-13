@@ -10,6 +10,7 @@ public class FinalResultModel {
 	private double totalLoadBalance;
 	private double totalFlowTime;
 	private double totalCommunicationCost;
+	private double totalWaitingTime;
 	private double totalFitness;
 	private int totalNumberOfChromosomes;
 
@@ -38,6 +39,10 @@ public class FinalResultModel {
 
 	public double getTotalCommunicationCost() {
 		return totalCommunicationCost;
+	}
+
+	public double getTotalWaitingTime() {
+		return totalWaitingTime;
 	}
 
 	public double getTotalFitness() {
@@ -70,6 +75,10 @@ public class FinalResultModel {
 
 	public void setTotalCommunicationCost(double totalCommunicationCost) {
 		this.totalCommunicationCost = totalCommunicationCost;
+	}
+
+	public void setTotalWaitingTime(double totalWaitingTime) {
+		this.totalWaitingTime = totalWaitingTime;
 	}
 
 	public void setTotalFitness(double totalFitness) {

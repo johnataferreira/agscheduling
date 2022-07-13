@@ -58,6 +58,10 @@ public class Chromosome {
 		return metrics.getCommunicationCost();
 	}
 
+	public double getWaitingTime() {
+		return metrics.getWaitingTime();
+	}
+
 	public int getFitnessAdjusted() {
 		return metrics.getFitnessAjusted();
 	}

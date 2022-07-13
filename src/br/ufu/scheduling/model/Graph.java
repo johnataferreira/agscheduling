@@ -47,8 +47,8 @@ public class Graph {
         return vertice;
     }
 
-    public Edge addEdge(Vertex source, Vertex destination, int computationalCost) {
-        Edge edge = new Edge(source, destination, computationalCost);
+    public Edge addEdge(Vertex source, Vertex destination, int communicationCost) {
+        Edge edge = new Edge(source, destination, communicationCost);
         source.addAdjacency(edge);
         edges.add(edge);
         return edge;
@@ -60,16 +60,16 @@ public class Graph {
 
     public static Graph initializeGraph(Configuration config) throws Exception {
     	if (config.isGraphWithCommunicationCost()) {
-    		return initializeGraphWithCommunicationCost(config.getTaskGraphFileName());
+    		return initializeGraphWithCommunicationCost(config);
     	} else {
-    		return initializeGraphWithoutCommunicationCost(config.getTaskGraphFileName());
+    		return initializeGraphWithoutCommunicationCost(config);
     	}
     }
 
-    private static Graph initializeGraphWithCommunicationCost(String fileName) throws Exception {
+    private static Graph initializeGraphWithCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -169,24 +169,26 @@ public class Graph {
 				}
 			}
 		} catch (Exception e) {
-			Exception e2 = new Exception("Error loading " + fileName + "  task graph file: " + e.getMessage());
+			Exception e2 = new Exception("Error loading " + config.getTaskGraphFileName() + "  task graph file: " + e.getMessage());
 			e2.initCause(e);
 			throw e2;
 		}
 
-		//FIXME: delete this parte of code
-		boolean debug = true;
-		if (debug) {
-			System.out.println(graph.toString());
-		}
+		printGraph(graph, config);
 
     	return graph;
     }
 
-    private static Graph initializeGraphWithoutCommunicationCost(String fileName) throws Exception {
+    private static void printGraph(Graph graph, Configuration config) {
+    	if (config.isPrintGraphAtTheBeginningOfRun()) {
+    		System.out.println(graph.toString());
+    	}
+    }
+
+    private static Graph initializeGraphWithoutCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -260,16 +262,12 @@ public class Graph {
 				counter++;
 			}
 		} catch (Exception e) {
-			Exception e2 = new Exception("Error loading " + fileName + "  task graph file: " + e.getMessage());
+			Exception e2 = new Exception("Error loading " + config.getTaskGraphFileName() + "  task graph file: " + e.getMessage());
 			e2.initCause(e);
 			throw e2;
 		}
 
-		//FIXME: delete this parte of code
-		boolean debug = false;
-		if (debug) {
-			System.out.println(graph.toString());
-		}
+		printGraph(graph, config);
 
     	return graph;
     }
@@ -353,7 +351,7 @@ public class Graph {
 
             for (Edge e : vertex.getAdjacency()) {
                 Vertex v = e.getDestination();
-                formattedText += v.getTask() + "[" + e.getComputationalCost() + "], ";
+                formattedText += v.getTask() + "[" + e.getCommunicationCost() + "], ";
             }
 
             formattedText += "\n";

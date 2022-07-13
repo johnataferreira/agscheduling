@@ -4,12 +4,12 @@ public class Edge {
 	private Vertex source;
 	private Vertex destination;
 
-	private int computationalCost = 0;
+	private int communicationCost = 0;
 
-	public Edge(Vertex source, Vertex destination, int computationalCost) {
+	public Edge(Vertex source, Vertex destination, int communicationCost) {
 		this.source = source;
 		this.destination = destination;
-		this.computationalCost = computationalCost;
+		this.communicationCost = communicationCost;
 	}
 
 	public Vertex getSource() {
@@ -20,8 +20,8 @@ public class Edge {
 		return destination;
 	}
 
-	public int getComputationalCost() {
-		return computationalCost;
+	public int getCommunicationCost() {
+		return communicationCost;
 	}
 
 	public void setSource(Vertex source) {
@@ -32,7 +32,7 @@ public class Edge {
 		this.destination = destination;
 	}
 
-	public void setComputationalCost(int computationalCost) {
-		this.computationalCost= computationalCost;
+	public void setCommunicationCost(int communicationCost) {
+		this.communicationCost= communicationCost;
 	}
 }

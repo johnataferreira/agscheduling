@@ -15,7 +15,7 @@ public class AGScheduling {
 	public static final double 	RANDOM_NUMBER_FIXED_IN_ARTICLE 			= 0.5;
 	public static final String 	QUEBRA_LINHA 							= "\n";
 	public static final int 	INDEX_BEST_CHROMOSOME					= 0;
-	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 10000.0;
+	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 1000.0;
 	public static final String 	USE_DEFAULT_GRAPH						= "-1";
 
 	//Best result of metrics from the graph used
@@ -23,6 +23,7 @@ public class AGScheduling {
 	public static final double 	BEST_LOAD_BALANCE 						= 1.0851063829787235;
 	public static final double 	BEST_FLOW_TIME 							= 30.0;
 	public static final double 	BEST_COMMUNICATION_COST					= 0.0;
+	public static final double  BEST_WAITING_TIME						= 0.0;
 
 	private Random generator 				= new Random();
 	private List<Chromosome> chromosomeList = new ArrayList<>();
@@ -44,6 +45,7 @@ public class AGScheduling {
 	private double totalLoadBalanceOfBestChromosomes;
 	private double totalFlowTimeOfBestChromosomes;
 	private double totalCommunicationCostOfBestChromosomes;
+	private double totalWaitingTimeOfBestChromosomes;
 	private double totalFitnessOfBestChromosomes;
 	private int totalNumberOfChromosomes;
 
@@ -431,6 +433,12 @@ public class AGScheduling {
 				}
 				break;
 
+			case WAITING_TIME:
+				if (BEST_WAITING_TIME < bestChromosome.getWaitingTime()) {
+					return false;
+				}
+				break;
+
 			default:
 				throw new IllegalArgumentException("Metric type not implemented.");
 			}
@@ -452,6 +460,7 @@ public class AGScheduling {
 		totalLoadBalanceOfBestChromosomes += chromosome.getLoadBalance();
 		totalFlowTimeOfBestChromosomes += chromosome.getFlowTime();
 		totalCommunicationCostOfBestChromosomes += chromosome.getCommunicationCost();
+		totalWaitingTimeOfBestChromosomes += chromosome.getWaitingTime();
 		totalFitnessOfBestChromosomes += chromosome.getFitness();
 		totalNumberOfChromosomes += 1;
 	}
@@ -474,6 +483,7 @@ public class AGScheduling {
 		result.setTotalLoadBalance(totalLoadBalanceOfBestChromosomes);
 		result.setTotalFlowTime(totalFlowTimeOfBestChromosomes);
 		result.setTotalCommunicationCost(totalCommunicationCostOfBestChromosomes);
+		result.setTotalWaitingTime(totalWaitingTimeOfBestChromosomes);
 		result.setTotalFitness(totalFitnessOfBestChromosomes);
 		result.setTotalNumberOfChromosomes(totalNumberOfChromosomes);
 

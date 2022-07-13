@@ -23,6 +23,7 @@ public class Metrics {
 	private double loadBalance;
 	private double flowTime; /* sum of processor times */
 	private double communicationCost;
+	private double waitingTime;
 
 	public Metrics() {
 	}
@@ -47,24 +48,8 @@ public class Metrics {
 		return communicationCost;
 	}
 
-	public void setFitness(double fitness) {
-		this.fitness = fitness;
-	}
-
-	public void setsLength(double sLength) {
-		this.sLength = sLength;
-	}
-
-	public void setLoadBalance(double loadBalance) {
-		this.loadBalance = loadBalance;
-	}
-
-	public void setFlowTime(double flowTime) {
-		this.flowTime = flowTime;
-	}
-
-	public void setCommunicationCost(double communicationCost) {
-		this.communicationCost = communicationCost;
+	public double getWaitingTime() {
+		return waitingTime;
 	}
 
 	public int getFitnessAjusted() {
@@ -94,7 +79,8 @@ public class Metrics {
 		calculateSLenght(finalTimeTask, config);
 		calculateLoadBalance(readinessTime, config);
 		calculateFlowTime(readinessTime, config);
-		calculateCommunicationCost(0.0, config);
+		validateCommunicationCost(config);
+		calculateWaitingTime(startTimeTask, finalTimeTask, graph, scheduling, mapping, config);
 		calculateFitness(config);
 	}
 
@@ -105,18 +91,11 @@ public class Metrics {
 		if (entries != null) {
 			for (Integer entry : entries) {
 				int resultCost = finalTimeTask[entry];
+				int communicationCost = getCommunicationCost(graph, task, processor, mapping, entry);
 
-				//Need to subtract one because the mapping vector starts from index 0
-				int parentTaskProcessor = mapping[entry - 1];
-
-				if (processor != parentTaskProcessor) {
-					resultCost += graph.getVertex(entry)
-									.getAdjacency()
-									.stream()
-									.filter(edge -> edge.getSource().getTask() == entry && edge.getDestination().getTask() == task)
-									.iterator()
-									.next()
-									.getComputationalCost();
+				if (communicationCost > 0) {
+					accumulateCommunicationCost(communicationCost);
+					resultCost += communicationCost;
 				}
 
 				if (max < resultCost) {
@@ -128,9 +107,31 @@ public class Metrics {
 		return max;
 	}
 
+	private int getCommunicationCost(Graph graph, int task, int processor, int[] mapping, Integer entry) {
+		//Need to subtract one because the mapping vector starts from index 0
+		int parentTaskProcessor = mapping[entry - 1];
+		int communicationCost = 0;
+
+		if (processor != parentTaskProcessor) {
+			communicationCost = graph.getVertex(entry)
+									.getAdjacency()
+									.stream()
+									.filter(edge -> edge.getSource().getTask() == entry && edge.getDestination().getTask() == task)
+									.iterator()
+									.next()
+									.getCommunicationCost(); 
+		}
+
+		return communicationCost;
+	}
+
+	private void accumulateCommunicationCost(int communicationCost) {
+		this.communicationCost += communicationCost; 
+	}
+
 	private void calculateSLenght(int[] finalTimeTask, Configuration config) {
 		sLength = maxValueFromVector(finalTimeTask);
-
+		
 		if (config.isConvergenceForTheBestSolution() && sLength < AGScheduling.BEST_SLENGTH) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLength: " + sLength + ".");
 		}
@@ -169,11 +170,37 @@ public class Metrics {
 		}		
 	}
 
-	private void calculateCommunicationCost(double accumulatedCommunicationCost, Configuration config) {
-		communicationCost = accumulatedCommunicationCost;
-		
+	private void validateCommunicationCost(Configuration config) {
 		if (config.isConvergenceForTheBestSolution() && communicationCost < AGScheduling.BEST_COMMUNICATION_COST) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. CommunicationCost: " + communicationCost + ".");
+		}
+	}
+
+	private void calculateWaitingTime(int [] startTimeTask, int [] finalTimeTask, Graph graph, int [] scheduling, int [] mapping, Configuration config) {
+		waitingTime = 0.0;
+
+		for (int taskIndex = 1; taskIndex <= graph.getNumberOfVertices(); taskIndex++) {
+			//Need to subtract one because the scheduling/mapping vector starts from index 0
+			int task = scheduling[taskIndex - 1];
+			List<Integer> entries = graph.getVertex(task).getEntries();
+
+			if (entries != null) {
+				int maxRuntimePredecessors = 0;
+
+				for (Integer entry : entries) {
+					if (maxRuntimePredecessors < finalTimeTask[entry]) {
+						maxRuntimePredecessors = finalTimeTask[entry];
+					}
+				}
+
+				if (startTimeTask[task] - maxRuntimePredecessors > 0) {
+					waitingTime += startTimeTask[task] - maxRuntimePredecessors;
+				}
+			}
+		}
+
+		if (config.isConvergenceForTheBestSolution() && waitingTime < AGScheduling.BEST_WAITING_TIME) {
+			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. WaitingTime: " + waitingTime + ".");
 		}
 	}
 
@@ -197,6 +224,12 @@ public class Metrics {
 
 		case FLOW_TIME:
 			return flowTime;
+
+		case COMMUNICATION_COST:
+			return communicationCost;
+
+		case WAITING_TIME:
+			return waitingTime;
 
 		default:
 			throw new IllegalArgumentException("Metric type not implemented.");
@@ -252,19 +285,16 @@ public class Metrics {
 		}
 	}
 
-	public static void main(String[] args) {
-		//For tests
+	public static void main(String[] args) throws Exception {
+		int [] mapping = {2, 3, 2, 1, 2, 1, 1, 1, 2};
+		int [] scheduling = {1, 2, 5, 7, 4, 3, 8, 6, 9};
+		
+//		int [] mapping = {3, 3, 1, 2, 3, 1, 3, 1, 1 };
+//		int [] scheduling = {1, 3, 2, 6, 7, 4, 8, 5, 9};
 
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File("README.conf")));
-			String linha = "";
-
-			while ((linha = br.readLine()) != null) {
-				System.out.println(linha);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Graph graph = Graph.initializeGraph();
+		Metrics m = new Metrics();
+		m.calculateMetrics(graph, mapping, scheduling, new Configuration());
+		
 	}
 }

@@ -33,6 +33,7 @@ public class Configuration {
 	private Boolean convergenceForTheBestSolution;
 	private String taskGraphFileName;
 	private Boolean graphWithCommunicationCost;
+	private Boolean printGraphAtTheBeginningOfRun;
 
 	//Auxiliaries
 	private int metric;
@@ -123,6 +124,10 @@ public class Configuration {
 		return graphWithCommunicationCost;
 	}
 
+	public Boolean isPrintGraphAtTheBeginningOfRun() {
+		return printGraphAtTheBeginningOfRun;
+	}
+
 	//The sets methods are used by the Java Reflection lib to populate the configuration
 	private void setInitialPopulation(Integer initialPopulation) {
 		this.initialPopulation = initialPopulation;
@@ -165,6 +170,10 @@ public class Configuration {
 
 		case 3:
 			metricType = MetricType.COMMUNICATION_COST;
+			break;
+
+		case 4:
+			metricType = MetricType.WAITING_TIME;
 			break;
 
 		default:
@@ -258,6 +267,10 @@ public class Configuration {
 
 	private void setGraphWithCommunicationCost(Boolean graphWithCommunicationCost) {
 		this.graphWithCommunicationCost = graphWithCommunicationCost;
+	}
+
+	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
+		this.printGraphAtTheBeginningOfRun = printGraphAtTheBeginningOfRun;
 	}
 
 	private void readConfiguration() throws Exception {
