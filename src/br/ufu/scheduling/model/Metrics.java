@@ -78,7 +78,7 @@ public class Metrics {
 
 		calculateSLenght(finalTimeTask, config);
 		calculateLoadBalance(readinessTime, config);
-		calculateFlowTime(readinessTime, config);
+		calculateFlowTime(finalTimeTask, config);
 		validateCommunicationCost(config);
 		calculateWaitingTime(startTimeTask, finalTimeTask, graph, scheduling, mapping, config);
 		calculateFitness(config);
@@ -157,8 +157,8 @@ public class Metrics {
 		}
 	}
 
-	private void calculateFlowTime(int[] readinessTime, Configuration config) {
-		flowTime = Arrays.stream(readinessTime)
+	private void calculateFlowTime(int[] finalTimeTask, Configuration config) {
+		flowTime = Arrays.stream(finalTimeTask)
 					.boxed()
 					.collect(Collectors.toList())
 					.stream()
