@@ -146,15 +146,20 @@ public class AGScheduling {
 		Chromosome parent2 = null;
 
 		switch (config.getSelectionType()) {
-		case TOURNAMENT:
+		case ROULETTE:
+			parent1 = raffleChromosomeByRoulette(null);
+			parent2 = raffleChromosomeByRoulette(parent1);
+			break;
+
+		case SIMPLE_TOURNAMENT:
 			parent1 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), null);
 			parent2 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), parent1);
 			break;
 
-		case ROULETTE:
-			parent1 = raffleChromosomeByRoulette(null); 
-			parent2 = raffleChromosomeByRoulette(parent1);
-			break;
+		case NON_LINEAR_RANKING:
+		case LINEAR_RANKING:
+		case STOCHASTIC_TOURNAMENT:
+			throw new IllegalArgumentException("Selection type not implemented.");
 
 		default:
 			throw new IllegalArgumentException("Selection type not implemented.");

@@ -213,7 +213,19 @@ public class Configuration {
 			break;
 
 		case 1:
-			selectionType = SelectionType.TOURNAMENT;
+			selectionType = SelectionType.SIMPLE_TOURNAMENT;
+			break;
+
+		case 2:
+			selectionType = SelectionType.STOCHASTIC_TOURNAMENT;
+			break;
+
+		case 3:
+			selectionType = SelectionType.LINEAR_RANKING;
+			break;
+
+		case 4:
+			selectionType = SelectionType.NON_LINEAR_RANKING;
 			break;
 
 		default:
