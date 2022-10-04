@@ -14,7 +14,7 @@ public class ExecuteAG {
 			e.printStackTrace();
 
 			System.out.println("Erro: " + e);
-			System.out.println("Tempo de execu��o com erro: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.");
+			System.out.println("Tempo de execução com erro: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.");
 		}
 	}
 }
