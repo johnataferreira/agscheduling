@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import br.ufu.scheduling.enums.SelectionType;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 import br.ufu.scheduling.model.Graph;
@@ -147,19 +148,17 @@ public class AGScheduling {
 
 		switch (config.getSelectionType()) {
 		case ROULETTE:
+		case LINEAR_RANKING:
+		case NON_LINEAR_RANKING:
 			parent1 = raffleChromosomeByRoulette(null);
 			parent2 = raffleChromosomeByRoulette(parent1);
 			break;
 
 		case SIMPLE_TOURNAMENT:
+		case STOCHASTIC_TOURNAMENT:
 			parent1 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), null);
 			parent2 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), parent1);
 			break;
-
-		case NON_LINEAR_RANKING:
-		case LINEAR_RANKING:
-		case STOCHASTIC_TOURNAMENT:
-			throw new IllegalArgumentException("Selection type not implemented.");
 
 		default:
 			throw new IllegalArgumentException("Selection type not implemented.");
@@ -175,8 +174,22 @@ public class AGScheduling {
 		Chromosome chromosome = null;
 
 		if (roulette == null) {
-			totalChromosomeScoreForSorting = getTotalChromosomeScoreForSorting();
-			roulette = populateRoulette();
+			switch (config.getSelectionType()) {
+			case LINEAR_RANKING:
+				totalChromosomeScoreForSorting = getTotalPositionsForLinearRanking();
+				roulette = populateRouletteForRanking(false);
+				break;
+
+			case NON_LINEAR_RANKING:
+				totalChromosomeScoreForSorting = getTotalPositionsForNonLinearRanking();
+				roulette = populateRouletteForRanking(true);
+				break;
+
+			default:
+				totalChromosomeScoreForSorting = getTotalChromosomeScoreForSorting();
+				roulette = populateRoulette();
+				break;
+			}
 		}
 
 		//If it's the first individual of the pair to be chosen, I'll raffle anyone
@@ -196,11 +209,59 @@ public class AGScheduling {
 		return chromosome;
 	}
 
+	private int getTotalPositionsForLinearRanking() {
+		int totalPositions = 0;
+		int totalChromosomes = chromosomeList.size();
+
+		// Sum of Gauss
+		if (totalChromosomes % 2 == 0) {
+			totalPositions = (totalChromosomes + 1) * (totalChromosomes / 2);
+		} else {
+			totalPositions = (totalChromosomes * (totalChromosomes / 2)) + totalChromosomes;
+		}
+
+		return totalPositions;
+	}
+
+	private int getTotalPositionsForNonLinearRanking() {
+		int totalPositions = 0;
+
+		for (int i = 1; i <= chromosomeList.size(); i++) {
+			totalPositions += (int) Math.pow(i, 2);
+		}
+
+		return totalPositions;
+	}
+
 	private int getTotalChromosomeScoreForSorting() {
 		return chromosomeList
 				.stream()
 				.mapToInt(Chromosome::getFitnessAdjusted)
 				.sum();
+	}
+
+	private int [] populateRouletteForRanking(boolean isNonLinearRanking) {
+		int [] roulette = new int[chromosomeList.size()];
+		int amountPerChromosome = config.getInitialPopulation();
+		int accumulatedValue = 0;
+
+		chromosomeList.sort(new Comparator<Chromosome>() {
+			@Override
+			public int compare(Chromosome o1, Chromosome o2) {
+				double o1Fitness = o1.getFitness();
+				double o2Fitness = o2.getFitness();
+
+				return o1Fitness > o2Fitness ? 1 : o1Fitness == o2Fitness ? 0 : -1;
+			}
+		});
+
+		for (int chromsomeIndex = 0; chromsomeIndex < chromosomeList.size(); chromsomeIndex++) {
+			accumulatedValue += (isNonLinearRanking ? (int) Math.pow(amountPerChromosome, 2) : amountPerChromosome);
+			roulette[chromsomeIndex] = accumulatedValue; 
+			amountPerChromosome--;
+		}
+
+		return roulette;
 	}
 
 	private int [] populateRoulette() {
@@ -221,32 +282,6 @@ public class AGScheduling {
 		return chromosomeList.get(getRealRouletteIndex(indexForSearch));
 	}
 
-	@Deprecated
-	private int [] populateRoulette(int totalChromosomeScoreForSorting) {
-		int [] roulette = new int[totalChromosomeScoreForSorting];
-
-		int initialIndex = 0;
-		int finalIndex = 0;
-
-		for (int chromsomeIndex = 0; chromsomeIndex < chromosomeList.size(); chromsomeIndex++) {
-			Chromosome chromosome = chromosomeList.get(chromsomeIndex);
-
-			initialIndex = finalIndex;
-			finalIndex = initialIndex + chromosome.getFitnessAdjusted();
-
-			for (int rouletteIndex = initialIndex; rouletteIndex < finalIndex; rouletteIndex++) {
-				roulette[rouletteIndex] = chromsomeIndex;
-			}
-		}
-
-		return roulette;
-	}
-
-	@Deprecated
-	private Chromosome raffleChromosomeByRoulette() {
-		return chromosomeList.get(roulette[raffleRouletteIndex(roulette.length)]);
-	}
-	
 	private int getRealRouletteIndex(int indexForSearch) {
 		int begin = 0;
 		int end = roulette.length - 1;
@@ -279,6 +314,11 @@ public class AGScheduling {
 	private Chromosome raffleChromosomeByTournament(List<Chromosome> copyOfChromosomeList, Chromosome chromosomeAlreadyChosen) {
 		Chromosome chromosome = null;
 
+		if (config.getSelectionType() == SelectionType.STOCHASTIC_TOURNAMENT && roulette == null) {
+			totalChromosomeScoreForSorting = getTotalChromosomeScoreForSorting();
+			roulette = populateRoulette();
+		}
+
 		//If it's the first individual of the pair to be chosen, I'll raffle anyone
 		//For the second individual of the pair, we will try x times until an individual different from the first is drawn, or we will use a repeated one even
 		if (chromosomeAlreadyChosen == null) {
@@ -301,24 +341,25 @@ public class AGScheduling {
 		Chromosome chromosome = null;
 
 		for (int tour = 0; tour < config.getTourForTournament(); tour++) {
-			int chromosomeRaffledIndex = raffleChromosomeIndexByTournament(tour);
+			int chromosomeRaffledIndex = 0;
+
+			if (config.getSelectionType() == SelectionType.STOCHASTIC_TOURNAMENT) {
+				int indexForSearch = raffleRouletteIndex(totalChromosomeScoreForSorting);
+				chromosomeRaffledIndex = getRealRouletteIndex(indexForSearch);
+			} else {
+				chromosomeRaffledIndex = raffleChromosomeIndexByTournament();
+			}
 
 			if (chromosome == null || chromosome.getFitness() > copyOfChromosomeList.get(chromosomeRaffledIndex).getFitness()) { 
 				chromosome = copyOfChromosomeList.get(chromosomeRaffledIndex);
 			}
-
-			removeRaffledChromosome(copyOfChromosomeList, chromosomeRaffledIndex);
 		}
 
 		return chromosome;
 	}
-	
-	private int raffleChromosomeIndexByTournament(int currentIndex) {
-		return raffleIndex(config.getInitialPopulation() - currentIndex);
-	}
 
-	private void removeRaffledChromosome(List<Chromosome> copyOfChromosomeList, int chromosomeRaffledIndex) {
-		copyOfChromosomeList.remove(chromosomeRaffledIndex);
+	private int raffleChromosomeIndexByTournament() {
+		return raffleIndex(config.getInitialPopulation());
 	}
 
 	private int raffleIndex(int limit) {
