@@ -21,6 +21,8 @@ public class Metrics {
 	private double communicationCost;
 	private double waitingTime;
 
+	private double aemmtValue;
+
 	public Metrics() {
 	}
 
@@ -51,7 +53,15 @@ public class Metrics {
 	public int getFitnessAjusted() {
 		return Long.valueOf(Math.round(Math.abs(fitness) * AGScheduling.ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE)).intValue();
 	}
-	
+
+	public double getAemmtValue() {
+		return aemmtValue;
+	}
+
+	public void setAemmtValue(double aemmtValue) {
+		this.aemmtValue = aemmtValue;
+	}
+
 	public void calculateMetrics(Graph graph, int[] mapping, int[] scheduling, Configuration config) {
 		//To facilitate the calculation, we will not work with zero index for the auxiliary vectors created
 		int [] startTimeTask = new int[graph.getNumberOfVertices() + 1]; 
@@ -147,6 +157,9 @@ public class Metrics {
 								.mapToInt(Integer::intValue)
 								.sum() / config.getTotalProcessors(); 
 		loadBalance = sLength / avg;
+		
+		// Rounding off above double number to 9 precision
+		loadBalance = Math.round(loadBalance * 1000000000) / 1000000000.0;
 
 		if (config.isConvergenceForTheBestSolution() && loadBalance < AGScheduling.BEST_LOAD_BALANCE) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. LoadBalance: " + loadBalance + ".");

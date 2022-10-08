@@ -66,6 +66,14 @@ public class Chromosome {
 		return metrics.getFitnessAjusted();
 	}
 
+	public double getAemmtValue() {
+		return metrics.getAemmtValue();
+	}
+
+	public void setAemmtValue(double aemmtValue) {
+		metrics.setAemmtValue(aemmtValue);
+	}
+
 	private void createVectors(Graph graph) {
 		mapping = new int[graph.getNumberOfVertices()];
 		scheduling = new int[graph.getNumberOfVertices()];

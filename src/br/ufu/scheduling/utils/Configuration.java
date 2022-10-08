@@ -35,6 +35,27 @@ public class Configuration {
 	private Boolean graphWithCommunicationCost;
 	private Boolean printGraphAtTheBeginningOfRun;
 
+	//AGMO
+	private Boolean executeMultiObjectiveGA;
+	private Integer totalObjectives;
+	private Integer sizeOfTables;
+	private Integer sizeOfNonDominatedTable;
+	private Integer objective1;
+	private Integer objective2;
+	private Integer objective3;
+	private Integer objective4;
+	private Integer objective5;
+	private Double weight1;
+	private Double weight2;
+	private Double weight3;
+	private Double weight4;
+	private Double weight5;
+
+	//CSV File
+	private Boolean generateCsvFile;
+	private Integer totalDifferentChromosomes;
+	private Integer maximumAttemptsGenerateDifferentChromosomes;
+
 	//Auxiliaries
 	private int metric;
 	private int mutation;
@@ -126,6 +147,74 @@ public class Configuration {
 
 	public Boolean isPrintGraphAtTheBeginningOfRun() {
 		return printGraphAtTheBeginningOfRun;
+	}
+
+	public Boolean isExecuteMultiObjectiveGA() {
+		return executeMultiObjectiveGA;
+	}
+
+	public Integer getTotalObjectives() {
+		return totalObjectives;
+	}
+
+	public Integer getSizeOfTables() {
+		return sizeOfTables;
+	}
+
+	public Integer getSizeOfNonDominatedTable() {
+		return sizeOfNonDominatedTable;
+	}
+
+	public Integer getObjective1() {
+		return objective1;
+	}
+
+	public Integer getObjective2() {
+		return objective2;
+	}
+
+	public Integer getObjective3() {
+		return objective3;
+	}
+
+	public Integer getObjective4() {
+		return objective4;
+	}
+
+	public Integer getObjective5() {
+		return objective5;
+	}
+
+	public Double getWeight1() {
+		return weight1;
+	}
+
+	public Double getWeight2() {
+		return weight2;
+	}
+
+	public Double getWeight3() {
+		return weight3;
+	}
+
+	public Double getWeight4() {
+		return weight4;
+	}
+
+	public Double getWeight5() {
+		return weight5;
+	}
+
+	public Boolean isGenerateCsvFile() {
+		return generateCsvFile;
+	}
+
+	public Integer getTotalDifferentChromosomes() {
+		return totalDifferentChromosomes;
+	}
+
+	public Integer getMaximumAttemptsGenerateDifferentChromosomes() {
+		return maximumAttemptsGenerateDifferentChromosomes;
 	}
 
 	//The sets methods are used by the Java Reflection lib to populate the configuration
@@ -283,6 +372,74 @@ public class Configuration {
 
 	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
 		this.printGraphAtTheBeginningOfRun = printGraphAtTheBeginningOfRun;
+	}
+
+	public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {
+		this.executeMultiObjectiveGA = executeMultiObjectiveGA;
+	}
+
+	private void setTotalObjectives(Integer totalObjectives) {
+		this.totalObjectives = totalObjectives;
+	}
+
+	private void setSizeOfTables(Integer sizeOfTables) {
+		this.sizeOfTables= sizeOfTables;
+	}
+
+	private void setSizeOfNonDominatedTable(Integer sizeOfNonDominatedTable) {
+		this.sizeOfNonDominatedTable= sizeOfNonDominatedTable;
+	}
+
+	public void setObjective1(Integer objective1) {
+		this.objective1 = objective1;
+	}
+
+	public void setObjective2(Integer objective2) {
+		this.objective2 = objective2;
+	}
+
+	public void setObjective3(Integer objective3) {
+		this.objective3 = objective3;
+	}
+
+	public void setObjective4(Integer objective4) {
+		this.objective4 = objective4;
+	}
+
+	public void setObjective5(Integer objective5) {
+		this.objective5 = objective5;
+	}
+
+	public void setWeight1(Double weight1) {
+		this.weight1 = weight1;
+	}
+
+	public void setWeight2(Double weight2) {
+		this.weight2 = weight2;
+	}
+
+	public void setWeight3(Double weight3) {
+		this.weight3 = weight3;
+	}
+
+	public void setWeight4(Double weight4) {
+		this.weight4 = weight4;
+	}
+
+	public void setWeight5(Double weight5) {
+		this.weight5 = weight5;
+	}
+
+	public void setGenerateCsvFile(Boolean generateCsvFile) {
+		this.generateCsvFile = generateCsvFile;
+	}
+
+	public void setTotalDifferentChromosomes(Integer totalDifferentChromosomes) {
+		this.totalDifferentChromosomes = totalDifferentChromosomes;
+	}
+
+	public void setMaximumAttemptsGenerateDifferentChromosomes(Integer maximumAttemptsGenerateDifferentChromosomes) {
+		this.maximumAttemptsGenerateDifferentChromosomes = maximumAttemptsGenerateDifferentChromosomes;
 	}
 
 	private void readConfiguration() throws Exception {

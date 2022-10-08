@@ -1,20 +1,19 @@
-package br.ufu.scheduling.ag;
+package br.ufu.scheduling.aemmt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import br.ufu.scheduling.aemmt.AEMMT;
 import br.ufu.scheduling.enums.SelectionType;
-import br.ufu.scheduling.file.csv.GeneratorDifferentChromosome;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 import br.ufu.scheduling.model.Graph;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Crossover;
 
-public class AGScheduling {
+public class AEMMT {
 	public static final double 	RANDOM_NUMBER_FIXED_IN_ARTICLE 			= 0.5;
 	public static final String 	QUEBRA_LINHA 							= "\n";
 	public static final int 	INDEX_BEST_CHROMOSOME					= 0;
@@ -23,7 +22,7 @@ public class AGScheduling {
 
 	//Best result of metrics from the graph used
 	public static final double 	BEST_SLENGTH 							= 16.0;
-	public static final double 	BEST_LOAD_BALANCE 						= 1.085106382;
+	public static final double 	BEST_LOAD_BALANCE 						= 1.0851063829787235;
 	public static final double 	BEST_FLOW_TIME 							= 30.0;
 	public static final double 	BEST_COMMUNICATION_COST					= 0.0;
 	public static final double  BEST_WAITING_TIME						= 0.0;
@@ -53,41 +52,149 @@ public class AGScheduling {
 	private int totalNumberOfChromosomes;
 
 
-	public AGScheduling() throws Exception {
-		config = new Configuration();
-		
-		if (USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
-			graph = Graph.initializeGraph();
-		} else {
-			graph = Graph.initializeGraph(config);
+	private int initialPopulation;
+	private int totalTables;
+	private List<Table> tables = new ArrayList<>();
+
+	public AEMMT() {
+		//For tests
+	}
+
+	public AEMMT(Configuration config, Graph graph) throws Exception {
+		this.config = config;
+		this.graph = graph;
+
+		createTables();
+		initialPopulation = totalTables * config.getSizeOfTables();
+	}
+
+	private void createTables() {
+		if (config.getTotalObjectives() < 2 || config.getTotalObjectives() > 5) {
+			throw new IllegalArgumentException(
+					"Invalid value to work with multi-objective algorithm. Valid values between 2 and 5.");
 		}
+
+		switch (config.getTotalObjectives()) {
+		case 2:
+			createTable(1);
+			createTable(2);
+
+			createTable(Arrays.asList(1, 2));
+			break;
+
+		case 3:
+			createTable(1);
+			createTable(2);
+			createTable(3);
+
+			createTable(Arrays.asList(1, 2));
+			createTable(Arrays.asList(1, 3));
+			createTable(Arrays.asList(2, 3));
+
+			createTable(Arrays.asList(1, 2, 3));
+			break;
+
+		case 4:
+			createTable(1);
+			createTable(2);
+			createTable(3);
+			createTable(4);
+
+			createTable(Arrays.asList(1, 2));
+			createTable(Arrays.asList(1, 3));
+			createTable(Arrays.asList(1, 4));
+			createTable(Arrays.asList(2, 3));
+			createTable(Arrays.asList(2, 4));
+			createTable(Arrays.asList(3, 4));
+
+			createTable(Arrays.asList(1, 2, 3));
+			createTable(Arrays.asList(1, 2, 4));
+			createTable(Arrays.asList(1, 3, 4));
+			createTable(Arrays.asList(2, 3, 4));
+
+			createTable(Arrays.asList(1, 2, 3, 4));
+			break;
+
+		case 5:
+			createTable(1);
+			createTable(2);
+			createTable(3);
+			createTable(4);
+			createTable(5);
+
+			createTable(Arrays.asList(1, 2));
+			createTable(Arrays.asList(1, 3));
+			createTable(Arrays.asList(1, 4));
+			createTable(Arrays.asList(1, 5));
+			createTable(Arrays.asList(2, 3));
+			createTable(Arrays.asList(2, 4));
+			createTable(Arrays.asList(2, 5));
+			createTable(Arrays.asList(3, 4));
+			createTable(Arrays.asList(3, 5));
+			createTable(Arrays.asList(4, 5));
+
+			createTable(Arrays.asList(1, 2, 3));
+			createTable(Arrays.asList(1, 2, 4));
+			createTable(Arrays.asList(1, 2, 5));
+			createTable(Arrays.asList(1, 3, 4));
+			createTable(Arrays.asList(1, 3, 5));
+			createTable(Arrays.asList(1, 4, 5));
+			createTable(Arrays.asList(2, 3, 4));
+			createTable(Arrays.asList(2, 3, 5));
+			createTable(Arrays.asList(2, 4, 5));
+			createTable(Arrays.asList(3, 4, 5));
+
+			createTable(Arrays.asList(1, 2, 3, 4));
+			createTable(Arrays.asList(1, 2, 3, 5));
+			createTable(Arrays.asList(1, 2, 4, 5));
+			createTable(Arrays.asList(1, 3, 4, 5));
+			createTable(Arrays.asList(2, 3, 4, 5));
+
+			createTable(Arrays.asList(1, 2, 3, 4, 5));
+			break;
+
+		default:
+			break;
+		}
+
+		createNonDominatedTable();
+	}
+
+	private void createNonDominatedTable() {
+		Table table = new Table(config.getSizeOfNonDominatedTable());
+		tables.add(table);
+	}
+
+	private void createTable(Integer objective) {
+		Table table = new Table(config.getSizeOfTables());
+		table.addObjective(objective);
+		tables.add(table);
+	}
+
+	private void createTable(List<Integer> objectives) {
+		Table table = new Table(config.getSizeOfTables());
+		table.addObjectives(objectives);
+		tables.add(table);
+	}
+
+	private int simpleCombination(int numberOfElements, int numberInTheSet) {
+		return fat(numberOfElements) / (fat(numberInTheSet) * fat(numberOfElements - numberInTheSet));
+	}
+
+	private int fat(int value) {
+		if (value == 0 || value == 1) {
+			return 1;
+		}
+
+		int accumulatedValue = 1;
+		for (int i = 1; i <= value; i++) {
+			accumulatedValue *= i;
+		}
+
+		return accumulatedValue;
 	}
 
 	public void execute(long initialTime) throws Exception {
-		if (config.isGenerateCsvFile()) {
-			executeAGAndGenerateCsvFile();
-			return;
-		}
-
-		if (config.isExecuteMultiObjectiveGA()) {
-			executeMultiObjectiveGeneticAlgorithm(initialTime);
-			return;
-		}
-
-		executeStandarGeneticAlgorithm(initialTime);
-	}
-
-	private void executeAGAndGenerateCsvFile() throws Exception {
-		GeneratorDifferentChromosome generator = new GeneratorDifferentChromosome(this.generator, config, graph);
-		generator.execute();
-	}
-
-	private void executeMultiObjectiveGeneticAlgorithm(long initialTime) throws Exception {
-		AEMMT aemmt = new AEMMT(config, graph);
-		aemmt.execute(initialTime);
-	}
-
-	private void executeStandarGeneticAlgorithm(long initialTime) throws Exception{
 		int iteration = 0;
 
 		while (iteration < config.getIterations()) {
@@ -119,7 +226,7 @@ public class AGScheduling {
 			iteration++;
 		}
 
-		showResult(initialTime);		
+		showResult(initialTime);
 	}
 
 	private void resetIteration() {
@@ -136,9 +243,9 @@ public class AGScheduling {
 
 	private void executeAG() throws Exception {
 		if (firstGeneration) {
-			for (int i = 0; i < config.getInitialPopulation(); i++) {
+			for (int i = 1; i <= initialPopulation; i++) {
 				Chromosome chromosome = new Chromosome(generator, graph, config);
-				addChromosomeInGeneralList(chromosome);
+				addChromosomeToTables(chromosome, i);
 			}
 
 			firstGeneration = false;
@@ -148,8 +255,28 @@ public class AGScheduling {
 		selectBestChromosomesForReinsertion();
 	}
 
-	private void addChromosomeInGeneralList(Chromosome chromosome) {
-		chromosomeList.add(chromosome);
+	private void addChromosomeToTables(Chromosome chromosome, int totalChromosomeGenerated) {
+		boolean createTables = tables.size() == 0;
+
+		//the non-dominated table will be processed only at the end
+		for (int i = 0; i < totalTables - 1; i++) {
+			if (createTables) {
+				Table table = new Table(config.getSizeOfTables());
+				tables.add(table);
+			}
+
+			tables.get(i).add(chromosome, config, validateInsertion(totalChromosomeGenerated));
+		}
+
+		if (createTables) {
+			//Create Non-dominated table
+			Table table = new Table(config.getSizeOfNonDominatedTable());
+			tables.add(table);
+		}
+	}
+
+	private boolean validateInsertion(int totalChromosomeGenerated) {
+		return totalChromosomeGenerated > config.getSizeOfTables();
 	}
 
 	private void addChromosomeInGeneralList(List<Chromosome> chromosomeList) {
@@ -560,5 +687,18 @@ public class AGScheduling {
 		result.setTotalNumberOfChromosomes(totalNumberOfChromosomes);
 
 		result.showResult(bestChromosomeFound, config);		
+	}
+
+	public static void main(String args[]) throws Exception {
+		AEMMT a = new AEMMT();
+		//System.out.println(a.simpleCombination(2, 1) + a.simpleCombination(2, 2));
+		//System.out.println(a.simpleCombination(3, 1) + a.simpleCombination(3, 2) + a.simpleCombination(3, 3));
+		//System.out.println(a.simpleCombination(4, 1) + a.simpleCombination(4, 2) + a.simpleCombination(4, 3) + a.simpleCombination(4, 4));
+		//System.out.println(a.simpleCombination(5, 1) + a.simpleCombination(5, 2) + a.simpleCombination(5, 3) + a.simpleCombination(5, 4) + a.simpleCombination(5, 5));
+		System.out.println(a.simpleCombination(5, 1));
+		System.out.println(a.simpleCombination(5, 2));
+		System.out.println(a.simpleCombination(5, 3));
+		System.out.println(a.simpleCombination(5, 4));
+		System.out.println(a.simpleCombination(5, 5));
 	}
 }
