@@ -40,6 +40,8 @@ public class Configuration {
 	private Integer totalObjectives;
 	private Integer sizeOfTables;
 	private Integer sizeOfNonDominatedTable;
+	private Integer totalGenerations;
+	private Integer totalGenerationsToResetTableScore;
 	private Integer objective1;
 	private Integer objective2;
 	private Integer objective3;
@@ -163,6 +165,14 @@ public class Configuration {
 
 	public Integer getSizeOfNonDominatedTable() {
 		return sizeOfNonDominatedTable;
+	}
+
+	public Integer getTotalGenerations() {
+		return totalGenerations;
+	}
+
+	public Integer getTotalGenerationsToResetTableScore() {
+		return totalGenerationsToResetTableScore;
 	}
 
 	public Integer getObjective1() {
@@ -390,55 +400,63 @@ public class Configuration {
 		this.sizeOfNonDominatedTable= sizeOfNonDominatedTable;
 	}
 
-	public void setObjective1(Integer objective1) {
+	private void setTotalGenerations(Integer totalGenerations) {
+		this.totalGenerations = totalGenerations;
+	}
+
+	private void setTotalGenerationsToResetTableScore(Integer totalGenerationsToResetTableScore) {
+		this.totalGenerationsToResetTableScore = totalGenerationsToResetTableScore;
+	}
+
+	private void setObjective1(Integer objective1) {
 		this.objective1 = objective1;
 	}
 
-	public void setObjective2(Integer objective2) {
+	private void setObjective2(Integer objective2) {
 		this.objective2 = objective2;
 	}
 
-	public void setObjective3(Integer objective3) {
+	private void setObjective3(Integer objective3) {
 		this.objective3 = objective3;
 	}
 
-	public void setObjective4(Integer objective4) {
+	private void setObjective4(Integer objective4) {
 		this.objective4 = objective4;
 	}
 
-	public void setObjective5(Integer objective5) {
+	private void setObjective5(Integer objective5) {
 		this.objective5 = objective5;
 	}
 
-	public void setWeight1(Double weight1) {
+	private void setWeight1(Double weight1) {
 		this.weight1 = weight1;
 	}
 
-	public void setWeight2(Double weight2) {
+	private void setWeight2(Double weight2) {
 		this.weight2 = weight2;
 	}
 
-	public void setWeight3(Double weight3) {
+	private void setWeight3(Double weight3) {
 		this.weight3 = weight3;
 	}
 
-	public void setWeight4(Double weight4) {
+	private void setWeight4(Double weight4) {
 		this.weight4 = weight4;
 	}
 
-	public void setWeight5(Double weight5) {
+	private void setWeight5(Double weight5) {
 		this.weight5 = weight5;
 	}
 
-	public void setGenerateCsvFile(Boolean generateCsvFile) {
+	private void setGenerateCsvFile(Boolean generateCsvFile) {
 		this.generateCsvFile = generateCsvFile;
 	}
 
-	public void setTotalDifferentChromosomes(Integer totalDifferentChromosomes) {
+	private void setTotalDifferentChromosomes(Integer totalDifferentChromosomes) {
 		this.totalDifferentChromosomes = totalDifferentChromosomes;
 	}
 
-	public void setMaximumAttemptsGenerateDifferentChromosomes(Integer maximumAttemptsGenerateDifferentChromosomes) {
+	private void setMaximumAttemptsGenerateDifferentChromosomes(Integer maximumAttemptsGenerateDifferentChromosomes) {
 		this.maximumAttemptsGenerateDifferentChromosomes = maximumAttemptsGenerateDifferentChromosomes;
 	}
 

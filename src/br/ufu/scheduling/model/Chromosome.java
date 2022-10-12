@@ -9,7 +9,7 @@ import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Mutation;
 import br.ufu.scheduling.utils.Printer;
 
-public class Chromosome {
+public class Chromosome implements Cloneable {
 	private int[] mapping; 		//Processors execution order - starts on processor 1
 	private int[] scheduling;	//Task execution order - starts at task 1
 	private Metrics metrics = new Metrics(); 
@@ -30,6 +30,9 @@ public class Chromosome {
 		calculateMetrics(graph, config);
 	}
 
+	private Chromosome() {
+	}
+
 	public int[] getMapping() {
 		return mapping;
 	}
@@ -38,9 +41,6 @@ public class Chromosome {
 		return scheduling;
 	}
 
-	public double getFitness() {
-		return metrics.getFitness();
-	}
 
 	public double getSLength() {
 		return metrics.getSLength();
@@ -62,8 +62,32 @@ public class Chromosome {
 		return metrics.getWaitingTime();
 	}
 
+	public double getFitness() {
+		return metrics.getFitness();
+	}
+
 	public int getFitnessAdjusted() {
 		return metrics.getFitnessAjusted();
+	}
+
+	public double getFitnessForSLenght() {
+		return metrics.getFitnessForSLenght();
+	}
+
+	public double getFitnessForLoadBalance() {
+		return metrics.getFitnessForLoadBalance();
+	}
+
+	public double getFitnessForFlowTime() {
+		return metrics.getFitnessForFlowTime();
+	}
+
+	public double getFitnessForCommunicationCost() {
+		return metrics.getFitnessForCommunicationCost();
+	}
+
+	public double getFitnessForWaitingTime() {
+		return metrics.getFitnessForWaitingTime();
 	}
 
 	public double getAemmtValue() {
@@ -218,6 +242,14 @@ public class Chromosome {
 
 	public void printChromosome() {
 		Printer.printChromosome(this);
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		Chromosome clone = new Chromosome();
+		clone.mapping = this.mapping.clone();
+		clone.scheduling = this.scheduling.clone();
+		clone.metrics = (Metrics) this.metrics.clone();
+		return  clone;
 	}
 
 	@Override

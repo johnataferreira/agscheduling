@@ -25,6 +25,14 @@ public class Table {
 		return size;
 	}
 
+	public Chromosome getChromosomeFromIndex(int index) {
+		if (index < 0 || index >= chromosomeList.size()) {
+			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ".");
+		}
+
+		return chromosomeList.get(index);
+	}
+
 	public void addScore(int score) {
 		this.score += score;
 	}
@@ -41,16 +49,12 @@ public class Table {
 		this.objectives.addAll(objectives);
 	}
 
-	public boolean add(Chromosome chromosome, Configuration config) {
-		return add(chromosome, config, false);
-	}
+	public boolean add(Chromosome chromosome, Configuration config) throws Exception {
+		if (chromosomeList.size() <= this.size) {
+			Chromosome clone = buildChromosomeClone(chromosome);
+			clone.setAemmtValue(calculateWeightedAverage(clone, config));
+			chromosomeList.add(clone);
 
-	public boolean add(Chromosome chromosome, Configuration config, boolean validateInsertion) {
-		if (!validateInsertion) {
-			//FIXME: aqui temos o problema de ter um valor no chromosome, mas esse cara pode ter métricas diferentes de acordo com a tabela, portanto não posso usar o chromossomo original
-			//preciso fazer uma copia dele
-			chromosome.setAemmtValue(calculateWeightedAverage(chromosome, config));
-			chromosomeList.add(chromosome);
 			return true;
 		}
 
@@ -66,11 +70,30 @@ public class Table {
 
 		if (weightedAverage > chromosomeList.get(0).getAemmtValue()) {
 			chromosomeList.remove(0);
-			chromosomeList.add(chromosome);
+
+			Chromosome clone = buildChromosomeClone(chromosome);
+			clone.setAemmtValue(weightedAverage);
+			chromosomeList.add(clone);
+
 			return true;
 		}
 
 		return false;
+	}
+
+	private Chromosome buildChromosomeClone(Chromosome chromosome) throws Exception {
+		Chromosome clone = null;
+
+		try {
+			clone = (Chromosome) chromosome.clone();
+		} catch (CloneNotSupportedException e) {
+			Exception e2 = new Exception("Error making base chromosome clone: " + e);
+			e2.initCause(e);
+
+			throw e;
+		}
+
+		return clone;
 	}
 
 	private double calculateWeightedAverage(Chromosome chromosome, Configuration config) {
@@ -111,23 +134,23 @@ public class Table {
 
 		switch (objective) {
 		case 0:
-			valueObjective = chromosome.getSLength();
+			valueObjective = chromosome.getFitnessForSLenght();
 			break;
 
 		case 1:
-			valueObjective = chromosome.getLoadBalance();
+			valueObjective = chromosome.getFitnessForLoadBalance();
 			break;
 
 		case 2:
-			valueObjective = chromosome.getFlowTime();
+			valueObjective = chromosome.getFitnessForFlowTime();
 			break;
 
 		case 3:
-			valueObjective = chromosome.getCommunicationCost();
+			valueObjective = chromosome.getFitnessForCommunicationCost();
 			break;
 
 		case 4:
-			valueObjective = chromosome.getWaitingTime();
+			valueObjective = chromosome.getFitnessForWaitingTime();
 			break;
 
 		default:
