@@ -12,8 +12,6 @@ import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Printer;
 
 public class Metrics implements Cloneable {
-	private static final int MAXIMIZATION_PROBLEM = 0; 
-
 	private double sLength; /* makespan */
 	private double loadBalance;
 	private double flowTime; /* sum of processor times */
@@ -21,7 +19,7 @@ public class Metrics implements Cloneable {
 	private double waitingTime;
 
 	private double fitness;
-	private double fitnessForSlenght;
+	private double fitnessForSlength;
 	private double fitnessForLoadBalance;
 	private double fitnessForFlowTime;
 	private double fitnessForCommunicationCost;
@@ -60,8 +58,8 @@ public class Metrics implements Cloneable {
 		return Long.valueOf(Math.round(Math.abs(fitness) * AGScheduling.ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE)).intValue();
 	}
 
-	public double getFitnessForSLenght() {
-		return fitnessForSlenght;
+	public double getFitnessForSLength() {
+		return fitnessForSlength;
 	}
 
 	public double getFitnessForLoadBalance() {
@@ -241,7 +239,7 @@ public class Metrics implements Cloneable {
 	}
 
 	private void calculateFitnessForMetrics(Configuration config) {
-		fitnessForSlenght = calculateFitnessForMetric(config, MetricType.MAKESPAN);
+		fitnessForSlength = calculateFitnessForMetric(config, MetricType.MAKESPAN);
 		fitnessForLoadBalance = calculateFitnessForMetric(config, MetricType.LOAD_BALANCE);
 		fitnessForFlowTime = calculateFitnessForMetric(config, MetricType.FLOW_TIME);
 		fitnessForCommunicationCost = calculateFitnessForMetric(config, MetricType.COMMUNICATION_COST);
@@ -249,7 +247,7 @@ public class Metrics implements Cloneable {
 	}
 
 	private Double calculateFitnessForMetric(Configuration config, MetricType metricType) {
-		if (config.getMaximizationConstant() == MAXIMIZATION_PROBLEM) {
+		if (config.getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
 			return getMetricValue(metricType);
 		}
 
@@ -260,7 +258,7 @@ public class Metrics implements Cloneable {
 	private void calculateFitness(Configuration config) {
 		switch (config.getMetricType()) {
 		case MAKESPAN:
-			fitness = fitnessForSlenght;
+			fitness = fitnessForSlength;
 			break;
 
 		case LOAD_BALANCE:
@@ -314,7 +312,7 @@ public class Metrics implements Cloneable {
 		clone.communicationCost = this.communicationCost;
 		clone.waitingTime = this.waitingTime;
 		clone.fitness = this.fitness;
-		clone.fitnessForSlenght = this.fitnessForSlenght;
+		clone.fitnessForSlength = this.fitnessForSlength;
 		clone.fitnessForLoadBalance = this.fitnessForLoadBalance;
 		clone.fitnessForFlowTime = this.fitnessForFlowTime;
 		clone.fitnessForCommunicationCost = this.fitnessForCommunicationCost;

@@ -27,7 +27,7 @@ public class Table {
 
 	public Chromosome getChromosomeFromIndex(int index) {
 		if (index < 0 || index >= chromosomeList.size()) {
-			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ".");
+			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ". Value Informed: " + index + ".");
 		}
 
 		return chromosomeList.get(index);
@@ -49,10 +49,22 @@ public class Table {
 		this.objectives.addAll(objectives);
 	}
 
+	public int getTotalChromosomes() {
+		return chromosomeList.size();
+	}
+
+	public void remove(int index) {
+		if (index < 0 || index >= chromosomeList.size()) {
+			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ".");
+		}
+
+		chromosomeList.remove(index);
+	}
+
 	public boolean add(Chromosome chromosome, Configuration config) throws Exception {
-		if (chromosomeList.size() <= this.size) {
+		if (chromosomeList.size() < this.size) {
 			Chromosome clone = buildChromosomeClone(chromosome);
-			clone.setAemmtValue(calculateWeightedAverage(clone, config));
+			clone.setAemmtValue(calculateAverage(clone, config));
 			chromosomeList.add(clone);
 
 			return true;
@@ -66,7 +78,7 @@ public class Table {
 			}
 		});
 
-		double weightedAverage = calculateWeightedAverage(chromosome, config);
+		double weightedAverage = calculateAverage(chromosome, config);
 
 		if (weightedAverage > chromosomeList.get(0).getAemmtValue()) {
 			chromosomeList.remove(0);
@@ -96,29 +108,37 @@ public class Table {
 		return clone;
 	}
 
-	private double calculateWeightedAverage(Chromosome chromosome, Configuration config) {
+	private double calculateAverage(Chromosome chromosome, Configuration config) {
+		if (config.isUseWeightToCalculateAverageFunction()) {
+			return calculateAverageByWeight(chromosome, config);
+		} else {
+			return calculateAverageByNormalization(chromosome, config);
+		}
+	}
+	
+	private double calculateAverageByWeight(Chromosome chromosome, Configuration config) {
 		double accumulatedValue = 0.0;
 
 		for (Integer objective : objectives) {
 			switch (objective) {
 			case 1:
-				accumulatedValue += getValueObjective(chromosome, config.getObjective1()) * config.getWeight1();
+				accumulatedValue += chromosome.getObjectiveValue(config.getObjective1()) * config.getWeight1();
 				break;
 
 			case 2:
-				accumulatedValue += getValueObjective(chromosome, config.getObjective2()) * config.getWeight2();
+				accumulatedValue += chromosome.getObjectiveValue(config.getObjective2()) * config.getWeight2();
 				break;
 
 			case 3:
-				accumulatedValue += getValueObjective(chromosome, config.getObjective3()) * config.getWeight3();
+				accumulatedValue += chromosome.getObjectiveValue(config.getObjective3()) * config.getWeight3();
 				break;
 
 			case 4:
-				accumulatedValue += getValueObjective(chromosome, config.getObjective4()) * config.getWeight4();
+				accumulatedValue += chromosome.getObjectiveValue(config.getObjective4()) * config.getWeight4();
 				break;
 
 			case 5:
-				accumulatedValue += getValueObjective(chromosome, config.getObjective5()) * config.getWeight5();
+				accumulatedValue += chromosome.getObjectiveValue(config.getObjective5()) * config.getWeight5();
 				break;
 
 			default:
@@ -128,35 +148,37 @@ public class Table {
 
 		return accumulatedValue /= objectives.size();
 	}
-	
-	private double getValueObjective(Chromosome chromosome, Integer objective) {
-		double valueObjective = 0.0;
 
-		switch (objective) {
-		case 0:
-			valueObjective = chromosome.getFitnessForSLenght();
-			break;
+	private double calculateAverageByNormalization(Chromosome chromosome, Configuration config) {
+		double accumulatedValue = 0.0;
 
-		case 1:
-			valueObjective = chromosome.getFitnessForLoadBalance();
-			break;
+		for (Integer objective : objectives) {
+			switch (objective) {
+			case 1:
+				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1());
+				break;
 
-		case 2:
-			valueObjective = chromosome.getFitnessForFlowTime();
-			break;
+			case 2:
+				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2());
+				break;
 
-		case 3:
-			valueObjective = chromosome.getFitnessForCommunicationCost();
-			break;
+			case 3:
+				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3());
+				break;
 
-		case 4:
-			valueObjective = chromosome.getFitnessForWaitingTime();
-			break;
+			case 4:
+				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4());
+				break;
 
-		default:
-			throw new IllegalArgumentException("Type of objective invalid. Value: " + objective + ".");
+			case 5:
+				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5());
+				break;
+
+			default:
+				throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+			}
 		}
 
-		return valueObjective;
+		return accumulatedValue /= objectives.size();
 	}
 }

@@ -1,5 +1,8 @@
 package br.ufu.scheduling.utils;
 
+import java.util.List;
+
+import br.ufu.scheduling.aemmt.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 
@@ -29,14 +32,11 @@ public class Printer {
 	}
 
 	public static void printChromosome(Chromosome chromosome) {
-		System.out.println("Mapping (Processors) : " + getFormattedVector(chromosome.getMapping()));
-		System.out.println("Scheduling (Tasks) : " + getFormattedVector(chromosome.getScheduling()));
-		System.out.println("SLenght : " + chromosome.getSLength());
-		System.out.println("LoadBalance: " + chromosome.getLoadBalance());
-		System.out.println("FlowTime: " + chromosome.getFlowTime());
-		System.out.println("CommunicationCost: " + chromosome.getCommunicationCost());
-		System.out.println("WaitingTime: " + chromosome.getWaitingTime());
-		System.out.println("Fitness : " + chromosome.getFitness());
+		printChromosome(chromosome, true);
+	}
+
+	public static void printChromosome(Chromosome chromosome, boolean printFitness) {
+		System.out.print(getObjectivesFromChromosomeFormatted(chromosome, printFitness));
 	}
 
 	public static void printChromosomeVectors(int[] mapping, int[] scheduling) {
@@ -89,5 +89,144 @@ public class Printer {
 
 	private static void append(StringBuilder builder, String message) {
 		builder.append(message + LINE_BREAK);
+	}
+
+	public static void printFinalResultForAEMMT(Configuration config, Table nonDominatedTable, long initialTime) {
+		StringBuilder builder = new StringBuilder();
+
+		append(builder, "######################################");
+		append(builder, "############ Final Result ############");
+		append(builder, "######################################");
+		append(builder, "");
+
+		append(builder, "############ AEMMT ############");
+		append(builder, "## Chromosomes Non-Dominated ##");
+		append(builder, "");
+
+		for (int i = 0; i < nonDominatedTable.getTotalChromosomes(); i++) {
+			append(builder, getObjectivesFromChromosomeFormatted(nonDominatedTable.getChromosomeFromIndex(i), false));
+		}
+
+		append(builder, "##################################");
+		append(builder, "");
+		append(builder, getGeneralData(config, nonDominatedTable, initialTime));
+
+		System.out.println(builder.toString());
+	}
+
+	private static String getObjectivesFromChromosomeFormatted(Chromosome chromosome, boolean showFitness) {
+		StringBuilder builder = new StringBuilder();
+
+		append(builder, "Mapping (Processors) : " + getFormattedVector(chromosome.getMapping()));
+		append(builder, "Scheduling (Tasks) : " + getFormattedVector(chromosome.getScheduling()));
+		append(builder, "SLenght : " + chromosome.getSLength());
+		append(builder, "LoadBalance: " + chromosome.getLoadBalance());
+		append(builder, "FlowTime: " + chromosome.getFlowTime());
+		append(builder, "CommunicationCost: " + chromosome.getCommunicationCost());
+		append(builder, "WaitingTime: " + chromosome.getWaitingTime());
+
+		if (showFitness) {
+			append(builder, "Fitness : " + chromosome.getFitness());
+		}
+
+		return builder.toString();
+	}
+
+	public static String getGeneralData(Configuration config, Table tableNonDominated, long initialTime) {
+		StringBuilder builder = new StringBuilder();
+
+		append(builder, "Total Chromosomes Non-Dominated: " + tableNonDominated.getTotalChromosomes() + ".");
+		append(builder, "Runtime for " + config.getTotalGenerations() + " generations: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.\n");
+
+		return builder.toString();
+	}
+
+	public static void printFinalResultForAEMMTWithComparedToNonDominated(Configuration config, List<Table> tables, long initialTime) {
+		StringBuilder builder = new StringBuilder();
+
+		append(builder, "######################################");
+		append(builder, "############ Final Result ############");
+		append(builder, "######################################");
+		append(builder, "");
+
+		append(builder, "############ AEMMT ############");
+		append(builder, "## Chromosomes Non-Dominated ##");
+		append(builder, "");
+		
+
+		Table nonDominatedTable = tables.get(tables.size() - 1);
+
+		for (int chromosomeNonDominatedIndex = 0; chromosomeNonDominatedIndex < nonDominatedTable.getTotalChromosomes(); chromosomeNonDominatedIndex++) {
+			append(builder, "##################################");
+			append(builder, "Chromosome A: - " + (chromosomeNonDominatedIndex + 1));
+			append(builder, "");
+
+			Chromosome chromosomeA = nonDominatedTable.getChromosomeFromIndex(chromosomeNonDominatedIndex);
+
+			append(builder, getObjectivesFromChromosomeFormatted(chromosomeA, false));
+			append(builder, "");
+
+			int totalCromossomesAnalised = 0;
+
+			for (int tableIndex = 0; tableIndex < tables.size(); tableIndex++) {
+				Table table = tables.get(tableIndex);
+
+				for (int chromosomeIndex = 0; chromosomeIndex < table.getTotalChromosomes(); chromosomeIndex++) {
+					Chromosome chromosomeB = table.getChromosomeFromIndex(chromosomeIndex);
+
+					append(builder, "----------------------------------");
+					append(builder, "Chromosome B: - " + (totalCromossomesAnalised + 1));
+					append(builder, "");
+
+					append(builder, getObjectivesFromChromosomeFormatted(chromosomeB, false));
+					append(builder, "");
+
+					append(builder, "SLenght : ");
+					append(builder, "	B: " + chromosomeB.getFitnessForSLength() + " | A: " + chromosomeA.getFitnessForSLength());
+					append(builder, "	Result: " + getResolvedComparison(chromosomeB.getFitnessForSLength(), chromosomeA.getFitnessForSLength()));
+
+					append(builder, "LoadBalance : ");
+					append(builder, "	B: " + chromosomeB.getFitnessForLoadBalance() + " | A: " + chromosomeA.getFitnessForLoadBalance());
+					append(builder, "	Result: " + getResolvedComparison(chromosomeB.getFitnessForLoadBalance(), chromosomeA.getFitnessForLoadBalance()));
+
+					append(builder, "FlowTime : ");
+					append(builder, "	B: " + chromosomeB.getFitnessForFlowTime() + " | A: " + chromosomeA.getFitnessForFlowTime());
+					append(builder, "	Result: " + getResolvedComparison(chromosomeB.getFitnessForFlowTime(), chromosomeA.getFitnessForFlowTime()));
+
+					append(builder, "CommunicationCost : ");
+					append(builder, "	B: " + chromosomeB.getFitnessForCommunicationCost() + " | A: " + chromosomeA.getFitnessForCommunicationCost());
+					append(builder, "	Result: " + getResolvedComparison(chromosomeB.getFitnessForCommunicationCost(), chromosomeA.getFitnessForCommunicationCost()));
+
+					append(builder, "WaitingTime : ");
+					append(builder, "	B: " + chromosomeB.getFitnessForWaitingTime() + " | A: " + chromosomeA.getFitnessForWaitingTime());
+					append(builder, "	Result: " + getResolvedComparison(chromosomeB.getFitnessForWaitingTime(), chromosomeA.getFitnessForWaitingTime()));
+
+					append(builder, "");
+
+					append(builder, "B domina A: " + chromosomeA.isChromosomeDominated(config, chromosomeB));
+					append(builder, "");
+					
+					totalCromossomesAnalised++;
+				}
+			}
+		}
+
+		append(builder, "##################################");
+		append(builder, "");
+		append(builder, getGeneralData(config, nonDominatedTable, initialTime));
+
+		System.out.println(builder.toString());
+	}
+
+	private static String getResolvedComparison(double valueA, double valueB) {
+		if (valueA > valueB) {
+			return "Greater or Equal";
+
+		} else if (valueA == valueB) {
+			return "Equal";
+
+		} else {
+			return "Less";
+		}
 	}
 }

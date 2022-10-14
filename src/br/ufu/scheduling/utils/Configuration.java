@@ -11,7 +11,11 @@ import br.ufu.scheduling.enums.MutationType;
 import br.ufu.scheduling.enums.SelectionType;
 
 public class Configuration {
-	public final static String READ_ME_FILE_NAME = "README.conf"; 
+	public static final String USE_DEFAULT_GRAPH = "-1";
+	public static final int MAXIMIZATION_PROBLEM = 0;
+	public final static String READ_ME_FILE_NAME = "README.conf";
+	public final static String NORMALIZATION_BASE_FILE_NAME = "normalization-DAGBase.txt";
+	public final static String PREFIX_NORMLIZATION_FILE_NAME = "normalization-";
 
 	private Integer initialPopulation;
 	private Double mutationRate;
@@ -42,6 +46,9 @@ public class Configuration {
 	private Integer sizeOfNonDominatedTable;
 	private Integer totalGenerations;
 	private Integer totalGenerationsToResetTableScore;
+	private Boolean printComparisonNonDominatedChromosomes;
+	private Integer totalGenerationsToApplyMutation;
+	private Boolean useWeightToCalculateAverageFunction;
 	private Integer objective1;
 	private Integer objective2;
 	private Integer objective3;
@@ -52,6 +59,18 @@ public class Configuration {
 	private Double weight3;
 	private Double weight4;
 	private Double weight5;
+
+	//AGMO Normalization Data
+	private Double maxObjectiveValue1;
+	private Double minObjectiveValue1;
+	private Double maxObjectiveValue2;
+	private Double minObjectiveValue2;
+	private Double maxObjectiveValue3;
+	private Double minObjectiveValue3;
+	private Double maxObjectiveValue4;
+	private Double minObjectiveValue4;
+	private Double maxObjectiveValue5;
+	private Double minObjectiveValue5;
 
 	//CSV File
 	private Boolean generateCsvFile;
@@ -175,6 +194,18 @@ public class Configuration {
 		return totalGenerationsToResetTableScore;
 	}
 
+	public Boolean isPrintComparisonNonDominatedChromosomes() {
+		return printComparisonNonDominatedChromosomes;
+	}
+
+	public Integer getTotalGenerationsToApplyMutation() {
+		return totalGenerationsToApplyMutation;
+	}
+
+	public Boolean isUseWeightToCalculateAverageFunction() {
+		return useWeightToCalculateAverageFunction;
+	}
+
 	public Integer getObjective1() {
 		return objective1;
 	}
@@ -213,6 +244,46 @@ public class Configuration {
 
 	public Double getWeight5() {
 		return weight5;
+	}
+
+	public Double getMaxObjectiveValue1() {
+		return maxObjectiveValue1;
+	}
+
+	public Double getMinObjectiveValue1() {
+		return minObjectiveValue1;
+	}
+
+	public Double getMaxObjectiveValue2() {
+		return maxObjectiveValue2;
+	}
+
+	public Double getMinObjectiveValue2() {
+		return minObjectiveValue2;
+	}
+
+	public Double getMaxObjectiveValue3() {
+		return maxObjectiveValue3;
+	}
+
+	public Double getMinObjectiveValue3() {
+		return minObjectiveValue3;
+	}
+
+	public Double getMaxObjectiveValue4() {
+		return maxObjectiveValue4;
+	}
+
+	public Double getMinObjectiveValue4() {
+		return minObjectiveValue4;
+	}
+
+	public Double getMaxObjectiveValue5() {
+		return maxObjectiveValue5;
+	}
+
+	public Double getMinObjectiveValue5() {
+		return minObjectiveValue5;
 	}
 
 	public Boolean isGenerateCsvFile() {
@@ -408,6 +479,18 @@ public class Configuration {
 		this.totalGenerationsToResetTableScore = totalGenerationsToResetTableScore;
 	}
 
+	private void setPrintComparisonNonDominatedChromosomes(Boolean printComparisonNonDominatedChromosomes) {
+		this.printComparisonNonDominatedChromosomes = printComparisonNonDominatedChromosomes;
+	}
+
+	private void setTotalGenerationsToApplyMutation(Integer totalGenerationsToApplyMutation) {
+		this.totalGenerationsToApplyMutation = totalGenerationsToApplyMutation;
+	}
+
+	private void setUseWeightToCalculateAverageFunction(Boolean useWeightToCalculateAverageFunction) {
+		this.useWeightToCalculateAverageFunction = useWeightToCalculateAverageFunction;
+	}
+
 	private void setObjective1(Integer objective1) {
 		this.objective1 = objective1;
 	}
@@ -448,6 +531,46 @@ public class Configuration {
 		this.weight5 = weight5;
 	}
 
+	private void setMaxObjectiveValue1(Double maxObjectiveValue1) {
+		this.maxObjectiveValue1 = maxObjectiveValue1;
+	}
+
+	private void setMinObjectiveValue1(Double minObjectiveValue1) {
+		this.minObjectiveValue1 = minObjectiveValue1;
+	}
+
+	private void setMaxObjectiveValue2(Double maxObjectiveValue2) {
+		this.maxObjectiveValue2 = maxObjectiveValue2;
+	}
+
+	private void setMinObjectiveValue2(Double minObjectiveValue2) {
+		this.minObjectiveValue2 = minObjectiveValue2;
+	}
+
+	private void setMaxObjectiveValue3(Double maxObjectiveValue3) {
+		this.maxObjectiveValue3 = maxObjectiveValue3;
+	}
+
+	private void setMinObjectiveValue3(Double minObjectiveValue3) {
+		this.minObjectiveValue3 = minObjectiveValue3;
+	}
+
+	private void setMaxObjectiveValue4(Double maxObjectiveValue4) {
+		this.maxObjectiveValue4 = maxObjectiveValue4;
+	}
+
+	private void setMinObjectiveValue4(Double minObjectiveValue4) {
+		this.minObjectiveValue4 = minObjectiveValue4;
+	}
+
+	private void setMaxObjectiveValue5(Double maxObjectiveValue5) {
+		this.maxObjectiveValue5 = maxObjectiveValue5;
+	}
+
+	private void setMinObjectiveValue5(Double minObjectiveValue5) {
+		this.minObjectiveValue5 = minObjectiveValue5;
+	}
+
 	private void setGenerateCsvFile(Boolean generateCsvFile) {
 		this.generateCsvFile = generateCsvFile;
 	}
@@ -474,11 +597,70 @@ public class Configuration {
 				Method method = this.getClass().getDeclaredMethod(getMethodName(vector[0]), getParameterType(vector[1]));
 				method.invoke(this, getConvertedValue(vector[2], vector[1]));
 			}
+
+			if (!isUseWeightToCalculateAverageFunction()) {
+				readConfigurationForDataNormalization();
+				
+				if (getMaximizationConstant() != Configuration.MAXIMIZATION_PROBLEM) {
+					invertMaximumAndMinimumObjectiveValues();
+				}
+			}
 		} catch (Exception e) {
 			Exception e2 = new Exception("Error loading README.conf configuration file: " + e.getMessage());
 			e2.initCause(e);
 			throw e2;
 		}
+	}
+
+	private void readConfigurationForDataNormalization() throws Exception {
+		String fileName;
+
+		if (USE_DEFAULT_GRAPH.equals(getTaskGraphFileName())) {
+			fileName = NORMALIZATION_BASE_FILE_NAME;
+		} else {
+			fileName = PREFIX_NORMLIZATION_FILE_NAME + getTaskGraphFileName();
+		} 
+
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+			String line = null;
+
+			while ((line = buffer.readLine()) != null) {
+				if (line.startsWith("#")) continue;
+
+				//0 - FieldName
+				//1 - Type (int, double, String)
+				//2 - Value
+				String[] vector = line.split(":");
+				Method method = this.getClass().getDeclaredMethod(getMethodName(vector[0]), getParameterType(vector[1]));
+				method.invoke(this, getRealObjectiveValue(getConvertedValue(vector[2], vector[1])));
+			}
+		} catch (Exception e) {
+			Exception e2 = new Exception("Error loading " + fileName + " file: " + e.getMessage());
+			e2.initCause(e);
+			throw e2;
+		}
+	}
+
+	private void invertMaximumAndMinimumObjectiveValues() {
+		double aux = maxObjectiveValue1;
+		this.maxObjectiveValue1 = minObjectiveValue1;
+		this.minObjectiveValue1 = aux;
+
+		aux = maxObjectiveValue2;
+		this.maxObjectiveValue2 = minObjectiveValue2;
+		this.minObjectiveValue2 = aux;
+
+		aux = maxObjectiveValue3;
+		this.maxObjectiveValue3 = minObjectiveValue3;
+		this.minObjectiveValue3 = aux;
+
+		aux = maxObjectiveValue4;
+		this.maxObjectiveValue4 = minObjectiveValue4;
+		this.minObjectiveValue4 = aux;
+
+		aux = maxObjectiveValue5;
+		this.maxObjectiveValue5 = minObjectiveValue5;
+		this.minObjectiveValue5 = aux;
 	}
 
 	private String getMethodName(String fieldName) {
@@ -521,7 +703,15 @@ public class Configuration {
 		default:
 			throw new IllegalArgumentException("Invalid type of field: " + type + "!");
 		}
+	}
 
+	private Object getRealObjectiveValue(Object objectiveValue) {
+		if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
+			return objectiveValue;
+		}
+
+		//Transform a minimization problem into a maximization problem 
+		return getMaximizationConstant() / (double) objectiveValue;
 	}
 
 	public static void main(String args[]) throws Exception {

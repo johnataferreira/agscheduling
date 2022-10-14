@@ -70,8 +70,8 @@ public class Chromosome implements Cloneable {
 		return metrics.getFitnessAjusted();
 	}
 
-	public double getFitnessForSLenght() {
-		return metrics.getFitnessForSLenght();
+	public double getFitnessForSLength() {
+		return metrics.getFitnessForSLength();
 	}
 
 	public double getFitnessForLoadBalance() {
@@ -250,6 +250,98 @@ public class Chromosome implements Cloneable {
 		clone.scheduling = this.scheduling.clone();
 		clone.metrics = (Metrics) this.metrics.clone();
 		return  clone;
+	}
+
+	public double getObjectiveValue(Integer objectiveIndex) {
+		double valueObjective = 0.0;
+
+		switch (objectiveIndex) {
+		case 0:
+			valueObjective = getFitnessForSLength();
+			break;
+
+		case 1:
+			valueObjective = getFitnessForLoadBalance();
+			break;
+
+		case 2:
+			valueObjective = getFitnessForFlowTime();
+			break;
+
+		case 3:
+			valueObjective = getFitnessForCommunicationCost();
+			break;
+
+		case 4:
+			valueObjective = getFitnessForWaitingTime();
+			break;
+
+		default:
+			throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
+		}
+
+		return valueObjective;
+	}
+
+	public double getNormalizedObjectiveValue(Configuration config, Integer objectiveIndex, double maxObjectiveValue, double minObjectiveValue) {
+		double objectiveValue = 0.0;
+
+		switch (objectiveIndex) {
+		case 0:
+			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForSLength(), maxObjectiveValue, minObjectiveValue);
+			break;
+
+		case 1:
+			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForLoadBalance(), maxObjectiveValue, minObjectiveValue);
+			break;
+
+		case 2:
+			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForFlowTime(), maxObjectiveValue, minObjectiveValue);
+			break;
+
+		case 3:
+			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForCommunicationCost(), maxObjectiveValue, minObjectiveValue);
+			break;
+
+		case 4:
+			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForWaitingTime(), maxObjectiveValue, minObjectiveValue);
+			break;
+
+		default:
+			throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
+		}
+
+		return objectiveValue;
+	}
+
+	private double calculateNormalizedObjetiveValue(Configuration config, double objectiveValue, double maxObjectiveValue, double minObjectiveValue) {
+		double differenceToMinimum = objectiveValue - minObjectiveValue;
+		double differenceBetweenExtremes = maxObjectiveValue - minObjectiveValue;
+
+		return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
+	}
+
+	/**
+	 * Rule:
+	 *   B dominates A or A is dominated by B if:
+	 *     1: B >= A in all objectives;
+	 *     2: B > A in at least one objective
+	 * 
+	 * */
+	public boolean isChromosomeDominated(Configuration config, Chromosome chromosomeB) {
+		boolean isChromosomeDominated = false;
+
+		for (int objectiveIndex = 0; objectiveIndex < config.getTotalObjectives(); objectiveIndex++) {
+			int result = Double.compare(chromosomeB.getObjectiveValue(objectiveIndex), this.getObjectiveValue(objectiveIndex));
+
+			if (result > 0) {
+				isChromosomeDominated = true;
+			} else {
+				return false;
+			}
+		}
+
+		return isChromosomeDominated;
 	}
 
 	@Override
