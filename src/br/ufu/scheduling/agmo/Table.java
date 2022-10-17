@@ -1,0 +1,80 @@
+package br.ufu.scheduling.agmo;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import br.ufu.scheduling.model.Chromosome;
+import br.ufu.scheduling.utils.Configuration;
+
+public abstract class Table {
+	protected int score = 0;
+	protected int size;
+	protected List<Integer> objectives = new ArrayList<>();
+	protected List<Chromosome> chromosomeList = new ArrayList<>();
+
+	public Table(int size) {
+		this.size = size;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public Chromosome getChromosomeFromIndex(int index) {
+		if (index < 0 || index >= chromosomeList.size()) {
+			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ". Value Informed: " + index + ".");
+		}
+
+		return chromosomeList.get(index);
+	}
+
+	public void addScore(int score) {
+		this.score += score;
+	}
+
+	public void resetScore() {
+		this.score = 0;
+	}
+
+	public void addObjective(Integer objective) {
+		objectives.add(objective);
+	}
+
+	public void addObjectives(List<Integer> objectives) {
+		this.objectives.addAll(objectives);
+	}
+
+	public int getTotalChromosomes() {
+		return chromosomeList.size();
+	}
+
+	public void remove(int index) {
+		if (index < 0 || index >= chromosomeList.size()) {
+			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ".");
+		}
+
+		chromosomeList.remove(index);
+	}
+
+	public abstract boolean add(Chromosome chromosome, Configuration config) throws Exception;
+
+	protected Chromosome buildChromosomeClone(Chromosome chromosome) throws Exception {
+		Chromosome clone = null;
+
+		try {
+			clone = (Chromosome) chromosome.clone();
+		} catch (CloneNotSupportedException e) {
+			Exception e2 = new Exception("Error making base chromosome clone: " + e);
+			e2.initCause(e);
+
+			throw e;
+		}
+
+		return clone;
+	}
+}

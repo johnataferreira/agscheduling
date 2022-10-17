@@ -2,7 +2,7 @@ package br.ufu.scheduling.utils;
 
 import java.util.List;
 
-import br.ufu.scheduling.aemmt.Table;
+import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 

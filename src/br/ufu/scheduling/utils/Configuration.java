@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.enums.MetricType;
 import br.ufu.scheduling.enums.MutationType;
 import br.ufu.scheduling.enums.SelectionType;
@@ -14,8 +15,8 @@ public class Configuration {
 	public static final String USE_DEFAULT_GRAPH = "-1";
 	public static final int MAXIMIZATION_PROBLEM = 0;
 	public final static String READ_ME_FILE_NAME = "README.conf";
-	public final static String NORMALIZATION_BASE_FILE_NAME = "normalization-DAGBase.txt";
-	public final static String PREFIX_NORMLIZATION_FILE_NAME = "normalization-";
+	public final static String NORMALIZATION_BASE_FILE_NAME = "DAGBase-normalization.txt";
+	public final static String SUFIX_NORMLIZATION_FILE_NAME = "-normalization";
 
 	private Integer initialPopulation;
 	private Double mutationRate;
@@ -25,6 +26,7 @@ public class Configuration {
 	private MetricType metricType;
 	private MutationType mutationType;
 	private SelectionType selectionType;
+	private AlgorithmType algorithmType;
 	private Integer tourForTournament;
 	private Integer totalProcessors;
 	private Boolean printIterationsAndGenerations;
@@ -37,6 +39,7 @@ public class Configuration {
 	private Boolean convergenceForTheBestSolution;
 	private String taskGraphFileName;
 	private Boolean graphWithCommunicationCost;
+	private Boolean generateRandomCommunicationCostForNoCostDag;
 	private Boolean printGraphAtTheBeginningOfRun;
 
 	//AGMO
@@ -49,6 +52,7 @@ public class Configuration {
 	private Boolean printComparisonNonDominatedChromosomes;
 	private Integer totalGenerationsToApplyMutation;
 	private Boolean useWeightToCalculateAverageFunction;
+	private Boolean calculateMaximusAndMinimusForNormalization;
 	private Integer objective1;
 	private Integer objective2;
 	private Integer objective3;
@@ -81,6 +85,7 @@ public class Configuration {
 	private int metric;
 	private int mutation;
 	private int selection;
+	private int algorithm;
 
 	public Configuration() throws Exception {
 		readConfiguration();
@@ -116,6 +121,10 @@ public class Configuration {
 
 	public SelectionType getSelectionType() {
 		return selectionType;
+	}
+
+	public AlgorithmType getAlgorithmType() {
+	    return algorithmType;
 	}
 
 	public Integer getTourForTournament() {
@@ -166,7 +175,11 @@ public class Configuration {
 		return graphWithCommunicationCost;
 	}
 
-	public Boolean isPrintGraphAtTheBeginningOfRun() {
+	public Boolean isGenerateRandomCommunicationCostForNoCostDag() {
+        return generateRandomCommunicationCostForNoCostDag;
+    }
+
+    public Boolean isPrintGraphAtTheBeginningOfRun() {
 		return printGraphAtTheBeginningOfRun;
 	}
 
@@ -204,6 +217,10 @@ public class Configuration {
 
 	public Boolean isUseWeightToCalculateAverageFunction() {
 		return useWeightToCalculateAverageFunction;
+	}
+
+	public Boolean isCalculateMaximusAndMinimusForNormalization() {
+		return calculateMaximusAndMinimusForNormalization;
 	}
 
 	public Integer getObjective1() {
@@ -347,7 +364,7 @@ public class Configuration {
 			break;
 
 		default:
-			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3).toString());
+			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4).toString());
 		}
 	}
 
@@ -399,11 +416,43 @@ public class Configuration {
 			break;
 
 		default:
-			throw new IllegalArgumentException("Invalid value of selection: " + selection + ". Valid values: " + Arrays.asList(0, 1).toString());	
+			throw new IllegalArgumentException("Invalid value of selection: " + selection + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4).toString());	
 		}
 	}
 
-	private void setTourForTournament(Integer tourForTournament) {
+    private void setAlgorithm(Integer algorithm) {
+        this.algorithm = algorithm;
+        setAlgorithmType(algorithm);
+    }
+
+	private void setAlgorithmType(Integer algorithm) {
+        switch (algorithm) {
+        case 0:
+            algorithmType = AlgorithmType.SINGLE_OBJECTIVE;
+            break;
+
+        case 1:
+            algorithmType = AlgorithmType.NSGAII;
+            break;
+
+        case 2:
+            algorithmType = AlgorithmType.SPEA2;
+            break;
+
+        case 3:
+            algorithmType = AlgorithmType.AEMMT;
+            break;
+
+        case 4:
+            algorithmType = AlgorithmType.AEMMD;
+            break;
+
+        default:
+            throw new IllegalArgumentException("Invalid value of selection: " + algorithm + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4).toString());   
+        }        
+    }
+
+    private void setTourForTournament(Integer tourForTournament) {
 		this.tourForTournament = tourForTournament;
 	}
 
@@ -451,6 +500,10 @@ public class Configuration {
 		this.graphWithCommunicationCost = graphWithCommunicationCost;
 	}
 
+    private void setGenerateRandomCommunicationCostForNoCostDag(Boolean generateRandomCommunicationCostForNoCostDag) {
+        this.generateRandomCommunicationCostForNoCostDag = generateRandomCommunicationCostForNoCostDag;
+    }
+
 	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
 		this.printGraphAtTheBeginningOfRun = printGraphAtTheBeginningOfRun;
 	}
@@ -489,6 +542,10 @@ public class Configuration {
 
 	private void setUseWeightToCalculateAverageFunction(Boolean useWeightToCalculateAverageFunction) {
 		this.useWeightToCalculateAverageFunction = useWeightToCalculateAverageFunction;
+	}
+
+	private void setCalculateMaximusAndMinimusForNormalization(Boolean calculateMaximusAndMinimusForNormalization) {
+		this.calculateMaximusAndMinimusForNormalization = calculateMaximusAndMinimusForNormalization;
 	}
 
 	private void setObjective1(Integer objective1) {
@@ -618,7 +675,7 @@ public class Configuration {
 		if (USE_DEFAULT_GRAPH.equals(getTaskGraphFileName())) {
 			fileName = NORMALIZATION_BASE_FILE_NAME;
 		} else {
-			fileName = PREFIX_NORMLIZATION_FILE_NAME + getTaskGraphFileName();
+			fileName = getTaskGraphFileName().split(".stg")[0] + SUFIX_NORMLIZATION_FILE_NAME + ".txt";
 		} 
 
 		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {

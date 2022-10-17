@@ -283,44 +283,6 @@ public class Chromosome implements Cloneable {
 		return valueObjective;
 	}
 
-	public double getNormalizedObjectiveValue(Configuration config, Integer objectiveIndex, double maxObjectiveValue, double minObjectiveValue) {
-		double objectiveValue = 0.0;
-
-		switch (objectiveIndex) {
-		case 0:
-			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForSLength(), maxObjectiveValue, minObjectiveValue);
-			break;
-
-		case 1:
-			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForLoadBalance(), maxObjectiveValue, minObjectiveValue);
-			break;
-
-		case 2:
-			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForFlowTime(), maxObjectiveValue, minObjectiveValue);
-			break;
-
-		case 3:
-			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForCommunicationCost(), maxObjectiveValue, minObjectiveValue);
-			break;
-
-		case 4:
-			objectiveValue = calculateNormalizedObjetiveValue(config, getFitnessForWaitingTime(), maxObjectiveValue, minObjectiveValue);
-			break;
-
-		default:
-			throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
-		}
-
-		return objectiveValue;
-	}
-
-	private double calculateNormalizedObjetiveValue(Configuration config, double objectiveValue, double maxObjectiveValue, double minObjectiveValue) {
-		double differenceToMinimum = objectiveValue - minObjectiveValue;
-		double differenceBetweenExtremes = maxObjectiveValue - minObjectiveValue;
-
-		return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
-	}
-
 	/**
 	 * Rule:
 	 *   B dominates A or A is dominated by B if:

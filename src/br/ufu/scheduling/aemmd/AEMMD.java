@@ -1,4 +1,4 @@
-package br.ufu.scheduling.aemmt;
+package br.ufu.scheduling.aemmd;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Crossover;
 import br.ufu.scheduling.utils.Printer;
 
-public class AEMMT {
+public class AEMMD {
 	public static final int DOUBLE_TOURNAMENT= 2;
 
 	private Random generator = new Random();
@@ -26,23 +26,21 @@ public class AEMMT {
 	private Table table2ForDoubleTournament;
 
 	private int initialPopulation;
-	private int nonDominatedTableIndex;
 	private int generationAccumulated;
-	private int generationAccumulatedForResetTableScore;
 	private int generationAccumulatedForApplyMutation;
 
-	public AEMMT() {
+	public AEMMD() {
 		//For tests
 	}
 
-	public AEMMT(Configuration config, Graph graph) throws Exception {
+	public AEMMD(Configuration config, Graph graph) throws Exception {
 		this.config = config;
 		this.graph = graph;
 
 		createTables();
 
+		//TODO: no AMMED não existe tamanho das tabelas, logo verificar o tamanho da população inicial
 		initialPopulation = tables.size() * config.getSizeOfTables();
-		nonDominatedTableIndex = tables.size() - 1;
 	}
 
 	private void createTables() {
@@ -52,32 +50,18 @@ public class AEMMT {
 
 		switch (config.getTotalObjectives()) {
 		case 2:
-			createTable(1);
-			createTable(2);
-
 			createTable(Arrays.asList(1, 2));
-			createNonDominatedTable(Arrays.asList(1, 2));
 			break;
 
 		case 3:
-			createTable(1);
-			createTable(2);
-			createTable(3);
-
 			createTable(Arrays.asList(1, 2));
 			createTable(Arrays.asList(1, 3));
 			createTable(Arrays.asList(2, 3));
 
 			createTable(Arrays.asList(1, 2, 3));
-			createNonDominatedTable(Arrays.asList(1, 2, 3));
 			break;
 
 		case 4:
-			createTable(1);
-			createTable(2);
-			createTable(3);
-			createTable(4);
-
 			createTable(Arrays.asList(1, 2));
 			createTable(Arrays.asList(1, 3));
 			createTable(Arrays.asList(1, 4));
@@ -91,16 +75,9 @@ public class AEMMT {
 			createTable(Arrays.asList(2, 3, 4));
 
 			createTable(Arrays.asList(1, 2, 3, 4));
-			createNonDominatedTable(Arrays.asList(1, 2, 3, 4));
 			break;
 
 		case 5:
-			createTable(1);
-			createTable(2);
-			createTable(3);
-			createTable(4);
-			createTable(5);
-
 			createTable(Arrays.asList(1, 2));
 			createTable(Arrays.asList(1, 3));
 			createTable(Arrays.asList(1, 4));
@@ -130,7 +107,6 @@ public class AEMMT {
 			createTable(Arrays.asList(2, 3, 4, 5));
 
 			createTable(Arrays.asList(1, 2, 3, 4, 5));
-			createNonDominatedTable(Arrays.asList(1, 2, 3, 4, 5));
 			break;
 
 		default:
@@ -138,20 +114,8 @@ public class AEMMT {
 		}
 	}
 
-	private void createNonDominatedTable(List<Integer> objectives) {
-		Table table = new TableAEMMT(config.getSizeOfNonDominatedTable());
-		table.addObjectives(objectives);
-		tables.add(table);
-	}
-
-	private void createTable(Integer objective) {
-		Table table = new TableAEMMT(config.getSizeOfTables());
-		table.addObjective(objective);
-		tables.add(table);
-	}
-
 	private void createTable(List<Integer> objectives) {
-		Table table = new TableAEMMT(config.getSizeOfTables());
+		Table table = new TableAEMMD(Integer.MAX_VALUE);
 		table.addObjectives(objectives);
 		tables.add(table);
 	}
@@ -177,8 +141,6 @@ public class AEMMT {
 		initialize();
 
 		while (generationAccumulated < config.getTotalGenerations()) {
-			resetTableScore();
-
 			if (config.isPrintIterationsAndGenerations()) {
 				System.out.println("############################\n");
 				System.out.println("####### GENERATION: " + (generationAccumulated + 1) + " #######\n");
@@ -195,83 +157,10 @@ public class AEMMT {
 
 	private void initialize() throws Exception {
 		generationAccumulated = 0;
-		generationAccumulatedForResetTableScore = 0;
 		generationAccumulatedForApplyMutation = 0;
-
-		if (config.isCalculateMaximusAndMinimusForNormalization()) {
-			calculateMaxMinObjectivesValues();
-		}
 
 		generateInitialPopulation();
 	}
-
-	   /**
-     * Used to find the highs and lows of the objectives. 
-     * */
-    private void calculateMaxMinObjectivesValues() throws Exception {
-        double maxObjectiveValue1 = 0.0; 
-        double minObjectiveValue1 = 0.0;
-
-        double maxObjectiveValue2 = 0.0;
-        double minObjectiveValue2 = 0.0;
-
-        double maxObjectiveValue3 = 0.0;
-        double minObjectiveValue3 = 0.0;
-
-        double maxObjectiveValue4 = 0.0;
-        double minObjectiveValue4 = 0.0;
-
-        double maxObjectiveValue5 = 0.0;
-        double minObjectiveValue5 = 0.0;
-
-        int totalExecutions = 10;
-        System.out.println("Total runs for calculation: " + totalExecutions);
-        System.out.println();
-        
-        for (int i = 0; i < totalExecutions; i++) {
-            System.out.println("Run: " + (i + 1));
-
-            initialPopulation = config.getTotalGenerations();
-            chromosomeInitialList.clear();
-            generateInitialPopulation();
-
-            for (int j = 0; j < chromosomeInitialList.size(); j++) {
-                Chromosome chromosome = chromosomeInitialList.get(j);
-
-                if (i == 0 && j == 0) {
-                    maxObjectiveValue1 = minObjectiveValue1 = chromosome.getSLength();
-                    maxObjectiveValue2 = minObjectiveValue2 = chromosome.getLoadBalance();
-                    maxObjectiveValue3 = minObjectiveValue3 = chromosome.getFlowTime();
-                    maxObjectiveValue4 = minObjectiveValue4 = chromosome.getCommunicationCost();
-                    maxObjectiveValue5 = minObjectiveValue5 = chromosome.getWaitingTime();
-                } else {
-                    if (chromosome.getSLength() > maxObjectiveValue1) maxObjectiveValue1 = chromosome.getSLength();
-                    if (chromosome.getSLength() < minObjectiveValue1) minObjectiveValue1 = chromosome.getSLength();
-                    
-                    if (chromosome.getLoadBalance() > maxObjectiveValue2) maxObjectiveValue2 = chromosome.getLoadBalance();
-                    if (chromosome.getLoadBalance() < minObjectiveValue2) minObjectiveValue2 = chromosome.getLoadBalance();
-                    
-                    if (chromosome.getFlowTime() > maxObjectiveValue3) maxObjectiveValue3 = chromosome.getFlowTime();
-                    if (chromosome.getFlowTime() < minObjectiveValue3) minObjectiveValue3 = chromosome.getFlowTime();
-                    
-                    if (chromosome.getCommunicationCost() > maxObjectiveValue4) maxObjectiveValue4 = chromosome.getCommunicationCost();
-                    if (chromosome.getCommunicationCost() < minObjectiveValue4) minObjectiveValue4 = chromosome.getCommunicationCost();
-                    
-                    if (chromosome.getWaitingTime() > maxObjectiveValue5) maxObjectiveValue5 = chromosome.getWaitingTime();
-                    if (chromosome.getWaitingTime() < minObjectiveValue5) minObjectiveValue5 = chromosome.getWaitingTime();
-                }
-            }
-        }
-
-        System.out.println();
-        System.out.println("Slenght -> Max : " + maxObjectiveValue1 + " | Min: " + minObjectiveValue1);
-        System.out.println("LoadBalance -> Max : " + maxObjectiveValue2 + " | Min: " + minObjectiveValue2);
-        System.out.println("FlowTime -> Max : " + maxObjectiveValue3 + " | Min: " + minObjectiveValue3);
-        System.out.println("CommunicationCost -> Max : " + maxObjectiveValue4 + " | Min: " + minObjectiveValue4);
-        System.out.println("WaitingTime -> Max : " + maxObjectiveValue5 + " | Min: " + minObjectiveValue5);
-
-        System.exit(0);
-    }
 
 	private void generateInitialPopulation() throws Exception {
 		for (int i = 1; i <= initialPopulation; i++) {
@@ -289,8 +178,7 @@ public class AEMMT {
 	private boolean addChromosomeToTables(Chromosome chromosome) throws Exception {
 		boolean addedInSometable = false;
 
-		//the non-dominated table will be processed only at the end
-		for (int i = 0; i < tables.size() - 1; i++) {
+		for (int i = 0; i < tables.size(); i++) {
 			boolean added = tables.get(i).add(chromosome, config);
 
 			if (!addedInSometable) {
@@ -333,7 +221,7 @@ public class AEMMT {
 	}
 
 	private void addChromosomeToNonDominatedTable(Chromosome chromosome) throws Exception {
-		Table nonDominatedTable = tables.get(nonDominatedTableIndex);
+		Table nonDominatedTable = null;///tables.get(nonDominatedTableIndex);
 		boolean isChromosomeDominated = false;
 
 		int currentChromosomeIndex = 0;
@@ -357,13 +245,6 @@ public class AEMMT {
 
 		if (!isChromosomeDominated) {
 			nonDominatedTable.add(chromosome, config);
-		}
-	}
-
-	private void resetTableScore() {
-		if (config.getTotalGenerationsToResetTableScore() > 0 && generationAccumulatedForResetTableScore > config.getTotalGenerationsToResetTableScore()) {
-			tables.forEach(table -> table.resetScore());
-			generationAccumulatedForResetTableScore = 1;
 		}
 	}
 
@@ -459,7 +340,6 @@ public class AEMMT {
 	}
 
 	private void finalizeGeneration() {
-		generationAccumulatedForResetTableScore++;
 		generationAccumulatedForApplyMutation++;
 		generationAccumulated++;
 	}
@@ -468,12 +348,12 @@ public class AEMMT {
 		if (config.isPrintComparisonNonDominatedChromosomes()) {
 			Printer.printFinalResultForAEMMTWithComparedToNonDominated(config, tables, initialTime);
 		} else {
-			Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime);
+			//Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime);
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
-		AEMMT a = new AEMMT();
+		AEMMD a = new AEMMD();
 		//System.out.println(a.simpleCombination(2, 1) + a.simpleCombination(2, 2));
 		//System.out.println(a.simpleCombination(3, 1) + a.simpleCombination(3, 2) + a.simpleCombination(3, 3));
 		//System.out.println(a.simpleCombination(4, 1) + a.simpleCombination(4, 2) + a.simpleCombination(4, 3) + a.simpleCombination(4, 4));

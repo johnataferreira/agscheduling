@@ -252,7 +252,7 @@ public class Metrics implements Cloneable {
 		}
 
 		//Transform a minimization problem into a maximization problem 
-		return config.getMaximizationConstant() / getMetricValue(metricType);
+		return getMetricValue(metricType) > 0.0 ? config.getMaximizationConstant() / getMetricValue(metricType) : 0.0;
 	}
 
 	private void calculateFitness(Configuration config) {

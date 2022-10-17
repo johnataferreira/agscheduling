@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import br.ufu.scheduling.aemmd.AEMMD;
 import br.ufu.scheduling.aemmt.AEMMT;
 import br.ufu.scheduling.enums.SelectionType;
 import br.ufu.scheduling.file.csv.GeneratorDifferentChromosome;
@@ -68,12 +69,26 @@ public class AGScheduling {
 			return;
 		}
 
-		if (config.isExecuteMultiObjectiveGA()) {
-			executeMultiObjectiveGeneticAlgorithm(initialTime);
-			return;
-		}
+        switch (config.getAlgorithmType()) {
+        case SINGLE_OBJECTIVE:
+            executeStandarGeneticAlgorithm(initialTime);
+            break;
 
-		executeStandarGeneticAlgorithm(initialTime);
+        case NSGAII:
+        case SPEA2:
+            throw new IllegalArgumentException("Algoritm type not implemented.");
+
+        case AEMMT:
+            executeMultiObjectiveGeneticAlgorithmAEMMT(initialTime);
+            break;
+
+        case AEMMD:
+            executeMultiObjectiveGeneticAlgorithmAEMMD(initialTime);
+            break;
+
+        default:
+            throw new IllegalArgumentException("Algoritm type not implemented.");
+        }
 	}
 
 	private void executeAGAndGenerateCsvFile() throws Exception {
@@ -81,10 +96,15 @@ public class AGScheduling {
 		generator.execute();
 	}
 
-	private void executeMultiObjectiveGeneticAlgorithm(long initialTime) throws Exception {
+	private void executeMultiObjectiveGeneticAlgorithmAEMMT(long initialTime) throws Exception {
 		AEMMT aemmt = new AEMMT(config, graph);
 		aemmt.execute(initialTime);
 	}
+
+    private void executeMultiObjectiveGeneticAlgorithmAEMMD(long initialTime) throws Exception {
+        AEMMD aemmd = new AEMMD(config, graph);
+        aemmd.execute(initialTime);
+    }	
 
 	private void executeStandarGeneticAlgorithm(long initialTime) throws Exception{
 		int iteration = 0;

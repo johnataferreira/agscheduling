@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import br.ufu.scheduling.utils.Configuration;
 
@@ -25,8 +26,12 @@ public class Graph {
         edges = new ArrayList<Edge>();
     }
 
-    public Map<Integer, Vertex> getVertices() {
+    private Map<Integer, Vertex> getVertices() {
     	return vertices;
+    }
+
+    private List<Edge> getEdges() {
+        return edges;
     }
 
     public Vertex getVertex(int task) {
@@ -267,6 +272,10 @@ public class Graph {
 			throw e2;
 		}
 
+		if (config.isGenerateRandomCommunicationCostForNoCostDag()) {
+		   generateRandomCommunicationCostForNoCostDag(graph);
+		}
+
 		printGraph(graph, config);
 
     	return graph;
@@ -275,6 +284,29 @@ public class Graph {
     private static int handleTask(int firstTask, int convertedValue) {
     	//The first task cannot be 0, so let's add 1 to each task.
     	return convertedValue + (firstTask == 0 ? 1 : 0);
+    }
+
+    private static void generateRandomCommunicationCostForNoCostDag(Graph graph) {
+        int maximumComputationalCost = Integer.MIN_VALUE;
+        int minimumComputationalCost = Integer.MAX_VALUE;
+
+        for (Map.Entry<Integer, Vertex> mapVertex : graph.getVertices().entrySet()) {
+            Vertex vertex = mapVertex.getValue();
+
+            if (vertex.getComputationalCost() > 0) {
+                maximumComputationalCost = Integer.max(maximumComputationalCost, vertex.getComputationalCost());
+                minimumComputationalCost = Integer.min(minimumComputationalCost, vertex.getComputationalCost());
+            }
+        }
+
+        Random generator = new Random();
+        for (Edge edge : graph.getEdges()) {
+            edge.setCommunicationCost(raffleCommunicationCost(generator, minimumComputationalCost, maximumComputationalCost));
+        }
+    }
+
+    private static int raffleCommunicationCost(Random generator, int minimumComputationalCost, int maximumComputationalCost) {
+        return generator.nextInt(maximumComputationalCost + 1) + minimumComputationalCost;
     }
 
     public static Graph initializeGraph() {
@@ -347,7 +379,7 @@ public class Graph {
         for (Map.Entry<Integer, Vertex> mapVertice : vertices.entrySet()) {
         	Vertex vertex = mapVertice.getValue();
 
-            formattedText += vertex.getTask() + " -> ";
+            formattedText += vertex.getTask() + "[" + vertex.getComputationalCost() + "]" + " -> ";
 
             for (Edge e : vertex.getAdjacency()) {
                 Vertex v = e.getDestination();

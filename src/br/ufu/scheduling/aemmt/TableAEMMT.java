@@ -4,65 +4,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.utils.Configuration;
 
-public class Table {
-	private int score = 0;
-	private int size;
-	private List<Integer> objectives = new ArrayList<>();
-	private List<Chromosome> chromosomeList = new ArrayList<>();
-
-	public Table(int size) {
-		this.size = size;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public Chromosome getChromosomeFromIndex(int index) {
-		if (index < 0 || index >= chromosomeList.size()) {
-			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ". Value Informed: " + index + ".");
-		}
-
-		return chromosomeList.get(index);
-	}
-
-	public void addScore(int score) {
-		this.score += score;
-	}
-
-	public void resetScore() {
-		this.score = 0;
-	}
-
-	public void addObjective(Integer objective) {
-		objectives.add(objective);
-	}
-
-	public void addObjectives(List<Integer> objectives) {
-		this.objectives.addAll(objectives);
-	}
-
-	public int getTotalChromosomes() {
-		return chromosomeList.size();
-	}
-
-	public void remove(int index) {
-		if (index < 0 || index >= chromosomeList.size()) {
-			throw new IllegalArgumentException("Invalid chromosome index. Valid values between 0 and " + chromosomeList.size() + ".");
-		}
-
-		chromosomeList.remove(index);
+public class TableAEMMT extends Table {
+	public TableAEMMT(int size) {
+		super(size);
 	}
 
 	public boolean add(Chromosome chromosome, Configuration config) throws Exception {
-		if (chromosomeList.size() < this.size) {
+		if (chromosomeList.size() < size) {
 			Chromosome clone = buildChromosomeClone(chromosome);
 			clone.setAemmtValue(calculateAverage(clone, config));
 			chromosomeList.add(clone);
@@ -91,21 +43,6 @@ public class Table {
 		}
 
 		return false;
-	}
-
-	private Chromosome buildChromosomeClone(Chromosome chromosome) throws Exception {
-		Chromosome clone = null;
-
-		try {
-			clone = (Chromosome) chromosome.clone();
-		} catch (CloneNotSupportedException e) {
-			Exception e2 = new Exception("Error making base chromosome clone: " + e);
-			e2.initCause(e);
-
-			throw e;
-		}
-
-		return clone;
 	}
 
 	private double calculateAverage(Chromosome chromosome, Configuration config) {
@@ -155,23 +92,23 @@ public class Table {
 		for (Integer objective : objectives) {
 			switch (objective) {
 			case 1:
-				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1());
+				accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome);
 				break;
 
 			case 2:
-				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2());
+				accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2(), chromosome);
 				break;
 
 			case 3:
-				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3());
+				accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3(), chromosome);
 				break;
 
 			case 4:
-				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4());
+				accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4(), chromosome);
 				break;
 
 			case 5:
-				accumulatedValue += chromosome.getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5());
+				accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5(), chromosome);
 				break;
 
 			default:
@@ -181,4 +118,42 @@ public class Table {
 
 		return accumulatedValue /= objectives.size();
 	}
+
+    private double getNormalizedObjectiveValue(Configuration config, Integer objectiveIndex, double maxObjectiveValue, double minObjectiveValue, Chromosome chromosome) {
+        double objectiveValue = 0.0;
+
+        switch (objectiveIndex) {
+        case 0:
+            objectiveValue = calculateNormalizedObjetiveValue(config, chromosome.getFitnessForSLength(), maxObjectiveValue, minObjectiveValue);
+            break;
+
+        case 1:
+            objectiveValue = calculateNormalizedObjetiveValue(config, chromosome.getFitnessForLoadBalance(), maxObjectiveValue, minObjectiveValue);
+            break;
+
+        case 2:
+            objectiveValue = calculateNormalizedObjetiveValue(config, chromosome.getFitnessForFlowTime(), maxObjectiveValue, minObjectiveValue);
+            break;
+
+        case 3:
+            objectiveValue = calculateNormalizedObjetiveValue(config, chromosome.getFitnessForCommunicationCost(), maxObjectiveValue, minObjectiveValue);
+            break;
+
+        case 4:
+            objectiveValue = calculateNormalizedObjetiveValue(config, chromosome.getFitnessForWaitingTime(), maxObjectiveValue, minObjectiveValue);
+            break;
+
+        default:
+            throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
+        }
+
+        return objectiveValue;
+    }
+
+    private double calculateNormalizedObjetiveValue(Configuration config, double objectiveValue, double maxObjectiveValue, double minObjectiveValue) {
+        double differenceToMinimum = objectiveValue - minObjectiveValue;
+        double differenceBetweenExtremes = maxObjectiveValue - minObjectiveValue;
+
+        return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
+    }
 }
