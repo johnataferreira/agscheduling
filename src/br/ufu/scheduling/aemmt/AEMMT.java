@@ -289,8 +289,7 @@ public class AEMMT {
 	private boolean addChromosomeToTables(Chromosome chromosome) throws Exception {
 		boolean addedInSometable = false;
 
-		//the non-dominated table will be processed only at the end
-		for (int i = 0; i < tables.size() - 1; i++) {
+		for (int i = 0; i < tables.size(); i++) {
 			boolean added = tables.get(i).add(chromosome, config);
 
 			if (!addedInSometable) {
@@ -334,33 +333,37 @@ public class AEMMT {
 
 	private void addChromosomeToNonDominatedTable(Chromosome chromosome) throws Exception {
 		Table nonDominatedTable = tables.get(nonDominatedTableIndex);
-		boolean isChromosomeDominated = false;
 
-		int currentChromosomeIndex = 0;
-		int totalChromosomes = nonDominatedTable.getTotalChromosomes();
-
-		while (currentChromosomeIndex < totalChromosomes) {
-			Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(currentChromosomeIndex);
-
-			if (chromosomeB.isChromosomeDominated(config, chromosome)) {
-				nonDominatedTable.remove(currentChromosomeIndex);
-				totalChromosomes--;
-			}
+		for (int chromosomeIndex = 0; chromosomeIndex < nonDominatedTable.getTotalChromosomes(); chromosomeIndex++) {
+			Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(chromosomeIndex);
 
 			if (chromosome.isChromosomeDominated(config, chromosomeB)) {
-				isChromosomeDominated = true;
-				break;
+			    return;
 			}
-
-			currentChromosomeIndex++;
 		}
 
-		if (!isChromosomeDominated) {
-			nonDominatedTable.add(chromosome, config);
-		}
+	    removeChromosomeDominatedFromTable(chromosome, nonDominatedTable);
+
+		nonDominatedTable.add(chromosome, config);
 	}
 
-	private void resetTableScore() {
+	private void removeChromosomeDominatedFromTable(Chromosome chromosome, Table nonDominatedTable) {
+        int totalChromosomes = nonDominatedTable.getTotalChromosomes();
+        int chromosomeIndex = 0;
+
+        while (chromosomeIndex < totalChromosomes) {
+            Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(chromosomeIndex);
+
+            if (chromosomeB.isChromosomeDominated(config, chromosome)) {
+                nonDominatedTable.remove(chromosomeIndex);
+                totalChromosomes--;
+            }
+
+            chromosomeIndex++;
+        }        
+    }
+
+    private void resetTableScore() {
 		if (config.getTotalGenerationsToResetTableScore() > 0 && generationAccumulatedForResetTableScore > config.getTotalGenerationsToResetTableScore()) {
 			tables.forEach(table -> table.resetScore());
 			generationAccumulatedForResetTableScore = 1;

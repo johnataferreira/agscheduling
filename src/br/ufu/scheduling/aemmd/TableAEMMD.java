@@ -1,7 +1,5 @@
 package br.ufu.scheduling.aemmd;
 
-import java.util.Comparator;
-
 import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.utils.Configuration;
@@ -17,37 +15,43 @@ public class TableAEMMD extends Table {
 	        chromosomeList.add(clone);
 	        return true;
 	    }
-	    
-	    
-	    
-	    
-//	    if (chromosomeList.size() < size) {
-//			//clone.setAemmtValue(calculateAverage(clone, config));
-//			chromosomeList.add(clone);
-//
-//			return true;
-//		}
-//
-//		// Ascending sort
-//		chromosomeList.sort(new Comparator<Chromosome>() {
-//			@Override
-//			public int compare(Chromosome o1, Chromosome o2) {
-//				return o1.getAemmtValue() < o2.getAemmtValue() ? -1 : o1.getAemmtValue() == o2.getAemmtValue() ? 0 : 1;
-//			}
-//		});
-//
-//		double weightedAverage = 0.0;//calculateAverage(chromosome, config);
-//
-//		if (weightedAverage > chromosomeList.get(0).getAemmtValue()) {
-//			chromosomeList.remove(0);
-//
-//			Chromosome clone = buildChromosomeClone(chromosome);
-//			clone.setAemmtValue(weightedAverage);
-//			chromosomeList.add(clone);
-//
-//			return true;
-//		}
 
-		return false;
+	    if (isChromosomeDominated(chromosome)) {
+	        return false;
+	    }
+
+        removeChromosomeDominatedFromTable(chromosome);
+
+        Chromosome clone = buildChromosomeClone(chromosome);
+        chromosomeList.add(clone);
+        return true;
 	}
+
+	private boolean isChromosomeDominated(Chromosome chromosome) {
+        for (int chromosomeIndex = 0; chromosomeIndex < chromosomeList.size(); chromosomeIndex++) {
+            Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
+
+            if (chromosome.isChromosomeDominated(objectives, chromosomeB)) {
+                return true;
+            }
+        }
+
+        return false;
+	}
+
+    private void removeChromosomeDominatedFromTable(Chromosome chromosome) {
+        int totalChromosomes = chromosomeList.size();
+        int chromosomeIndex = 0;
+
+        while (chromosomeIndex < totalChromosomes) {
+            Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
+
+            if (chromosomeB.isChromosomeDominated(objectives, chromosome)) {
+                chromosomeList.remove(chromosomeIndex);
+                totalChromosomes--;
+            }
+
+            chromosomeIndex++;
+        }
+    }
 }

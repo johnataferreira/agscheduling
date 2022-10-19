@@ -171,80 +171,13 @@ public class AEMMD {
 				chromosomeInitialList.add(chromosome);
 			}
 		}
-
-		addChromosomesFromInitialPopulationToNonDominatedTable(chromosomeInitialList);
 	}
 
-	private boolean addChromosomeToTables(Chromosome chromosome) throws Exception {
-		boolean addedInSometable = false;
-
+	private void addChromosomeToTables(Chromosome chromosome) throws Exception {
 		for (int i = 0; i < tables.size(); i++) {
-			boolean added = tables.get(i).add(chromosome, config);
-
-			if (!addedInSometable) {
-				addedInSometable = added; 
+			if (tables.get(i).add(chromosome, config)) {
+				processTableScore(tables.get(i)); 
 			}
-		}
-
-		return addedInSometable;
-	}
-
-	private void addChromosomesFromInitialPopulationToNonDominatedTable(List<Chromosome> chromosomeInitialList) throws Exception {
-		List<Chromosome> dominatedChromosomeList = new ArrayList<>();
-
-		externalLoop:
-		for (int chromosomeAIndex = 0; chromosomeAIndex < chromosomeInitialList.size(); chromosomeAIndex++) {
-			Chromosome chromosomeA = chromosomeInitialList.get(chromosomeAIndex);
-
-			if (dominatedChromosomeList.contains(chromosomeA)) {
-				continue;
-			}
-
-			for (int chromosomeBIndex = 0; chromosomeBIndex < chromosomeInitialList.size(); chromosomeBIndex++) {
-				if (chromosomeAIndex == chromosomeBIndex) {
-					continue;
-				}
-
-				Chromosome chromosomeB = chromosomeInitialList.get(chromosomeBIndex);
-
-				if (chromosomeB.isChromosomeDominated(config, chromosomeA)) {
-					dominatedChromosomeList.add(chromosomeB);
-				}
-
-				if (chromosomeA.isChromosomeDominated(config, chromosomeB)) {
-					continue externalLoop;
-				}
-			}
-
-			addChromosomeToNonDominatedTable(chromosomeA);
-		}
-	}
-
-	private void addChromosomeToNonDominatedTable(Chromosome chromosome) throws Exception {
-		Table nonDominatedTable = null;///tables.get(nonDominatedTableIndex);
-		boolean isChromosomeDominated = false;
-
-		int currentChromosomeIndex = 0;
-		int totalChromosomes = nonDominatedTable.getTotalChromosomes();
-
-		while (currentChromosomeIndex < totalChromosomes) {
-			Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(currentChromosomeIndex);
-
-			if (chromosomeB.isChromosomeDominated(config, chromosome)) {
-				nonDominatedTable.remove(currentChromosomeIndex);
-				totalChromosomes--;
-			}
-
-			if (chromosome.isChromosomeDominated(config, chromosomeB)) {
-				isChromosomeDominated = true;
-				break;
-			}
-
-			currentChromosomeIndex++;
-		}
-
-		if (!isChromosomeDominated) {
-			nonDominatedTable.add(chromosome, config);
 		}
 	}
 
@@ -254,10 +187,7 @@ public class AEMMD {
 		Chromosome child = processPairSelection();
 		applyMutation(child);
 
-		if (addChromosomeToTables(child)) {
-			processTableScore();
-			addChromosomeChildToNonDominatedTable(child);
-		}
+		addChromosomeToTables(child);
 	}
 
 	private void processTablesForDoubleTournament() {
@@ -311,32 +241,8 @@ public class AEMMD {
 		}		
 	}
 
-	private void processTableScore() {
-		table1ForDoubleTournament.addScore(1);
-		table2ForDoubleTournament.addScore(1);
-	}
-
-	private void addChromosomeChildToNonDominatedTable(Chromosome child) throws Exception {
-		boolean chromosomeChildIsDominated = false;
-
-		//the non-dominated table will be processed only at the end
-		externalLoop:
-		for (int tableIndex = 0; tableIndex < tables.size() - 1; tableIndex++) {
-			Table table = tables.get(tableIndex);
-
-			for (int chromosomeIndex = 0; chromosomeIndex < table.getTotalChromosomes(); chromosomeIndex++) {
-				Chromosome chromosomeB = table.getChromosomeFromIndex(chromosomeIndex);
-
-				if (child.isChromosomeDominated(config, chromosomeB)) {
-					chromosomeChildIsDominated = true;
-					break externalLoop;
-				}
-			}
-		}
-
-		if (!chromosomeChildIsDominated) {
-			addChromosomeToNonDominatedTable(child);
-		}
+	private void processTableScore(Table table) {
+	    table.addScore(1);
 	}
 
 	private void finalizeGeneration() {
@@ -346,9 +252,9 @@ public class AEMMD {
 
 	private void showResult(long initialTime) {
 		if (config.isPrintComparisonNonDominatedChromosomes()) {
-			Printer.printFinalResultForAEMMTWithComparedToNonDominated(config, tables, initialTime);
+			Printer.printFinalResultForAEMMDWithComparedToNonDominated(config, tables.get(tables.size() - 1), initialTime);
 		} else {
-			//Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime);
+			Printer.printFinalResultForAEMMD(config, tables.get(tables.size() - 1), initialTime);
 		}
 	}
 

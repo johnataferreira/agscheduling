@@ -306,6 +306,31 @@ public class Chromosome implements Cloneable {
 		return isChromosomeDominated;
 	}
 
+	   /**
+     * Rule:
+     *   B dominates A or A is dominated by B if:
+     *     1: B >= A in all objectives;
+     *     2: B > A in at least one objective
+     * 
+     * */
+    public boolean isChromosomeDominated(List<Integer> objectives, Chromosome chromosomeB) {
+        boolean isChromosomeDominated = false;
+
+        for (int objective : objectives) {
+            //Internally, the objectives start from zero, so the subtraction
+            int realObjective = objective - 1;
+            int result = Double.compare(chromosomeB.getObjectiveValue(realObjective), this.getObjectiveValue(realObjective));
+
+            if (result > 0) {
+                isChromosomeDominated = true;
+            } else {
+                return false;
+            }
+        }
+
+        return isChromosomeDominated;
+    }
+
 	@Override
 	public boolean equals(Object obj) {
 		Chromosome other = (Chromosome) obj;
