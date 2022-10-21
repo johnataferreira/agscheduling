@@ -289,8 +289,9 @@ public class AEMMT {
 	private boolean addChromosomeToTables(Chromosome chromosome) throws Exception {
 		boolean addedInSometable = false;
 
-		for (int i = 0; i < tables.size(); i++) {
-			boolean added = tables.get(i).add(chromosome, config);
+		//the non-dominated table will be processed separately
+		for (int tableIndex = 0; tableIndex < tables.size() - 1; tableIndex++) {
+			boolean added = tables.get(tableIndex).add(chromosome, config);
 
 			if (!addedInSometable) {
 				addedInSometable = added; 

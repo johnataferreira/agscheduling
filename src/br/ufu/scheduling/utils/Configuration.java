@@ -41,6 +41,7 @@ public class Configuration {
 	private Boolean graphWithCommunicationCost;
 	private Boolean generateRandomCommunicationCostForNoCostDag;
 	private Boolean printGraphAtTheBeginningOfRun;
+	private Boolean printBestResultsByObjectives;
 
 	//AGMO
 	private Boolean executeMultiObjectiveGA;
@@ -183,7 +184,11 @@ public class Configuration {
 		return printGraphAtTheBeginningOfRun;
 	}
 
-	public Boolean isExecuteMultiObjectiveGA() {
+	public Boolean isPrintBestResultsByObjectives() {
+        return printBestResultsByObjectives;
+    }
+
+    public Boolean isExecuteMultiObjectiveGA() {
 		return executeMultiObjectiveGA;
 	}
 
@@ -507,6 +512,10 @@ public class Configuration {
 	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
 		this.printGraphAtTheBeginningOfRun = printGraphAtTheBeginningOfRun;
 	}
+
+    private void setPrintBestResultsByObjectives(Boolean printBestResultsByObjectives) {
+        this.printBestResultsByObjectives = printBestResultsByObjectives;
+    }
 
 	public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {
 		this.executeMultiObjectiveGA = executeMultiObjectiveGA;

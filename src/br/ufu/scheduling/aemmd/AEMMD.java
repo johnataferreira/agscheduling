@@ -167,15 +167,15 @@ public class AEMMD {
 			Chromosome chromosome = new Chromosome(generator, graph, config);
 
 			if (!chromosomeInitialList.contains(chromosome)) {
-				addChromosomeToTables(chromosome);
+				addChromosomeToTables(chromosome, true);
 				chromosomeInitialList.add(chromosome);
 			}
 		}
 	}
 
-	private void addChromosomeToTables(Chromosome chromosome) throws Exception {
+	private void addChromosomeToTables(Chromosome chromosome, boolean isInitialPopulation) throws Exception {
 		for (int i = 0; i < tables.size(); i++) {
-			if (tables.get(i).add(chromosome, config)) {
+			if (tables.get(i).add(chromosome, config) && !isInitialPopulation) {
 				processTableScore(tables.get(i)); 
 			}
 		}
@@ -187,7 +187,7 @@ public class AEMMD {
 		Chromosome child = processPairSelection();
 		applyMutation(child);
 
-		addChromosomeToTables(child);
+		addChromosomeToTables(child, false);
 	}
 
 	private void processTablesForDoubleTournament() {

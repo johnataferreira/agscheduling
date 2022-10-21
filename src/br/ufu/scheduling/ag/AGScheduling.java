@@ -23,10 +23,10 @@ public class AGScheduling {
 
 	//Best result of metrics from the graph used
 	public static final double 	BEST_SLENGTH 							= 16.0;
-	public static final double 	BEST_LOAD_BALANCE 						= 1.085106382;
-	public static final double 	BEST_FLOW_TIME 							= 30.0;
+	public static final double 	BEST_LOAD_BALANCE 						= 1.085106383;
+	public static final double 	BEST_FLOW_TIME 							= 80.0;
 	public static final double 	BEST_COMMUNICATION_COST					= 0.0;
-	public static final double  BEST_WAITING_TIME						= 0.0;
+	public static final double  BEST_WAITING_TIME						= 9.0;
 
 	private Random generator 				= new Random();
 	private List<Chromosome> chromosomeList = new ArrayList<>();
@@ -51,7 +51,13 @@ public class AGScheduling {
 	private double totalWaitingTimeOfBestChromosomes;
 	private double totalFitnessOfBestChromosomes;
 	private int totalNumberOfChromosomes;
-
+	
+	//Variables for the best solutions
+	private double bestSlenght = Double.MAX_VALUE;
+	private double bestLoadBalance = Double.MAX_VALUE;
+	private double bestFlowTime = Double.MAX_VALUE;
+	private double bestCommunicationCost = Double.MAX_VALUE;
+	private double bestWaitingTime = Double.MAX_VALUE;
 
 	public AGScheduling() throws Exception {
 		config = new Configuration();
@@ -106,7 +112,7 @@ public class AGScheduling {
         aemmd.execute(initialTime);
     }	
 
-	private void executeStandarGeneticAlgorithm(long initialTime) throws Exception{
+	private void executeStandarGeneticAlgorithm(long initialTime) throws Exception {
 		int iteration = 0;
 
 		while (iteration < config.getIterations()) {
@@ -121,9 +127,9 @@ public class AGScheduling {
 			int generation = 0;
 
 			while (generation < config.getGenerations() && !(config.isStopGenerationIfFindBestSolution() && findBestChromosomeInGeneration)) {
-				if (config.isPrintIterationsAndGenerations()) {
-					System.out.println("##### GENERATION: " + (generation + 1) + " #####\n");
-				}
+//				if (config.isPrintIterationsAndGenerations()) {
+//					System.out.println("##### GENERATION: " + (generation + 1) + " #####\n");
+//				}
 
 				resetGeneration();
 				executeAG();
@@ -138,10 +144,11 @@ public class AGScheduling {
 			iteration++;
 		}
 
-		showResult(initialTime);		
+		showResult(initialTime);
+		showBestResultsByObjectives();
 	}
 
-	private void resetIteration() {
+    private void resetIteration() {
 		firstGeneration = true;
 		chromosomeList.clear();
 	}
@@ -169,11 +176,48 @@ public class AGScheduling {
 
 	private void addChromosomeInGeneralList(Chromosome chromosome) {
 		chromosomeList.add(chromosome);
+		verifyBestSolutions(chromosome);
 	}
 
-	private void addChromosomeInGeneralList(List<Chromosome> chromosomeList) {
+    private void addChromosomeInGeneralList(List<Chromosome> chromosomeList) {
 		this.chromosomeList.addAll(chromosomeList);
+		verifyBestSolutions(chromosomeList);
 	}
+
+    private void verifyBestSolutions(Chromosome chromosome) {
+        if (config.isPrintBestResultsByObjectives()) {
+            List<Chromosome> chromosomeList = new ArrayList<>();
+            chromosomeList.add(chromosome);
+
+            verifyBestSolutions(chromosomeList);
+        }
+    }
+
+    private void verifyBestSolutions(List<Chromosome> chromosomeList) {
+        if (config.isPrintBestResultsByObjectives()) {
+            for (Chromosome chromosome : chromosomeList) {
+                if (chromosome.getSLength() < bestSlenght) {
+                    bestSlenght = chromosome.getSLength();
+                }
+
+                if (chromosome.getLoadBalance() < bestLoadBalance) {
+                    bestLoadBalance = chromosome.getLoadBalance();
+                }
+
+                if (chromosome.getFlowTime() < bestFlowTime) {
+                    bestFlowTime = chromosome.getFlowTime();
+                }
+
+                if (chromosome.getCommunicationCost() < bestCommunicationCost) {
+                    bestCommunicationCost = chromosome.getCommunicationCost();
+                }
+
+                if (chromosome.getWaitingTime() < bestWaitingTime) {
+                    bestWaitingTime = chromosome.getWaitingTime();
+                }
+            }
+        }
+    }
 
 	private void executeSelection() {
 		for (int pair = 0; pair < getNumberOfChromosomesForSelection(); pair++) {
@@ -580,4 +624,22 @@ public class AGScheduling {
 
 		result.showResult(bestChromosomeFound, config);		
 	}
+
+    private void showBestResultsByObjectives() {
+        if (config.isPrintBestResultsByObjectives()) {
+            System.out.println("");
+            System.out.println("##################################");
+            System.out.println("## Best Results By Objectives ##");
+            System.out.println("");
+            System.out.println("Best SLenght Founded: " + bestSlenght);
+            System.out.println("Best LoadBalance: " + bestLoadBalance);
+            System.out.println("Best FlowTime: " + bestFlowTime);
+            System.out.println("Best CommunicationCost: " + bestCommunicationCost);
+            System.out.println("Best WaitingTime: " + bestWaitingTime);
+            System.out.println("");
+            System.out.println("Graph: " + (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
+            System.out.println("Processors: " + config.getTotalProcessors());
+            System.out.println("With CommunicationCost: " + (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()));
+        }
+    }
 }
