@@ -40,6 +40,7 @@ public class Configuration {
 	private String taskGraphFileName;
 	private Boolean graphWithCommunicationCost;
 	private Boolean generateRandomCommunicationCostForNoCostDag;
+	private Boolean generateCommunicationCostFromDAGWithoutCommunicationCost;
 	private Boolean printGraphAtTheBeginningOfRun;
 	private Boolean printBestResultsByObjectives;
 
@@ -180,6 +181,10 @@ public class Configuration {
         return generateRandomCommunicationCostForNoCostDag;
     }
 
+    public Boolean isGenerateCommunicationCostFromDAGWithoutCommunicationCost() {
+        return generateCommunicationCostFromDAGWithoutCommunicationCost;
+    }
+
     public Boolean isPrintGraphAtTheBeginningOfRun() {
 		return printGraphAtTheBeginningOfRun;
 	}
@@ -228,7 +233,7 @@ public class Configuration {
 		return calculateMaximusAndMinimusForNormalization;
 	}
 
-	public Integer getObjective1() {
+    public Integer getObjective1() {
 		return objective1;
 	}
 
@@ -507,6 +512,10 @@ public class Configuration {
 
     private void setGenerateRandomCommunicationCostForNoCostDag(Boolean generateRandomCommunicationCostForNoCostDag) {
         this.generateRandomCommunicationCostForNoCostDag = generateRandomCommunicationCostForNoCostDag;
+    }
+
+    private void setGenerateCommunicationCostFromDAGWithoutCommunicationCost(Boolean generateCommunicationCostFromDAGWithoutCommunicationCost) {
+        this.generateCommunicationCostFromDAGWithoutCommunicationCost = generateCommunicationCostFromDAGWithoutCommunicationCost;
     }
 
 	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {

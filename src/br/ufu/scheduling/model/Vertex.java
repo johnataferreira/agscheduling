@@ -26,6 +26,10 @@ public class Vertex implements Comparable<Vertex> {
     	return computationalCost;
     }
 
+    public void setComputationalCost(int computationalCost) {
+        this.computationalCost = computationalCost;
+    }
+
     public List<Integer> getEntries() {
     	return entries;
     }

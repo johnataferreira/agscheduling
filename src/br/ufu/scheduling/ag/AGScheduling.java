@@ -52,12 +52,17 @@ public class AGScheduling {
 	private double totalFitnessOfBestChromosomes;
 	private int totalNumberOfChromosomes;
 	
-	//Variables for the best solutions
+	//Variables for the best and the worst solutions
 	private double bestSlenght = Double.MAX_VALUE;
 	private double bestLoadBalance = Double.MAX_VALUE;
 	private double bestFlowTime = Double.MAX_VALUE;
 	private double bestCommunicationCost = Double.MAX_VALUE;
 	private double bestWaitingTime = Double.MAX_VALUE;
+    private double worstSlenght = Double.MIN_VALUE;
+    private double worstLoadBalance = Double.MIN_VALUE;
+    private double worstFlowTime = Double.MIN_VALUE;
+    private double worstCommunicationCost = Double.MIN_VALUE;
+    private double worstWaitingTime = Double.MIN_VALUE;
 
 	public AGScheduling() throws Exception {
 		config = new Configuration();
@@ -176,26 +181,27 @@ public class AGScheduling {
 
 	private void addChromosomeInGeneralList(Chromosome chromosome) {
 		chromosomeList.add(chromosome);
-		verifyBestSolutions(chromosome);
+		verifyBestAndWorstSolutions(chromosome);
 	}
 
     private void addChromosomeInGeneralList(List<Chromosome> chromosomeList) {
 		this.chromosomeList.addAll(chromosomeList);
-		verifyBestSolutions(chromosomeList);
+		verifyBestAndWorstSolutions(chromosomeList);
 	}
 
-    private void verifyBestSolutions(Chromosome chromosome) {
+    private void verifyBestAndWorstSolutions(Chromosome chromosome) {
         if (config.isPrintBestResultsByObjectives()) {
             List<Chromosome> chromosomeList = new ArrayList<>();
             chromosomeList.add(chromosome);
 
-            verifyBestSolutions(chromosomeList);
+            verifyBestAndWorstSolutions(chromosomeList);
         }
     }
 
-    private void verifyBestSolutions(List<Chromosome> chromosomeList) {
+    private void verifyBestAndWorstSolutions(List<Chromosome> chromosomeList) {
         if (config.isPrintBestResultsByObjectives()) {
             for (Chromosome chromosome : chromosomeList) {
+                //Best Solutions
                 if (chromosome.getSLength() < bestSlenght) {
                     bestSlenght = chromosome.getSLength();
                 }
@@ -214,6 +220,27 @@ public class AGScheduling {
 
                 if (chromosome.getWaitingTime() < bestWaitingTime) {
                     bestWaitingTime = chromosome.getWaitingTime();
+                }
+
+                //Worst Solutions
+                if (chromosome.getSLength() > worstSlenght) {
+                    worstSlenght = chromosome.getSLength();
+                }
+
+                if (chromosome.getLoadBalance() > worstLoadBalance) {
+                    worstLoadBalance = chromosome.getLoadBalance();
+                }
+
+                if (chromosome.getFlowTime() > worstFlowTime) {
+                    worstFlowTime = chromosome.getFlowTime();
+                }
+
+                if (chromosome.getCommunicationCost() > worstCommunicationCost) {
+                    worstCommunicationCost = chromosome.getCommunicationCost();
+                }
+
+                if (chromosome.getWaitingTime() > worstWaitingTime) {
+                    worstWaitingTime = chromosome.getWaitingTime();
                 }
             }
         }
@@ -629,13 +656,19 @@ public class AGScheduling {
         if (config.isPrintBestResultsByObjectives()) {
             System.out.println("");
             System.out.println("##################################");
-            System.out.println("## Best Results By Objectives ##");
+            System.out.println("## Best And Worst Results By Objectives ##");
             System.out.println("");
             System.out.println("Best SLenght Founded: " + bestSlenght);
             System.out.println("Best LoadBalance: " + bestLoadBalance);
             System.out.println("Best FlowTime: " + bestFlowTime);
             System.out.println("Best CommunicationCost: " + bestCommunicationCost);
             System.out.println("Best WaitingTime: " + bestWaitingTime);
+            System.out.println("");
+            System.out.println("Worst SLenght Founded: " + worstSlenght);
+            System.out.println("Worst LoadBalance: " + worstLoadBalance);
+            System.out.println("Worst FlowTime: " + worstFlowTime);
+            System.out.println("Worst CommunicationCost: " + worstCommunicationCost);
+            System.out.println("Worst WaitingTime: " + worstWaitingTime);
             System.out.println("");
             System.out.println("Graph: " + (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
             System.out.println("Processors: " + config.getTotalProcessors());
