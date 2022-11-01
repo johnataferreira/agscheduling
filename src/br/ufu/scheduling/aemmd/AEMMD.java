@@ -141,7 +141,7 @@ public class AEMMD {
 		initialize();
 
 		while (generationAccumulated < config.getTotalGenerations()) {
-			if (config.isPrintIterationsAndGenerations()) {
+			if (config.isPrintIterations()) {
 				System.out.println("############################\n");
 				System.out.println("####### GENERATION: " + (generationAccumulated + 1) + " #######\n");
 				System.out.println("############################\n");

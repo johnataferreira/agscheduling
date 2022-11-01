@@ -33,7 +33,7 @@ public class GeneratorDifferentChromosome {
 		int iteration = 0;
 
 		while (differentsChromosomes < config.getTotalDifferentChromosomes() && iteration < config.getMaximumAttemptsGenerateDifferentChromosomes()) {
-			if (config.isPrintIterationsAndGenerations()) {
+			if (config.isPrintIterations()) {
 				System.out.println("############################\n");
 				System.out.println("####### ATTEMPT TO GENERATE DIFFERENT CHROMOSOME: " + (iteration + 1) + " #######\n");
 				System.out.println("############################\n");

@@ -121,7 +121,7 @@ public class AGScheduling {
 		int iteration = 0;
 
 		while (iteration < config.getIterations()) {
-			if (config.isPrintIterationsAndGenerations()) {
+			if (config.isPrintIterations()) {
 				System.out.println("############################\n");
 				System.out.println("####### ITERATION: " + (iteration + 1) + " #######\n");
 				System.out.println("############################\n");
@@ -132,9 +132,9 @@ public class AGScheduling {
 			int generation = 0;
 
 			while (generation < config.getGenerations() && !(config.isStopGenerationIfFindBestSolution() && findBestChromosomeInGeneration)) {
-//				if (config.isPrintIterationsAndGenerations()) {
-//					System.out.println("##### GENERATION: " + (generation + 1) + " #####\n");
-//				}
+				if (config.isPrintGenerations()) {
+					System.out.println("##### GENERATION: " + (generation + 1) + " #####\n");
+				}
 
 				resetGeneration();
 				executeAG();

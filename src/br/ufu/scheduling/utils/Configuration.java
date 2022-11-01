@@ -29,7 +29,8 @@ public class Configuration {
 	private AlgorithmType algorithmType;
 	private Integer tourForTournament;
 	private Integer totalProcessors;
-	private Boolean printIterationsAndGenerations;
+	private Boolean printIterations;
+	private Boolean printGenerations;
 	private Boolean testMode;
 	private Integer maximizationConstant;
 	private Integer attemptSelectParentNotRepeated;
@@ -137,9 +138,13 @@ public class Configuration {
 		return totalProcessors;
 	}
 
-	public Boolean isPrintIterationsAndGenerations() {
-		return printIterationsAndGenerations;
+	public Boolean isPrintIterations() {
+		return printIterations;
 	}
+
+    public Boolean isPrintGenerations() {
+        return printGenerations;
+    }
 
 	public Boolean isTestMode() {
 		return testMode;
@@ -466,9 +471,13 @@ public class Configuration {
 		this.tourForTournament = tourForTournament;
 	}
 
-	private void setPrintIterationsAndGenerations(Boolean printIterationsAndGenerations) {
-		this.printIterationsAndGenerations = printIterationsAndGenerations;
+	private void setPrintIterations(Boolean printIterations) {
+		this.printIterations = printIterations;
 	}
+
+    private void setPrintGenerations(Boolean printGenerations) {
+        this.printGenerations = printGenerations;
+    }
 
 	private void setTotalProcessors(Integer totalProcessors) {
 		this.totalProcessors = totalProcessors;

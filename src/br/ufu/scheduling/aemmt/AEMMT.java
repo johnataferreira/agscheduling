@@ -179,7 +179,7 @@ public class AEMMT {
 		while (generationAccumulated < config.getTotalGenerations()) {
 			resetTableScore();
 
-			if (config.isPrintIterationsAndGenerations()) {
+			if (config.isPrintIterations()) {
 				System.out.println("############################\n");
 				System.out.println("####### GENERATION: " + (generationAccumulated + 1) + " #######\n");
 				System.out.println("############################\n");
