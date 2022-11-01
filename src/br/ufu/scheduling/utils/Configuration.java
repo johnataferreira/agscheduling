@@ -682,7 +682,7 @@ public class Configuration {
 				method.invoke(this, getConvertedValue(vector[2], vector[1]));
 			}
 
-			if (!isUseWeightToCalculateAverageFunction()) {
+			if (getAlgorithmType() != AlgorithmType.SINGLE_OBJECTIVE && !isUseWeightToCalculateAverageFunction()) {
 				readConfigurationForDataNormalization();
 				
 				if (getMaximizationConstant() != Configuration.MAXIMIZATION_PROBLEM) {
