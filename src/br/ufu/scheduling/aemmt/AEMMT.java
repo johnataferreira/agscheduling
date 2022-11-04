@@ -343,26 +343,9 @@ public class AEMMT {
 			}
 		}
 
-	    removeChromosomeDominatedFromTable(chromosome, nonDominatedTable);
-
+		nonDominatedTable.removeChromosomeFromTable(chromosome);
 		nonDominatedTable.add(chromosome, config);
 	}
-
-	private void removeChromosomeDominatedFromTable(Chromosome chromosome, Table nonDominatedTable) {
-        int totalChromosomes = nonDominatedTable.getTotalChromosomes();
-        int chromosomeIndex = 0;
-
-        while (chromosomeIndex < totalChromosomes) {
-            Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(chromosomeIndex);
-
-            if (chromosomeB.isChromosomeDominated(config, chromosome)) {
-                nonDominatedTable.remove(chromosomeIndex);
-                totalChromosomes--;
-            }
-
-            chromosomeIndex++;
-        }        
-    }
 
     private void resetTableScore() {
 		if (config.getTotalGenerationsToResetTableScore() > 0 && generationAccumulatedForResetTableScore > config.getTotalGenerationsToResetTableScore()) {

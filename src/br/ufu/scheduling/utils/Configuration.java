@@ -3,20 +3,30 @@ package br.ufu.scheduling.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
 
 import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.enums.MetricType;
 import br.ufu.scheduling.enums.MutationType;
 import br.ufu.scheduling.enums.SelectionType;
+import br.ufu.scheduling.file.normalization.with.cost.LoaderNormalizationWithCost;
+import br.ufu.scheduling.file.normalization.without.cost.LoaderNormalizationWithoutCost;
 
 public class Configuration {
 	public static final String USE_DEFAULT_GRAPH = "-1";
-	public static final int MAXIMIZATION_PROBLEM = 0;
+	public static final int    MAXIMIZATION_PROBLEM = 0;
 	public final static String READ_ME_FILE_NAME = "README.conf";
 	public final static String NORMALIZATION_BASE_FILE_NAME = "DAGBase-normalization.txt";
 	public final static String SUFIX_NORMLIZATION_FILE_NAME = "-normalization";
+	public final static String PACKAGE_BASE = "br" + File.separator + "ufu" + File.separator + "scheduling" + File.separator + "file";
+	public final static String PACKAGE_NORMALIZATION_WITH_COST =  PACKAGE_BASE + File.separator + "normalization" + File.separator + "with" + File.separator + "cost" + File.separator;
+	public final static String PACKAGE_NORMALIZATION_WITHOUT_COST = PACKAGE_BASE + File.separator + "normalization" + File.separator + "without" + File.separator + "cost" + File.separator;
+    public final static String PACKAGE_DAG_WITH_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "with" + File.separator + "cost" + File.separator;
+    public final static String PACKAGE_DAG_WITHOUT_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "without" + File.separator + "cost" + File.separator;
+    public final static String PACKAGE_CSV = PACKAGE_BASE + File.separator + "csv" + File.separator;
 
 	private Integer initialPopulation;
 	private Double mutationRate;
@@ -705,7 +715,18 @@ public class Configuration {
 			fileName = getTaskGraphFileName().split(".stg")[0] + SUFIX_NORMLIZATION_FILE_NAME + ".txt";
 		} 
 
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(fileName)))) {
+		Class cls = null;
+		String packagePath = null;
+
+		if (USE_DEFAULT_GRAPH.equals(getTaskGraphFileName()) || isGraphWithCommunicationCost()) {
+		    cls = LoaderNormalizationWithCost.class;
+		    packagePath = PACKAGE_NORMALIZATION_WITH_COST;
+		} else {
+		    cls = LoaderNormalizationWithoutCost.class;
+		    packagePath = PACKAGE_NORMALIZATION_WITHOUT_COST;
+		}
+
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(cls.getClassLoader().getResourceAsStream(packagePath + fileName)))) {
 			String line = null;
 
 			while ((line = buffer.readLine()) != null) {

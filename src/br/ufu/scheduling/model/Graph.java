@@ -1,8 +1,7 @@
 package br.ufu.scheduling.model;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import br.ufu.scheduling.file.dag.with.cost.LoaderDagWithCost;
+import br.ufu.scheduling.file.dag.without.cost.LoaderDagWithoutCost;
 import br.ufu.scheduling.utils.Configuration;
 
 public class Graph {
@@ -78,7 +79,7 @@ public class Graph {
     private static Graph initializeGraphWithCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(config.getTaskGraphFileName())))) {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithCost.class.getClassLoader().getResourceAsStream(Configuration.PACKAGE_DAG_WITH_COST + config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -220,7 +221,7 @@ public class Graph {
     private static Graph initializeGraphWithoutCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(config.getTaskGraphFileName())))) {
+    	try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithoutCost.class.getClassLoader().getResourceAsStream(Configuration.PACKAGE_DAG_WITHOUT_COST + config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -299,10 +300,7 @@ public class Graph {
 			throw e2;
 		}
 
-		if (config.isGenerateRandomCommunicationCostForNoCostDag()) {
-		   generateRandomCommunicationCostForNoCostDag(graph);
-		}
-
+		generateRandomCommunicationCostForNoCostDag(graph, config);
 		printGraph(graph, config);
         generateDAGWithCommunicationCost(graph, config);
 
@@ -379,22 +377,24 @@ public class Graph {
     	return convertedValue + (firstTask == 0 ? 1 : 0);
     }
 
-    private static void generateRandomCommunicationCostForNoCostDag(Graph graph) {
-        int maximumComputationalCost = Integer.MIN_VALUE;
-        int minimumComputationalCost = Integer.MAX_VALUE;
+    private static void generateRandomCommunicationCostForNoCostDag(Graph graph, Configuration config) {
+        if (config.isGenerateRandomCommunicationCostForNoCostDag()) {
+            int maximumComputationalCost = Integer.MIN_VALUE;
+            int minimumComputationalCost = Integer.MAX_VALUE;
 
-        for (Map.Entry<Integer, Vertex> mapVertex : graph.getVertices().entrySet()) {
-            Vertex vertex = mapVertex.getValue();
+            for (Map.Entry<Integer, Vertex> mapVertex : graph.getVertices().entrySet()) {
+                Vertex vertex = mapVertex.getValue();
 
-            if (vertex.getComputationalCost() > 0) {
-                maximumComputationalCost = Integer.max(maximumComputationalCost, vertex.getComputationalCost());
-                minimumComputationalCost = Integer.min(minimumComputationalCost, vertex.getComputationalCost());
+                if (vertex.getComputationalCost() > 0) {
+                    maximumComputationalCost = Integer.max(maximumComputationalCost, vertex.getComputationalCost());
+                    minimumComputationalCost = Integer.min(minimumComputationalCost, vertex.getComputationalCost());
+                }
             }
-        }
 
-        Random generator = new Random();
-        for (Edge edge : graph.getEdges()) {
-            edge.setCommunicationCost(raffleCommunicationCost(generator, minimumComputationalCost, maximumComputationalCost));
+            Random generator = new Random();
+            for (Edge edge : graph.getEdges()) {
+                edge.setCommunicationCost(raffleCommunicationCost(generator, minimumComputationalCost, maximumComputationalCost));
+            }            
         }
     }
 

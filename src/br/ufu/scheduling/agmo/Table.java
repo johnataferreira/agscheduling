@@ -1,7 +1,6 @@
 package br.ufu.scheduling.agmo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import br.ufu.scheduling.model.Chromosome;
@@ -77,4 +76,22 @@ public abstract class Table {
 
 		return clone;
 	}
+
+    public void removeChromosomeFromTable(Chromosome chromosome) {
+        int totalChromosomes = chromosomeList.size();
+        int chromosomeIndex = 0;
+
+        while (chromosomeIndex < totalChromosomes) {
+            Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
+
+            if (chromosomeB.isChromosomeDominated(objectives, chromosome)) {
+                chromosomeList.remove(chromosomeIndex);
+                totalChromosomes--;
+
+                continue;
+            }
+
+            chromosomeIndex++;
+        }
+    }
 }

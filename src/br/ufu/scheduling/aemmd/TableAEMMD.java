@@ -20,7 +20,7 @@ public class TableAEMMD extends Table {
 	        return false;
 	    }
 
-        removeChromosomeDominatedFromTable(chromosome);
+	    removeChromosomeFromTable(chromosome);
 
         Chromosome clone = buildChromosomeClone(chromosome);
         chromosomeList.add(clone);
@@ -38,20 +38,4 @@ public class TableAEMMD extends Table {
 
         return false;
 	}
-
-    private void removeChromosomeDominatedFromTable(Chromosome chromosome) {
-        int totalChromosomes = chromosomeList.size();
-        int chromosomeIndex = 0;
-
-        while (chromosomeIndex < totalChromosomes) {
-            Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
-
-            if (chromosomeB.isChromosomeDominated(objectives, chromosome)) {
-                chromosomeList.remove(chromosomeIndex);
-                totalChromosomes--;
-            }
-
-            chromosomeIndex++;
-        }
-    }
 }

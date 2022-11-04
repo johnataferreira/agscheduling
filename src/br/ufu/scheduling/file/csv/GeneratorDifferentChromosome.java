@@ -62,9 +62,9 @@ public class GeneratorDifferentChromosome {
 	}
 
 	private void generateCSVFile() throws Exception {
-		try (BufferedWriter writerObjective = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-differentChromosomesObjective.csv")));
-				BufferedWriter writerChromosome = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-differentChromosomes.csv")));
-				BufferedWriter writerRepeteadChromosome = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-repeatedChromosomes.csv")))) {
+        try (BufferedWriter writerObjective = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-differentChromosomesObjective.csv")));
+                BufferedWriter writerChromosome = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-differentChromosomes.csv")));
+                BufferedWriter writerRepeteadChromosome = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("file-repeatedChromosomes.csv")))) {
 
 			generateCSVFile(writerObjective, "makespan,loadBalance,flowtime,communicationCost,waitingTime", chromosomeList, OBJECTIVES_FORMATTED);
 			generateCSVFile(writerChromosome, "mapping,scheduling", chromosomeList, CHROMOSOME_FORMATTED);
