@@ -388,8 +388,12 @@ public class Configuration {
 			metricType = MetricType.WAITING_TIME;
 			break;
 
+        case 5:
+            metricType = MetricType.MAKESPAN_PLUS_WAITING_TIME;
+            break;
+
 		default:
-			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4).toString());
+			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4, 5).toString());
 		}
 	}
 
@@ -737,7 +741,7 @@ public class Configuration {
 				//2 - Value
 				String[] vector = line.split(":");
 				Method method = this.getClass().getDeclaredMethod(getMethodName(vector[0]), getParameterType(vector[1]));
-				method.invoke(this, getRealObjectiveValue(getConvertedValue(vector[2], vector[1])));
+				method.invoke(this, getTransformedObjectiveValue(getConvertedValue(vector[2], vector[1])));
 			}
 		} catch (Exception e) {
 			Exception e2 = new Exception("Error loading " + fileName + " file: " + e.getMessage());
@@ -810,14 +814,22 @@ public class Configuration {
 		}
 	}
 
-	private Object getRealObjectiveValue(Object objectiveValue) {
+	public Object getTransformedObjectiveValue(Object objectiveValue) {
 		if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
 			return objectiveValue;
 		}
 
 		//Transform a minimization problem into a maximization problem 
-		return getMaximizationConstant() / (double) objectiveValue;
+		return (double) objectiveValue > 0.0 ? getMaximizationConstant() / (double) objectiveValue : 0.0;
 	}
+
+    public double getRealObjectiveValue(double objectiveValue) {
+        if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
+            return objectiveValue;
+        }
+
+        return getMaximizationConstant() * (double) objectiveValue;
+    }
 
 	public static void main(String args[]) throws Exception {
 		Configuration config = new Configuration();

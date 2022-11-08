@@ -17,6 +17,7 @@ public class Metrics implements Cloneable {
 	private double flowTime; /* sum of processor times */
 	private double communicationCost;
 	private double waitingTime;
+	private double sLengthPlusWaitingTime;
 
 	private double fitness;
 	private double fitnessForSlength;
@@ -24,6 +25,7 @@ public class Metrics implements Cloneable {
 	private double fitnessForFlowTime;
 	private double fitnessForCommunicationCost;
 	private double fitnessForWaitingTime;
+	private double fitnessForSLengthPlusWaitingTime;
 
 	private double aemmtValue;
 
@@ -48,6 +50,10 @@ public class Metrics implements Cloneable {
 
 	public double getWaitingTime() {
 		return waitingTime;
+	}
+
+	public double getSLengthPlusWaitingTime() {
+	    return sLengthPlusWaitingTime;
 	}
 
 	public double getFitness() {
@@ -76,6 +82,10 @@ public class Metrics implements Cloneable {
 
 	public double getFitnessForWaitingTime() {
 		return fitnessForWaitingTime;
+	}
+
+	public double getFitnessForSLengthPlusWaitingTime() {
+	    return fitnessForSLengthPlusWaitingTime;
 	}
 
 	public double getAemmtValue() {
@@ -111,6 +121,7 @@ public class Metrics implements Cloneable {
 		calculateFlowTime(finalTimeTask, config);
 		validateCommunicationCost(config);
 		calculateWaitingTime(startTimeTask, finalTimeTask, graph, scheduling, mapping, config);
+		calculateSLenghtPlusWaitingTime(config);
 		calculateFitnessForMetrics(config);
 		calculateFitness(config);
 	}
@@ -238,21 +249,25 @@ public class Metrics implements Cloneable {
 		}
 	}
 
+    private void calculateSLenghtPlusWaitingTime(Configuration config) {
+        sLengthPlusWaitingTime = sLength + waitingTime;
+
+        if (config.isConvergenceForTheBestSolution() && sLengthPlusWaitingTime < AGScheduling.BEST_SLENGTH_PLUS_WAITING_TIME) {
+            throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLengthPlusWaitingTime: " + sLengthPlusWaitingTime + ".");
+        }
+    }
+
 	private void calculateFitnessForMetrics(Configuration config) {
 		fitnessForSlength = calculateFitnessForMetric(config, MetricType.MAKESPAN);
 		fitnessForLoadBalance = calculateFitnessForMetric(config, MetricType.LOAD_BALANCE);
 		fitnessForFlowTime = calculateFitnessForMetric(config, MetricType.FLOW_TIME);
 		fitnessForCommunicationCost = calculateFitnessForMetric(config, MetricType.COMMUNICATION_COST);
 		fitnessForWaitingTime = calculateFitnessForMetric(config, MetricType.WAITING_TIME);
+		fitnessForSLengthPlusWaitingTime = calculateFitnessForMetric(config, MetricType.MAKESPAN_PLUS_WAITING_TIME);
 	}
 
 	private Double calculateFitnessForMetric(Configuration config, MetricType metricType) {
-		if (config.getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
-			return getMetricValue(metricType);
-		}
-
-		//Transform a minimization problem into a maximization problem 
-		return getMetricValue(metricType) > 0.0 ? config.getMaximizationConstant() / getMetricValue(metricType) : 0.0;
+	    return (double) config.getTransformedObjectiveValue(getMetricValue(metricType));
 	}
 
 	private void calculateFitness(Configuration config) {
@@ -277,6 +292,10 @@ public class Metrics implements Cloneable {
 			fitness = fitnessForWaitingTime;
 			break;
 
+	     case MAKESPAN_PLUS_WAITING_TIME:
+	         fitness = fitnessForSLengthPlusWaitingTime;
+	         break;
+
 		default:
 			throw new IllegalArgumentException("Metric type not implemented.");
 		}
@@ -299,6 +318,9 @@ public class Metrics implements Cloneable {
 		case WAITING_TIME:
 			return waitingTime;
 
+		case MAKESPAN_PLUS_WAITING_TIME:
+		    return sLengthPlusWaitingTime;
+
 		default:
 			throw new IllegalArgumentException("Metric type not implemented.");
 		}
@@ -311,12 +333,14 @@ public class Metrics implements Cloneable {
 		clone.flowTime = this.flowTime;
 		clone.communicationCost = this.communicationCost;
 		clone.waitingTime = this.waitingTime;
+		clone.sLengthPlusWaitingTime = this.sLengthPlusWaitingTime;
 		clone.fitness = this.fitness;
 		clone.fitnessForSlength = this.fitnessForSlength;
 		clone.fitnessForLoadBalance = this.fitnessForLoadBalance;
 		clone.fitnessForFlowTime = this.fitnessForFlowTime;
 		clone.fitnessForCommunicationCost = this.fitnessForCommunicationCost;
 		clone.fitnessForWaitingTime = this.fitnessForWaitingTime;
+		clone.fitnessForSLengthPlusWaitingTime = this.fitnessForSLengthPlusWaitingTime;
 		clone.aemmtValue = this.aemmtValue;
 		return clone;
 	}

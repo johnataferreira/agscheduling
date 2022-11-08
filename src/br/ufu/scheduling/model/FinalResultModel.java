@@ -11,6 +11,7 @@ public class FinalResultModel {
 	private double totalFlowTime;
 	private double totalCommunicationCost;
 	private double totalWaitingTime;
+	private double totalSLengthPlusWaitingTime;
 	private double totalFitness;
 	private int totalNumberOfChromosomes;
 
@@ -45,6 +46,10 @@ public class FinalResultModel {
 		return totalWaitingTime;
 	}
 
+	public double getTotalSLengthPlusWaitingTime() {
+	    return totalSLengthPlusWaitingTime;
+	}
+
 	public double getTotalFitness() {
 		return totalFitness;
 	}
@@ -61,7 +66,7 @@ public class FinalResultModel {
 		this.totalSuccess = totalSuccess;
 	}
 
-	public void setTotalSLenght(double totalSLenght) {
+	public void setTotalSLength(double totalSLenght) {
 		this.totalSLenght = totalSLenght;
 	}
 
@@ -79,6 +84,10 @@ public class FinalResultModel {
 
 	public void setTotalWaitingTime(double totalWaitingTime) {
 		this.totalWaitingTime = totalWaitingTime;
+	}
+
+	public void setTotalSLengthPlusWaitingTime(double totalSLengthPlusWaitingTime) {
+	    this.totalSLengthPlusWaitingTime = totalSLengthPlusWaitingTime;
 	}
 
 	public void setTotalFitness(double totalFitness) {

@@ -62,6 +62,10 @@ public class Chromosome implements Cloneable {
 		return metrics.getWaitingTime();
 	}
 
+    public double getSLengthPlusWaitingTime() {
+        return metrics.getSLengthPlusWaitingTime();
+    }
+
 	public double getFitness() {
 		return metrics.getFitness();
 	}

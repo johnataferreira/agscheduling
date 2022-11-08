@@ -3,6 +3,7 @@ package br.ufu.scheduling.utils;
 import java.util.List;
 
 import br.ufu.scheduling.agmo.Table;
+import br.ufu.scheduling.model.AGMOResultModel;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 
@@ -84,6 +85,7 @@ public class Printer {
 		append(builder, "Average FlowTime: " + (result.getTotalFlowTime() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average CommunicationCost: " + (result.getTotalCommunicationCost() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average WaitingTime: " + (result.getTotalWaitingTime() / result.getTotalNumberOfChromosomes()));
+		append(builder, "Average S_Length_Plus_Waiting_Time: " + (result.getTotalSLengthPlusWaitingTime() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average Fitness: " + (result.getTotalFitness() / result.getTotalNumberOfChromosomes()));
 
 		System.out.println(builder.toString());
@@ -104,12 +106,17 @@ public class Printer {
     private static void printFinalResult(Configuration config, Table resultTable, long initialTime, String algorithmName) {
         print(getHeadFinalResult(algorithmName));
 
+        AGMOResultModel resultModel = new AGMOResultModel(config, resultTable.getTotalChromosomes());
+
         for (int i = 0; i < resultTable.getTotalChromosomes(); i++) {
             print("## Chromosome " + (i + 1) + " ##");
             print(getObjectivesFromChromosomeFormatted(resultTable.getChromosomeFromIndex(i), false));
+
+            resultModel.processChromosome(resultTable.getChromosomeFromIndex(i));
         }
 
         print(getGeneralData(config, resultTable, initialTime));
+        resultModel.showResult();
     }
 
     private static void print(String message) {
@@ -136,11 +143,12 @@ public class Printer {
 
 		append(builder, "Mapping (Processors) : " + getFormattedVector(chromosome.getMapping()));
 		append(builder, "Scheduling (Tasks) : " + getFormattedVector(chromosome.getScheduling()));
-		append(builder, "SLenght : " + chromosome.getSLength());
+		append(builder, "SLength : " + chromosome.getSLength());
 		append(builder, "LoadBalance: " + chromosome.getLoadBalance());
 		append(builder, "FlowTime: " + chromosome.getFlowTime());
 		append(builder, "CommunicationCost: " + chromosome.getCommunicationCost());
 		append(builder, "WaitingTime: " + chromosome.getWaitingTime());
+		append(builder, "SLength_Plus_WaitingTime: " + chromosome.getSLengthPlusWaitingTime());
 
 		if (showFitness) {
 			append(builder, "Fitness : " + chromosome.getFitness());
@@ -227,7 +235,7 @@ public class Printer {
         append(builder, getObjectivesFromChromosomeFormatted(chromosomeB, false));
         append(builder, "");
 
-        append(builder, "SLenght : ");
+        append(builder, "SLength : ");
         append(builder, "   B: " + chromosomeB.getFitnessForSLength() + " | A: " + chromosomeA.getFitnessForSLength());
         append(builder, "   Result: " + getResolvedComparison(chromosomeB.getFitnessForSLength(), chromosomeA.getFitnessForSLength()));
 
