@@ -11,6 +11,10 @@ public class TableAEMMT extends Table {
 		super(size);
 	}
 
+    public TableAEMMT(int size, boolean isSolutionTable) {
+        super(size, isSolutionTable);
+    }
+
 	public boolean add(Chromosome chromosome, Configuration config) throws Exception {
 		if (chromosomeList.size() < size) {
 			Chromosome clone = buildChromosomeClone(chromosome);

@@ -267,7 +267,7 @@ public class Metrics implements Cloneable {
 	}
 
 	private Double calculateFitnessForMetric(Configuration config, MetricType metricType) {
-	    return (double) config.getTransformedObjectiveValue(getMetricValue(metricType));
+	    return config.getTransformedObjectiveValue(getMetricValue(metricType));
 	}
 
 	private void calculateFitness(Configuration config) {

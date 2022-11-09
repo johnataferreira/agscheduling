@@ -139,7 +139,7 @@ public class AEMMT {
 	}
 
 	private void createNonDominatedTable(List<Integer> objectives) {
-		Table table = new TableAEMMT(config.getSizeOfNonDominatedTable());
+		Table table = new TableAEMMT(config.getSizeOfNonDominatedTable(), true);
 		table.addObjectives(objectives);
 		tables.add(table);
 	}
@@ -334,6 +334,11 @@ public class AEMMT {
 
 	private void addChromosomeToNonDominatedTable(Chromosome chromosome) throws Exception {
 		Table nonDominatedTable = tables.get(nonDominatedTableIndex);
+
+		//Repeated individual is not allowed in the solution table
+		if (nonDominatedTable.contains(chromosome)) {
+		    return;
+		}
 
 		for (int chromosomeIndex = 0; chromosomeIndex < nonDominatedTable.getTotalChromosomes(); chromosomeIndex++) {
 			Chromosome chromosomeB = nonDominatedTable.getChromosomeFromIndex(chromosomeIndex);

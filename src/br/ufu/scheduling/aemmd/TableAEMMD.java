@@ -9,6 +9,10 @@ public class TableAEMMD extends Table {
 		super(size);
 	}
 
+    public TableAEMMD(int size, boolean isSolutionTable) {
+        super(size, isSolutionTable);
+    }
+
 	public boolean add(Chromosome chromosome, Configuration config) throws Exception {
 	    if (chromosomeList.size() == 0) {
 	        Chromosome clone = buildChromosomeClone(chromosome);
@@ -19,6 +23,11 @@ public class TableAEMMD extends Table {
 	    if (isChromosomeDominated(chromosome)) {
 	        return false;
 	    }
+
+	    //Repeated individual is not allowed in the solution table
+        if (isSolutionTable && chromosomeList.contains(chromosome)) {
+            return false;
+        }
 
 	    removeChromosomeFromTable(chromosome);
 

@@ -106,7 +106,7 @@ public class AEMMD {
 			createTable(Arrays.asList(1, 3, 4, 5));
 			createTable(Arrays.asList(2, 3, 4, 5));
 
-			createTable(Arrays.asList(1, 2, 3, 4, 5));
+			createSolutionTable(Arrays.asList(1, 2, 3, 4, 5));
 			break;
 
 		default:
@@ -119,6 +119,12 @@ public class AEMMD {
 		table.addObjectives(objectives);
 		tables.add(table);
 	}
+
+    private void createSolutionTable(List<Integer> objectives) {
+        Table table = new TableAEMMD(Integer.MAX_VALUE, true);
+        table.addObjectives(objectives);
+        tables.add(table);
+    }
 
 	private int simpleCombination(int numberOfElements, int numberInTheSet) {
 		return fat(numberOfElements) / (fat(numberInTheSet) * fat(numberOfElements - numberInTheSet));

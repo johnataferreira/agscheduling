@@ -88,6 +88,17 @@ public class Configuration {
 	private Double minObjectiveValue4;
 	private Double maxObjectiveValue5;
 	private Double minObjectiveValue5;
+	
+    private Double realMaxObjectiveValue1;
+    private Double realMinObjectiveValue1;
+    private Double realMaxObjectiveValue2;
+    private Double realMinObjectiveValue2;
+    private Double realMaxObjectiveValue3;
+    private Double realMinObjectiveValue3;
+    private Double realMaxObjectiveValue4;
+    private Double realMinObjectiveValue4;
+    private Double realMaxObjectiveValue5;
+    private Double realMinObjectiveValue5;
 
 	//CSV File
 	private Boolean generateCsvFile;
@@ -327,6 +338,46 @@ public class Configuration {
 	public Double getMinObjectiveValue5() {
 		return minObjectiveValue5;
 	}
+
+    public Double getRealMaxObjectiveValue1() {
+        return realMaxObjectiveValue1;
+    }
+
+    public Double getRealMinObjectiveValue1() {
+        return realMinObjectiveValue1;
+    }
+
+    public Double getRealMaxObjectiveValue2() {
+        return realMaxObjectiveValue2;
+    }
+
+    public Double getRealMinObjectiveValue2() {
+        return realMinObjectiveValue2;
+    }
+
+    public Double getRealMaxObjectiveValue3() {
+        return realMaxObjectiveValue3;
+    }
+
+    public Double getRealMinObjectiveValue3() {
+        return realMinObjectiveValue3;
+    }
+
+    public Double getRealMaxObjectiveValue4() {
+        return realMaxObjectiveValue4;
+    }
+
+    public Double getRealMinObjectiveValue4() {
+        return realMinObjectiveValue4;
+    }
+
+    public Double getRealMaxObjectiveValue5() {
+        return realMaxObjectiveValue5;
+    }
+
+    public Double getRealMinObjectiveValue5() {
+        return realMinObjectiveValue5;
+    }
 
 	public Boolean isGenerateCsvFile() {
 		return generateCsvFile;
@@ -630,44 +681,94 @@ public class Configuration {
 	}
 
 	private void setMaxObjectiveValue1(Double maxObjectiveValue1) {
-		this.maxObjectiveValue1 = maxObjectiveValue1;
+		this.maxObjectiveValue1 = getTransformedObjectiveValue(maxObjectiveValue1);
+		setRealMaxObjectiveValue1(maxObjectiveValue1);
 	}
 
-	private void setMinObjectiveValue1(Double minObjectiveValue1) {
-		this.minObjectiveValue1 = minObjectiveValue1;
+    private void setMinObjectiveValue1(Double minObjectiveValue1) {
+		this.minObjectiveValue1 = getTransformedObjectiveValue(minObjectiveValue1);
+		setRealMinObjectiveValue1(minObjectiveValue1);
 	}
 
 	private void setMaxObjectiveValue2(Double maxObjectiveValue2) {
-		this.maxObjectiveValue2 = maxObjectiveValue2;
+		this.maxObjectiveValue2 = getTransformedObjectiveValue(maxObjectiveValue2);
+		setRealMaxObjectiveValue2(maxObjectiveValue2);
 	}
 
 	private void setMinObjectiveValue2(Double minObjectiveValue2) {
-		this.minObjectiveValue2 = minObjectiveValue2;
+		this.minObjectiveValue2 = getTransformedObjectiveValue(minObjectiveValue2);
+		setRealMinObjectiveValue2(minObjectiveValue2);
 	}
 
 	private void setMaxObjectiveValue3(Double maxObjectiveValue3) {
-		this.maxObjectiveValue3 = maxObjectiveValue3;
+		this.maxObjectiveValue3 = getTransformedObjectiveValue(maxObjectiveValue3);
+		setRealMaxObjectiveValue3(maxObjectiveValue3);
 	}
 
 	private void setMinObjectiveValue3(Double minObjectiveValue3) {
-		this.minObjectiveValue3 = minObjectiveValue3;
+		this.minObjectiveValue3 = getTransformedObjectiveValue(minObjectiveValue3);
+		setRealMinObjectiveValue3(minObjectiveValue3);
 	}
 
 	private void setMaxObjectiveValue4(Double maxObjectiveValue4) {
-		this.maxObjectiveValue4 = maxObjectiveValue4;
+		this.maxObjectiveValue4 = getTransformedObjectiveValue(maxObjectiveValue4);
+		setRealMaxObjectiveValue4(maxObjectiveValue4);
 	}
 
 	private void setMinObjectiveValue4(Double minObjectiveValue4) {
-		this.minObjectiveValue4 = minObjectiveValue4;
+		this.minObjectiveValue4 = getTransformedObjectiveValue(minObjectiveValue4);
+		setRealMinObjectiveValue4(minObjectiveValue4);
 	}
 
 	private void setMaxObjectiveValue5(Double maxObjectiveValue5) {
-		this.maxObjectiveValue5 = maxObjectiveValue5;
+		this.maxObjectiveValue5 = getTransformedObjectiveValue(maxObjectiveValue5);
+		setRealMaxObjectiveValue5(maxObjectiveValue5);
 	}
 
 	private void setMinObjectiveValue5(Double minObjectiveValue5) {
-		this.minObjectiveValue5 = minObjectiveValue5;
+		this.minObjectiveValue5 = getTransformedObjectiveValue(minObjectiveValue5);
+		setRealMinObjectiveValue5(minObjectiveValue5);
 	}
+
+    private void setRealMaxObjectiveValue1(Double realMaxObjectiveValue1) {
+        this.realMaxObjectiveValue1 = realMaxObjectiveValue1;
+    }
+
+    private void setRealMinObjectiveValue1(Double realMinObjectiveValue1) {
+        this.realMinObjectiveValue1 = realMinObjectiveValue1;
+    }
+
+    private void setRealMaxObjectiveValue2(Double realMaxObjectiveValue2) {
+        this.realMaxObjectiveValue2 = realMaxObjectiveValue2;
+    }
+
+    private void setRealMinObjectiveValue2(Double realMinObjectiveValue2) {
+        this.realMinObjectiveValue2 = realMinObjectiveValue2;
+    }
+
+    private void setRealMaxObjectiveValue3(Double realMaxObjectiveValue3) {
+        this.realMaxObjectiveValue3 = realMaxObjectiveValue3;
+    }
+
+    private void setRealMinObjectiveValue3(Double realMinObjectiveValue3) {
+        this.realMinObjectiveValue3 = realMinObjectiveValue3;
+    }
+
+    private void setRealMaxObjectiveValue4(Double realMaxObjectiveValue4) {
+        this.realMaxObjectiveValue4 = realMaxObjectiveValue4;
+    }
+
+    private void setRealMinObjectiveValue4(Double realMinObjectiveValue4) {
+        this.realMinObjectiveValue4 = realMinObjectiveValue4;
+    }
+
+    private void setRealMaxObjectiveValue5(Double realMaxObjectiveValue5) {
+        this.realMaxObjectiveValue5 = realMaxObjectiveValue5;
+    }
+
+    private void setRealMinObjectiveValue5(Double realMinObjectiveValue5) {
+        this.realMinObjectiveValue5 = realMinObjectiveValue5;
+    }
 
 	private void setGenerateCsvFile(Boolean generateCsvFile) {
 		this.generateCsvFile = generateCsvFile;
@@ -741,7 +842,7 @@ public class Configuration {
 				//2 - Value
 				String[] vector = line.split(":");
 				Method method = this.getClass().getDeclaredMethod(getMethodName(vector[0]), getParameterType(vector[1]));
-				method.invoke(this, getTransformedObjectiveValue(getConvertedValue(vector[2], vector[1])));
+				method.invoke(this, getConvertedValue(vector[2], vector[1]));
 			}
 		} catch (Exception e) {
 			Exception e2 = new Exception("Error loading " + fileName + " file: " + e.getMessage());
@@ -814,22 +915,14 @@ public class Configuration {
 		}
 	}
 
-	public Object getTransformedObjectiveValue(Object objectiveValue) {
+	public double getTransformedObjectiveValue(double objectiveValue) {
 		if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
 			return objectiveValue;
 		}
 
 		//Transform a minimization problem into a maximization problem 
-		return (double) objectiveValue > 0.0 ? getMaximizationConstant() / (double) objectiveValue : 0.0;
+		return objectiveValue > 0.0 ? getMaximizationConstant() / (double) objectiveValue : 0.0;
 	}
-
-    public double getRealObjectiveValue(double objectiveValue) {
-        if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
-            return objectiveValue;
-        }
-
-        return getMaximizationConstant() * (double) objectiveValue;
-    }
 
 	public static void main(String args[]) throws Exception {
 		Configuration config = new Configuration();

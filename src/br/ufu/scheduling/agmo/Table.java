@@ -11,10 +11,16 @@ public abstract class Table {
 	protected int size;
 	protected List<Integer> objectives = new ArrayList<>();
 	protected List<Chromosome> chromosomeList = new ArrayList<>();
+	protected boolean isSolutionTable = false;
 
 	public Table(int size) {
 		this.size = size;
 	}
+
+    public Table(int size, boolean isSolutionTable) {
+        this.size = size;
+        this.isSolutionTable = isSolutionTable; 
+    }
 
 	public int getScore() {
 		return score;
@@ -22,6 +28,10 @@ public abstract class Table {
 
 	public int getSize() {
 		return size;
+	}
+
+	public boolean contains(Chromosome chromosome) {
+	    return chromosomeList.contains(chromosome);
 	}
 
 	public Chromosome getChromosomeFromIndex(int index) {
