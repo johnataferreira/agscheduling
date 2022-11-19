@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import br.ufu.scheduling.ag.AGScheduling;
 import br.ufu.scheduling.enums.CrossoverType;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.Graph;
@@ -13,10 +12,10 @@ public class Crossover {
 	public static List<Chromosome> getCrossover(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
 		switch (solveCrossoverType(generator)) {
 		case CROSSOVER_MAP:
-			return getCrossoverMap(parent1, parent2, graph, config);
+			return getCrossoverMap(parent1, parent2, graph, generator, config);
 
 		case ORDER_CROSSOVER:
-			return getOrderCrossover(parent1, parent2, graph, config);
+			return getOrderCrossover(parent1, parent2, graph, generator, config);
 
 		default:
 			throw new IllegalArgumentException("Crossover type not implemented.");
@@ -24,14 +23,14 @@ public class Crossover {
 	}
 
 	private static CrossoverType solveCrossoverType(Random generator) {
-		return generator.nextDouble() < Constants.RANDOM_NUMBER_FIXED_IN_ARTICLE ? CrossoverType.CROSSOVER_MAP : CrossoverType.ORDER_CROSSOVER;
+		return  generator.nextDouble() < Constants.RANDOM_NUMBER_FIXED_IN_ARTICLE ? CrossoverType.CROSSOVER_MAP : CrossoverType.ORDER_CROSSOVER;
 	}
 
-	private static List<Chromosome> getCrossoverMap(Chromosome parent1, Chromosome parent2, Graph graph, Configuration config) {
+	private static List<Chromosome> getCrossoverMap(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
 		List<Chromosome> childrenList = new ArrayList<>();
 		
 		//Add 1 to generate values between 1 and the total of tasks (inclusive)
-		int cutPoint = new Random().nextInt(graph.getNumberOfVertices()) + 1;
+		int cutPoint = generator.nextInt(graph.getNumberOfVertices()) + 1;
 
 		if (config.isTestMode()) {
 			System.out.println("CutPoint: " + cutPoint);
@@ -72,11 +71,11 @@ public class Crossover {
 		return childrenList;
 	}
 
-	private static List<Chromosome> getOrderCrossover(Chromosome parent1, Chromosome parent2, Graph graph, Configuration config) {
+	private static List<Chromosome> getOrderCrossover(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
 		List<Chromosome> childrenList = new ArrayList<>();
 		
 		//Add 1 to generate values between 1 and the total of tasks (inclusive)
-		int cutPoint = new Random().nextInt(graph.getNumberOfVertices()) + 1;
+		int cutPoint = generator.nextInt(graph.getNumberOfVertices()) + 1;
 
 		if (config.isTestMode()) {
 			System.out.println("CutPoint: " + cutPoint);
