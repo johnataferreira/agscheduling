@@ -43,6 +43,7 @@ public class Configuration {
 	private Boolean generateCommunicationCostFromDAGWithoutCommunicationCost;
 	private Boolean printGraphAtTheBeginningOfRun;
 	private Boolean printBestResultsByObjectives;
+	private Integer seed;
 
 	//AGMO
 	private Boolean executeMultiObjectiveGA;
@@ -207,6 +208,10 @@ public class Configuration {
 
 	public Boolean isPrintBestResultsByObjectives() {
         return printBestResultsByObjectives;
+    }
+
+    public Integer getSeed() {
+        return seed;
     }
 
     public Boolean isExecuteMultiObjectiveGA() {
@@ -590,7 +595,11 @@ public class Configuration {
         this.printBestResultsByObjectives = printBestResultsByObjectives;
     }
 
-	public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {
+	public void setSeed(Integer seed) {
+        this.seed = seed;
+    }
+
+    public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {
 		this.executeMultiObjectiveGA = executeMultiObjectiveGA;
 	}
 

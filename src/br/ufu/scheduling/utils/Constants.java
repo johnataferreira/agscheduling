@@ -15,13 +15,14 @@ public class Constants {
     public final static String PACKAGE_CSV = PACKAGE_BASE + File.separator + "csv" + File.separator;
     public static final String QUEBRA_LINHA = "\n";
 
+    public static final int RANDOM_SEED = -1;
     public static final int TASK_NUMBER = 0;
     public static final int COMPUTATIONAL_COST = 1;
     public static final int TOTAL_PREDECESSORS = 2;
     public static final int INDEX_BEST_CHROMOSOME = 0;
     public static final int MAXIMIZATION_PROBLEM = 0;
     public static final int DOUBLE_TOURNAMENT = 2;
-    
+
     public static final double RANDOM_NUMBER_FIXED_IN_ARTICLE = 0.5;
     public static final double ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE = 1000.0;
 

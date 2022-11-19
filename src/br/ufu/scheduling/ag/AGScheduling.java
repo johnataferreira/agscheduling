@@ -19,11 +19,11 @@ import br.ufu.scheduling.utils.Crossover;
 import br.ufu.scheduling.utils.Constants;
 
 public class AGScheduling {
-	private Random generator 				= new Random(1000);
 	private List<Chromosome> chromosomeList = new ArrayList<>();
 	private List<Chromosome> parentList 	= new ArrayList<>();
 	private List<Chromosome> childrenList 	= new ArrayList<>();
 
+	private Random generator;
 	private Configuration config;
 	private Graph graph;
 	private int[] roulette;
@@ -48,6 +48,12 @@ public class AGScheduling {
 	public AGScheduling() throws Exception {
 		config = new Configuration();
 		bestResult = new BestResultByObjective(config);
+
+		if (config.getSeed() == Constants.RANDOM_SEED) {
+		    generator = new Random();
+		} else {
+		    generator = new Random(config.getSeed());
+		}
 
 		if (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
 			graph = Graph.initializeGraph();
