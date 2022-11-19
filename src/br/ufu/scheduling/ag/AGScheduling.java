@@ -13,24 +13,13 @@ import br.ufu.scheduling.model.BestResultByObjective;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 import br.ufu.scheduling.model.Graph;
+import br.ufu.scheduling.nsga2.NSGA2;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Crossover;
+import br.ufu.scheduling.utils.Constants;
 
 public class AGScheduling {
-	public static final double 	RANDOM_NUMBER_FIXED_IN_ARTICLE 			= 0.5;
-	public static final String 	QUEBRA_LINHA 							= "\n";
-	public static final int 	INDEX_BEST_CHROMOSOME					= 0;
-	public static final double 	ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE	= 1000.0;
-
-	//Best result of metrics from the graph used
-	public static final double 	BEST_SLENGTH 							= 16.0;
-	public static final double 	BEST_LOAD_BALANCE 						= 1.085106383;
-	public static final double 	BEST_FLOW_TIME 							= 80.0;
-	public static final double 	BEST_COMMUNICATION_COST					= 0.0;
-	public static final double  BEST_WAITING_TIME						= 9.0;
-	public static final double  BEST_SLENGTH_PLUS_WAITING_TIME          = 25.0;
-
-	private Random generator 				= new Random();
+	private Random generator 				= new Random(1000);
 	private List<Chromosome> chromosomeList = new ArrayList<>();
 	private List<Chromosome> parentList 	= new ArrayList<>();
 	private List<Chromosome> childrenList 	= new ArrayList<>();
@@ -60,7 +49,7 @@ public class AGScheduling {
 		config = new Configuration();
 		bestResult = new BestResultByObjective(config);
 
-		if (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
+		if (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName())) {
 			graph = Graph.initializeGraph();
 		} else {
 			graph = Graph.initializeGraph(config);
@@ -79,6 +68,9 @@ public class AGScheduling {
             break;
 
         case NSGAII:
+            executeMultiObjectiveGeneticAlgorithmNSGA2(initialTime);
+            break;
+
         case SPEA2:
             throw new IllegalArgumentException("Algoritm type not implemented.");
 
@@ -96,17 +88,22 @@ public class AGScheduling {
 	}
 
 	private void executeAGAndGenerateCsvFile() throws Exception {
-		GeneratorDifferentChromosome generator = new GeneratorDifferentChromosome(this.generator, config, graph);
+		GeneratorDifferentChromosome generator = new GeneratorDifferentChromosome(config, graph, this.generator);
 		generator.execute();
 	}
 
+	private void executeMultiObjectiveGeneticAlgorithmNSGA2(long initialTime) throws Exception {
+        NSGA2 nsga2 = new NSGA2(config, graph, generator);
+        nsga2.execute(initialTime);	    
+	}
+
 	private void executeMultiObjectiveGeneticAlgorithmAEMMT(long initialTime) throws Exception {
-		AEMMT aemmt = new AEMMT(config, graph);
+		AEMMT aemmt = new AEMMT(config, graph, generator);
 		aemmt.execute(initialTime);
 	}
 
     private void executeMultiObjectiveGeneticAlgorithmAEMMD(long initialTime) throws Exception {
-        AEMMD aemmd = new AEMMD(config, graph);
+        AEMMD aemmd = new AEMMD(config, graph, generator);
         aemmd.execute(initialTime);
     }	
 
@@ -137,7 +134,7 @@ public class AGScheduling {
 			}
 
 			processIterationResult();
-			populateAverageDataOfBestChromosomes(chromosomeList.get(INDEX_BEST_CHROMOSOME));
+			populateAverageDataOfBestChromosomes(chromosomeList.get(Constants.INDEX_BEST_CHROMOSOME));
 
 			iteration++;
 		}
@@ -491,7 +488,7 @@ public class AGScheduling {
 	}
 
 	private void processGenerationResult() throws Exception {
-		Chromosome bestChromosomeOfGeneration = chromosomeList.get(INDEX_BEST_CHROMOSOME);
+		Chromosome bestChromosomeOfGeneration = chromosomeList.get(Constants.INDEX_BEST_CHROMOSOME);
 		findBestChromosomeInGeneration = findBestChromosome(bestChromosomeOfGeneration);
 
 		if (config.isPrintBestChromosomeOfGeneration()) {
@@ -507,37 +504,37 @@ public class AGScheduling {
 		if (config.isConvergenceForTheBestSolution()) {
 			switch (config.getMetricType()) {
 			case MAKESPAN:
-				if (BEST_SLENGTH < bestChromosome.getSLength()) {
+				if (Constants.BEST_SLENGTH < bestChromosome.getSLength()) {
 					return false;
 				}
 				break;
 
 			case LOAD_BALANCE:
-				if (BEST_LOAD_BALANCE < bestChromosome.getLoadBalance()) {
+				if (Constants.BEST_LOAD_BALANCE < bestChromosome.getLoadBalance()) {
 					return false;
 				}
 				break;
 
 			case FLOW_TIME:
-				if (BEST_FLOW_TIME < bestChromosome.getFlowTime()) {
+				if (Constants.BEST_FLOW_TIME < bestChromosome.getFlowTime()) {
 					return false;
 				}
 				break;
 
 			case COMMUNICATION_COST:
-				if (BEST_COMMUNICATION_COST < bestChromosome.getCommunicationCost()) {
+				if (Constants.BEST_COMMUNICATION_COST < bestChromosome.getCommunicationCost()) {
 					return false;
 				}
 				break;
 
 			case WAITING_TIME:
-				if (BEST_WAITING_TIME < bestChromosome.getWaitingTime()) {
+				if (Constants.BEST_WAITING_TIME < bestChromosome.getWaitingTime()) {
 					return false;
 				}
 				break;
 
             case MAKESPAN_PLUS_WAITING_TIME:
-                if (BEST_SLENGTH_PLUS_WAITING_TIME < bestChromosome.getSLengthPlusWaitingTime()) {
+                if (Constants.BEST_SLENGTH_PLUS_WAITING_TIME < bestChromosome.getSLengthPlusWaitingTime()) {
                     return false;
                 }
                 break;
@@ -570,7 +567,7 @@ public class AGScheduling {
 	}
 
 	private void processIterationResult() throws Exception {
-		Chromosome bestChromosomeOfIteration = chromosomeList.get(INDEX_BEST_CHROMOSOME);
+		Chromosome bestChromosomeOfIteration = chromosomeList.get(Constants.INDEX_BEST_CHROMOSOME);
 
 		if (findBestChromosome(bestChromosomeOfIteration)) {
 			totalSuccess++;

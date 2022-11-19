@@ -94,12 +94,12 @@ public class Chromosome implements Cloneable {
 		return metrics.getFitnessForWaitingTime();
 	}
 
-	public double getAemmtValue() {
-		return metrics.getAemmtValue();
+	public double getValueForSort() {
+		return metrics.getValueForSort();
 	}
 
-	public void setAemmtValue(double aemmtValue) {
-		metrics.setAemmtValue(aemmtValue);
+	public void setValueForSort(double valueForSort) {
+		metrics.setValueForSort(valueForSort);
 	}
 
 	private void createVectors(Graph graph) {

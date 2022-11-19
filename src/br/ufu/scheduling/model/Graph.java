@@ -12,12 +12,9 @@ import java.util.Random;
 import br.ufu.scheduling.file.dag.with.cost.LoaderDagWithCost;
 import br.ufu.scheduling.file.dag.without.cost.LoaderDagWithoutCost;
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 
 public class Graph {
-	private static final int TASK_NUMBER				= 0;
-	private static final int COMPUTATIONAL_COST			= 1;
-	private static final int TOTAL_PREDECESSORS			= 2;
-
     private Map<Integer, Vertex> vertices;
     private List<Edge> edges;
     private int firstTask;
@@ -79,7 +76,7 @@ public class Graph {
     private static Graph initializeGraphWithCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithCost.class.getClassLoader().getResourceAsStream(Configuration.PACKAGE_DAG_WITH_COST + config.getTaskGraphFileName())))) {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithCost.class.getClassLoader().getResourceAsStream(Constants.PACKAGE_DAG_WITH_COST + config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -135,15 +132,15 @@ public class Graph {
 					} else {
 
 						switch (totalPositionsAnalyzed) {
-						case TASK_NUMBER:
+						case Constants.TASK_NUMBER:
 							taskNumber = handleTask(firstTask, convertedValue); 
 							break;
 
-						case COMPUTATIONAL_COST:
+						case Constants.COMPUTATIONAL_COST:
 							computationalCost = convertedValue;
 							break;
 
-						case TOTAL_PREDECESSORS:
+						case Constants.TOTAL_PREDECESSORS:
 							totalPredecessors = convertedValue;
 							handlePredecessor = true;
 							break;
@@ -221,7 +218,7 @@ public class Graph {
     private static Graph initializeGraphWithoutCommunicationCost(Configuration config) throws Exception {
     	Graph graph = new Graph();
 
-    	try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithoutCost.class.getClassLoader().getResourceAsStream(Configuration.PACKAGE_DAG_WITHOUT_COST + config.getTaskGraphFileName())))) {
+    	try (BufferedReader buffer = new BufferedReader(new InputStreamReader(LoaderDagWithoutCost.class.getClassLoader().getResourceAsStream(Constants.PACKAGE_DAG_WITHOUT_COST + config.getTaskGraphFileName())))) {
 			String line = null;
 
 			int totalTasks = -1;
@@ -256,15 +253,15 @@ public class Graph {
 					}
 
 					switch (totalPositionsAnalyzed) {
-					case TASK_NUMBER:
+					case Constants.TASK_NUMBER:
 						taskNumber = handleTask(firstTask, convertedValue); 
 						break;
 
-					case COMPUTATIONAL_COST:
+					case Constants.COMPUTATIONAL_COST:
 						computationalCost = convertedValue;
 						break;
 
-					case TOTAL_PREDECESSORS:
+					case Constants.TOTAL_PREDECESSORS:
 						totalPredecessors = convertedValue;
 						break;
 

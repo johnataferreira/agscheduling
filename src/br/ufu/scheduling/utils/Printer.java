@@ -149,6 +149,7 @@ public class Printer {
 		append(builder, "CommunicationCost: " + chromosome.getCommunicationCost());
 		append(builder, "WaitingTime: " + chromosome.getWaitingTime());
 		append(builder, "SLength_Plus_WaitingTime: " + chromosome.getSLengthPlusWaitingTime());
+		append(builder, "Value For Sort (normalization): " + chromosome.getValueForSort());
 
 		if (showFitness) {
 			append(builder, "Fitness : " + chromosome.getFitness());

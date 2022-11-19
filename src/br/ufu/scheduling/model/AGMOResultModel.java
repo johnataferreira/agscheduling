@@ -1,66 +1,37 @@
 package br.ufu.scheduling.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 
 public class AGMOResultModel {
-    private static final int MAKESPAN = 0;
-    private static final int LOAD_BALANCE = 1;
-    private static final int FLOW_TIME = 2;
-    private static final int COMMUNICATION_COST = 3;
-    private static final int WAITING_TIME = 4;
-    
-    private static final int SOLUTION_RANGE = 4;
-
     private int totalChromossomes;
 
-    private int totalBestSLenght;
-    private int totalBestLoadBalance;
-    private int totalBestFlowTime;
-    private int totalBestCommunicationCost;
-    private int totalBestWaitingTime;
-
-    private double bestSLenght;
+    private double bestSLength;
     private double bestLoadBalance;
     private double bestFlowTime;
     private double bestCommunicationCost;
     private double bestWaitingTime;
 
-    private double worstSLenght;
+    private double worstSLength;
     private double worstLoadBalance;
     private double worstFlowTime;
     private double worstCommunicationCost;
     private double worstWaitingTime;
 
-    private double diffBetweenMaxAndMinSLenght;
+    private double diffBetweenMaxAndMinSLength;
     private double diffBetweenMaxAndMinLoadBalance;
     private double diffBetweenMaxAndMinFlowTime;
     private double diffBetweenMaxAndMinCommunicationCost;
     private double diffBetweenMaxAndMinWaitingTime;
 
-    private int totalSLenghtValueBetween0_25;
-    private int totalSLenghtValueBetween25_50;
-    private int totalSLenghtValueBetween50_75;
-    private int totalSLenghtValueBetween75_100;
-
-    private int totalLoadBalanceValueBetween0_25;
-    private int totalLoadBalanceValueBetween25_50;
-    private int totalLoadBalanceValueBetween50_75;
-    private int totalLoadBalanceValueBetween75_100;
-
-    private int totalFlowTimeValueBetween0_25;
-    private int totalFlowTimeValueBetween25_50;
-    private int totalFlowTimeValueBetween50_75;
-    private int totalFlowTimeValueBetween75_100;
-
-    private int totalCommunicationCostValueBetween0_25;
-    private int totalCommunicationCostValueBetween25_50;
-    private int totalCommunicationCostValueBetween50_75;
-    private int totalCommunicationCostValueBetween75_100;
-
-    private int totalWaitingTimeValueBetween0_25;
-    private int totalWaitingTimeValueBetween25_50;
-    private int totalWaitingTimeValueBetween50_75;
-    private int totalWaitingTimeValueBetween75_100;
+    private TotalCalculation totalCalculationSLength = new TotalCalculation();
+    private TotalCalculation totalCalculationLoadBalance = new TotalCalculation();
+    private TotalCalculation totalCalculationFlowTime = new TotalCalculation();
+    private TotalCalculation totalCalculationCommunicationCost = new TotalCalculation();
+    private TotalCalculation totalCalculationWaitingTime = new TotalCalculation();
 
     private BestResultByObjective bestResult;
 
@@ -68,14 +39,14 @@ public class AGMOResultModel {
 	    this.totalChromossomes = totalChromossomes;
 	    this.bestResult = new BestResultByObjective(config);
 
-	    handleValueFromObjective(config, MAKESPAN);
-	    handleValueFromObjective(config, LOAD_BALANCE);
-	    handleValueFromObjective(config, FLOW_TIME);
-	    handleValueFromObjective(config, COMMUNICATION_COST);
-	    handleValueFromObjective(config, WAITING_TIME);
+	    handleValueFromObjective(config, Constants.MAKESPAN);
+	    handleValueFromObjective(config, Constants.LOAD_BALANCE);
+	    handleValueFromObjective(config, Constants.FLOW_TIME);
+	    handleValueFromObjective(config, Constants.COMMUNICATION_COST);
+	    handleValueFromObjective(config, Constants.WAITING_TIME);
 	}
 
-	private void handleValueFromObjective(Configuration config, int objective) {
+    private void handleValueFromObjective(Configuration config, int objective) {
 	    double bestObjectiveValue = 0.0;
 	    double worstObjectiveValue = 0.0;
 
@@ -102,43 +73,43 @@ public class AGMOResultModel {
 	    }
 
 	    switch (objective) {
-            case MAKESPAN:
-                bestSLenght = bestObjectiveValue;
-                worstSLenght = worstObjectiveValue;
-                diffBetweenMaxAndMinSLenght = Math.abs(bestSLenght - worstSLenght) / SOLUTION_RANGE;
+            case Constants.MAKESPAN:
+                bestSLength = bestObjectiveValue;
+                worstSLength = worstObjectiveValue;
+                diffBetweenMaxAndMinSLength = Math.abs(bestSLength - worstSLength) / Constants.SOLUTION_RANGE;
                 break;
 
-            case LOAD_BALANCE:
+            case Constants.LOAD_BALANCE:
                 bestLoadBalance = bestObjectiveValue;
                 worstLoadBalance = worstObjectiveValue;
-                diffBetweenMaxAndMinLoadBalance = Math.abs(bestLoadBalance - worstLoadBalance) / SOLUTION_RANGE;
+                diffBetweenMaxAndMinLoadBalance = Math.abs(bestLoadBalance - worstLoadBalance) / Constants.SOLUTION_RANGE;
                 break;
 
-            case FLOW_TIME:
+            case Constants.FLOW_TIME:
                 bestFlowTime = bestObjectiveValue;
                 worstFlowTime = worstObjectiveValue;
-                diffBetweenMaxAndMinFlowTime = Math.abs(bestFlowTime - worstFlowTime);
+                diffBetweenMaxAndMinFlowTime = Math.abs(bestFlowTime - worstFlowTime) / Constants.SOLUTION_RANGE;
                 break;
 
-            case COMMUNICATION_COST:
+            case Constants.COMMUNICATION_COST:
                 bestCommunicationCost = bestObjectiveValue;
                 worstCommunicationCost = worstObjectiveValue;
-                diffBetweenMaxAndMinCommunicationCost = Math.abs(bestCommunicationCost - worstCommunicationCost) / SOLUTION_RANGE;
+                diffBetweenMaxAndMinCommunicationCost = Math.abs(bestCommunicationCost - worstCommunicationCost) / Constants.SOLUTION_RANGE;
                 break;
 
-            case WAITING_TIME:
+            case Constants.WAITING_TIME:
                 bestWaitingTime = bestObjectiveValue;
                 worstWaitingTime = worstObjectiveValue;
-                diffBetweenMaxAndMinWaitingTime = Math.abs(bestWaitingTime - worstWaitingTime) / SOLUTION_RANGE;
+                diffBetweenMaxAndMinWaitingTime = Math.abs(bestWaitingTime - worstWaitingTime) / Constants.SOLUTION_RANGE;
                 break;
 
             default:
                 throw new IllegalArgumentException("Objective invalid.");
         } 
 	}
-	
+
     public void processChromosome(Chromosome chromosome) {
-        processSLenght(chromosome.getSLength());
+        processSLength(chromosome.getSLength());
         processLoadBalance(chromosome.getLoadBalance());
         processFlowTime(chromosome.getFlowTime());
         processCommunicationCost(chromosome.getCommunicationCost());
@@ -147,54 +118,38 @@ public class AGMOResultModel {
         bestResult.verifyBestAndWorstSolutions(chromosome);
     }
 
-    private void processSLenght(double sLenght) {
-        TotalCalculation calculation = processTotalCalculation(sLenght, bestSLenght, diffBetweenMaxAndMinSLenght);
-
-        totalBestSLenght += calculation.totalBest;
-        totalSLenghtValueBetween0_25 += calculation.totalValueBetween0_25;
-        totalSLenghtValueBetween25_50 += calculation.totalValueBetween25_50;
-        totalSLenghtValueBetween50_75 += calculation.totalValueBetween50_75;
-        totalSLenghtValueBetween75_100 += calculation.totalValueBetween75_100;
+    private void processSLength(double SLength) {
+        putValueOnRangeMap(totalCalculationSLength, processTotalCalculation(SLength, bestSLength, diffBetweenMaxAndMinSLength));
     }
 
     private void processLoadBalance(double loadBalance) {
-        TotalCalculation calculation = processTotalCalculation(loadBalance, bestLoadBalance, diffBetweenMaxAndMinLoadBalance);
-
-        totalBestLoadBalance += calculation.totalBest;
-        totalLoadBalanceValueBetween0_25 += calculation.totalValueBetween0_25;
-        totalLoadBalanceValueBetween25_50 += calculation.totalValueBetween25_50;
-        totalLoadBalanceValueBetween50_75 += calculation.totalValueBetween50_75;
-        totalLoadBalanceValueBetween75_100 += calculation.totalValueBetween75_100;
+        putValueOnRangeMap(totalCalculationLoadBalance, processTotalCalculation(loadBalance, bestLoadBalance, diffBetweenMaxAndMinLoadBalance));
     }
 
     private void processFlowTime(double flowTime) {
-        TotalCalculation calculation = processTotalCalculation(flowTime, bestFlowTime, diffBetweenMaxAndMinFlowTime);
-
-        totalBestFlowTime += calculation.totalBest;
-        totalFlowTimeValueBetween0_25 += calculation.totalValueBetween0_25;
-        totalFlowTimeValueBetween25_50 += calculation.totalValueBetween25_50;
-        totalFlowTimeValueBetween50_75 += calculation.totalValueBetween50_75;
-        totalFlowTimeValueBetween75_100 += calculation.totalValueBetween75_100;
+        putValueOnRangeMap(totalCalculationFlowTime, processTotalCalculation(flowTime, bestFlowTime, diffBetweenMaxAndMinFlowTime));
     }
 
     private void processCommunicationCost(double communicationCost) {
-        TotalCalculation calculation = processTotalCalculation(communicationCost, bestCommunicationCost, diffBetweenMaxAndMinCommunicationCost);
-
-        totalBestCommunicationCost += calculation.totalBest;
-        totalCommunicationCostValueBetween0_25 += calculation.totalValueBetween0_25;
-        totalCommunicationCostValueBetween25_50 += calculation.totalValueBetween25_50;
-        totalCommunicationCostValueBetween50_75 += calculation.totalValueBetween50_75;
-        totalCommunicationCostValueBetween75_100 += calculation.totalValueBetween75_100;
+        putValueOnRangeMap(totalCalculationCommunicationCost, processTotalCalculation(communicationCost, bestCommunicationCost, diffBetweenMaxAndMinCommunicationCost));
     }
 
     private void processWaitingTime(double waitingTime) {
-        TotalCalculation calculation = processTotalCalculation(waitingTime, bestWaitingTime, diffBetweenMaxAndMinWaitingTime);
+        putValueOnRangeMap(totalCalculationWaitingTime, processTotalCalculation(waitingTime, bestWaitingTime, diffBetweenMaxAndMinWaitingTime));
+    }
 
-        totalBestWaitingTime += calculation.totalBest;
-        totalWaitingTimeValueBetween0_25 += calculation.totalValueBetween0_25;
-        totalWaitingTimeValueBetween25_50 += calculation.totalValueBetween25_50;
-        totalWaitingTimeValueBetween50_75 += calculation.totalValueBetween50_75;
-        totalWaitingTimeValueBetween75_100 += calculation.totalValueBetween75_100;
+    private void putValueOnRangeMap(TotalCalculation totalCalculationAccumulated, TotalCalculation totalCalculation) {
+        totalCalculationAccumulated.totalBest += totalCalculation.totalBest;
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_90_100, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_80_90, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_70_80, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_60_70, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_50_60, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_40_50, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_30_40, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_20_30, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_10_20, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20));
+        totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_0_10, totalCalculationAccumulated.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10));
     }
 
     private TotalCalculation processTotalCalculation(double objectiveValue, double best, double diffBetweenMaxAndMin) {
@@ -205,16 +160,34 @@ public class AGMOResultModel {
         }
 
         if (objectiveValue < (best + diffBetweenMaxAndMin)) {
-            calculation.totalValueBetween75_100++;
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_90_100, Constants.INCREMENT_RANGE_VALUE);
 
         } else if (objectiveValue < (best + (2 * diffBetweenMaxAndMin))) {
-            calculation.totalValueBetween50_75++;
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_80_90, Constants.INCREMENT_RANGE_VALUE);
 
         } else if (objectiveValue < (best + (3 * diffBetweenMaxAndMin))) {
-            calculation.totalValueBetween25_50++;
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_70_80, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (4 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_60_70, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (5 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_50_60, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (6 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_40_50, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (7 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_30_40, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (8 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_20_30, Constants.INCREMENT_RANGE_VALUE);
+
+        } else if (objectiveValue < (best + (9 * diffBetweenMaxAndMin))) {
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_10_20, Constants.INCREMENT_RANGE_VALUE);
 
         } else {
-            calculation.totalValueBetween0_25++;            
+            calculation.mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_0_10, Constants.INCREMENT_RANGE_VALUE);
         }
 
         return calculation;
@@ -224,83 +197,105 @@ public class AGMOResultModel {
         System.out.println("##################################");
         System.out.println("######## General Analysis ########");
 
-        TotalCalculation totalCalculation = new TotalCalculation();
-
-        totalCalculation.totalBest = totalBestSLenght;
-        totalCalculation.totalValueBetween75_100 = totalSLenghtValueBetween75_100;
-        totalCalculation.totalValueBetween50_75 = totalSLenghtValueBetween50_75;
-        totalCalculation.totalValueBetween25_50 = totalSLenghtValueBetween25_50;
-        totalCalculation.totalValueBetween0_25 = totalSLenghtValueBetween0_25;
-        printObjectiveFormatted("SLenght", totalCalculation, bestSLenght, worstSLenght, diffBetweenMaxAndMinSLenght);
-
-        totalCalculation.totalBest = totalBestLoadBalance;
-        totalCalculation.totalValueBetween75_100 = totalLoadBalanceValueBetween75_100;
-        totalCalculation.totalValueBetween50_75 = totalLoadBalanceValueBetween50_75;
-        totalCalculation.totalValueBetween25_50 = totalLoadBalanceValueBetween25_50;
-        totalCalculation.totalValueBetween0_25 = totalLoadBalanceValueBetween0_25;
-        printObjectiveFormatted("LoadBalance", totalCalculation, bestLoadBalance, worstLoadBalance, diffBetweenMaxAndMinLoadBalance);
-
-        totalCalculation.totalBest = totalBestFlowTime;
-        totalCalculation.totalValueBetween75_100 = totalFlowTimeValueBetween75_100;
-        totalCalculation.totalValueBetween50_75 = totalFlowTimeValueBetween50_75;
-        totalCalculation.totalValueBetween25_50 = totalFlowTimeValueBetween25_50;
-        totalCalculation.totalValueBetween0_25 = totalFlowTimeValueBetween0_25;
-        printObjectiveFormatted("FlowTime", totalCalculation, bestFlowTime, worstFlowTime, diffBetweenMaxAndMinFlowTime);
-
-        totalCalculation.totalBest = totalBestCommunicationCost;
-        totalCalculation.totalValueBetween75_100 = totalCommunicationCostValueBetween75_100;
-        totalCalculation.totalValueBetween50_75 = totalCommunicationCostValueBetween50_75;
-        totalCalculation.totalValueBetween25_50 = totalCommunicationCostValueBetween25_50;
-        totalCalculation.totalValueBetween0_25 = totalCommunicationCostValueBetween0_25;
-        printObjectiveFormatted("CommunicationCost", totalCalculation, bestCommunicationCost, worstCommunicationCost, diffBetweenMaxAndMinCommunicationCost);
-
-        totalCalculation.totalBest = totalBestWaitingTime;
-        totalCalculation.totalValueBetween75_100 = totalWaitingTimeValueBetween75_100;
-        totalCalculation.totalValueBetween50_75 = totalWaitingTimeValueBetween50_75;
-        totalCalculation.totalValueBetween25_50 = totalWaitingTimeValueBetween25_50;
-        totalCalculation.totalValueBetween0_25 = totalWaitingTimeValueBetween0_25;
-        printObjectiveFormatted("WaitingTime", totalCalculation, bestWaitingTime, worstWaitingTime, diffBetweenMaxAndMinWaitingTime);
+        printObjectiveFormatted("SLength", totalCalculationSLength, bestSLength, worstSLength, diffBetweenMaxAndMinSLength);
+        printObjectiveFormatted("LoadBalance", totalCalculationLoadBalance, bestLoadBalance, worstLoadBalance, diffBetweenMaxAndMinLoadBalance, Constants.NINE_DECIMAL_PLACES);
+        printObjectiveFormatted("FlowTime", totalCalculationFlowTime, bestFlowTime, worstFlowTime, diffBetweenMaxAndMinFlowTime);
+        printObjectiveFormatted("CommunicationCost", totalCalculationCommunicationCost, bestCommunicationCost, worstCommunicationCost, diffBetweenMaxAndMinCommunicationCost);
+        printObjectiveFormatted("WaitingTime", totalCalculationWaitingTime, bestWaitingTime, worstWaitingTime, diffBetweenMaxAndMinWaitingTime);
 
         bestResult.showResult();
     }
 
     private void printObjectiveFormatted(String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin) {
+        printObjectiveFormatted(objectiveName, totalCalculation, bestValue, worstValue, diffBetweenMaxAndMin, Constants.TWO_DECIMAL_PLACES);
+    }
+
+    private void printObjectiveFormatted(String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin, int decimalPlaces) {
         System.out.println("");
         System.out.println("## " + objectiveName + "##");
 
-        double percTotalBestObjective = Math.round((totalCalculation.totalBest * 100.0 / totalChromossomes) * 100.0) / 100.0;
+        double percTotalBestObjective = round((totalCalculation.totalBest * 100.0 / totalChromossomes), 2);
         System.out.println("Total Best " + objectiveName + " Founded: " + totalCalculation.totalBest + " -> " + percTotalBestObjective + "%");
         System.out.println("");
 
-        double percTotalValueBetween75_100 = Math.round((totalCalculation.totalValueBetween75_100 * 100.0 / totalChromossomes) * 100.0) / 100.0;
-        double percTotalValueBetween50_75 = Math.round((totalCalculation.totalValueBetween50_75 * 100.0 / totalChromossomes) * 100.0) / 100.0;
-        double percTotalValueBetween25_50 = Math.round((totalCalculation.totalValueBetween25_50 * 100.0 / totalChromossomes) * 100.0) / 100.0;
-        double percTotalValueBetween0_25 = Math.round((totalCalculation.totalValueBetween0_25 * 100.0 / totalChromossomes) * 100.0) / 100.0;
+        double percTotalValueBetween90_100 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween80_90 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween70_80 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween60_70 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween50_60 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween40_50 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween30_40 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween20_30 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween10_20 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) * 100.0 / totalChromossomes), 2);
+        double percTotalValueBetween0_10 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) * 100.0 / totalChromossomes), 2);
 
-        double bottomLimit75_100 = bestValue;
-        double topLimit75_100 = bestValue + diffBetweenMaxAndMin;
+        double bottomLimit90_100 = Math.round(bestValue * 100) / 100.0;
+        double topLimit90_100 = round(bestValue + diffBetweenMaxAndMin, decimalPlaces);
 
-        double bottomLimit50_75 = topLimit75_100;
-        double topLimit50_75 = bestValue + 2 * diffBetweenMaxAndMin;
+        double bottomLimit80_90 = topLimit90_100;
+        double topLimit80_90 = round(bestValue + 2 * diffBetweenMaxAndMin, decimalPlaces);
 
-        double bottomLimit25_50 = topLimit50_75;
-        double topLimit25_50 = bestValue + 3 * diffBetweenMaxAndMin;
+        double bottomLimit70_80 = topLimit80_90;
+        double topLimit70_80 = round(bestValue + 3 * diffBetweenMaxAndMin, decimalPlaces);
 
-        double bottomLimit0_25 = topLimit25_50;
-        double topLimit0_25 = bestValue + 4 * diffBetweenMaxAndMin;
+        double bottomLimit60_70 = topLimit70_80;
+        double topLimit60_70 = round(bestValue + 4 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit50_60 = topLimit60_70;
+        double topLimit50_60 = round(bestValue + 5 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit40_50 = topLimit50_60;
+        double topLimit40_50 = round(bestValue + 6 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit30_40 = topLimit40_50;
+        double topLimit30_40 = round(bestValue + 7 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit20_30 = topLimit30_40;
+        double topLimit20_30 = round(bestValue + 8 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit10_20 = topLimit20_30;
+        double topLimit10_20 = round(bestValue + 9 * diffBetweenMaxAndMin, decimalPlaces);
+
+        double bottomLimit0_10 = topLimit10_20;
+        double topLimit0_10 = round(bestValue + 10 * diffBetweenMaxAndMin, decimalPlaces);
 
         System.out.println(objectiveName + " Between Min and Max: [" + bestValue + ", " + worstValue + "]");
-        System.out.println("75-100 [" + bottomLimit75_100 + ", " + topLimit75_100 + "): " + totalCalculation.totalValueBetween75_100 + " -> " + percTotalValueBetween75_100 + "%");
-        System.out.println("50-75 [" + bottomLimit50_75 + ", " + topLimit50_75 + "): " + totalCalculation.totalValueBetween50_75 + " -> " + percTotalValueBetween50_75 + "%");
-        System.out.println("25-50 [" + bottomLimit25_50 + ", " + topLimit25_50 + "): " + totalCalculation.totalValueBetween25_50 + " -> " + percTotalValueBetween25_50 + "%");
-        System.out.println("0-25 [" + bottomLimit0_25 + ", " + topLimit0_25 + "]: " + totalCalculation.totalValueBetween0_25 + " -> " + percTotalValueBetween0_25 + "%");
+        System.out.println("90-100 [" + bottomLimit90_100 + ", " + topLimit90_100 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) + " -> " + percTotalValueBetween90_100 + "%");
+        System.out.println("80-90 [" + bottomLimit80_90 + ", " + topLimit80_90 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) + " -> " + percTotalValueBetween80_90 + "%");
+        System.out.println("70-80 [" + bottomLimit70_80 + ", " + topLimit70_80 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80) + " -> " + percTotalValueBetween70_80 + "%");
+        System.out.println("60-70 [" + bottomLimit60_70 + ", " + topLimit60_70 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70) + " -> " + percTotalValueBetween60_70 + "%");
+        System.out.println("50-60 [" + bottomLimit50_60 + ", " + topLimit50_60 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60) + " -> " + percTotalValueBetween50_60 + "%");
+        System.out.println("40-50 [" + bottomLimit40_50 + ", " + topLimit40_50 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50) + " -> " + percTotalValueBetween40_50 + "%");
+        System.out.println("30-40 [" + bottomLimit30_40 + ", " + topLimit30_40 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40) + " -> " + percTotalValueBetween30_40 + "%");
+        System.out.println("20-30 [" + bottomLimit20_30 + ", " + topLimit20_30 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) + " -> " + percTotalValueBetween20_30 + "%");
+        System.out.println("10-20 [" + bottomLimit10_20 + ", " + topLimit10_20 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) + " -> " + percTotalValueBetween10_20 + "%");
+        System.out.println("0-10 [" + bottomLimit0_10 + ", " + topLimit0_10 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) + " -> " + percTotalValueBetween0_10 + "%");
+    }
+
+    private double round(double value, int decimalPlaces) {
+        return Math.round(value * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
     }
 
     class TotalCalculation {
         int totalBest;
+        Map<Integer, Integer> mapTotalValueBetweenBottonAndTopLimit = new HashMap<>();
+
         int totalValueBetween75_100;
         int totalValueBetween50_75;
         int totalValueBetween25_50;
         int totalValueBetween0_25;
+
+        TotalCalculation() {
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_90_100, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_80_90, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_70_80, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_60_70, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_50_60, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_40_50, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_30_40, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_20_30, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_10_20, Constants.DEFAULT_RANGE_VALUE);
+            mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_0_10, Constants.DEFAULT_RANGE_VALUE);
+        }
     }
 }

@@ -22,10 +22,10 @@ public class GeneratorDifferentChromosome {
 	private List<Chromosome> chromosomeList = new ArrayList<>();
 	private List<Chromosome> repeatedChromosomesList = new ArrayList<>();
 
-	public GeneratorDifferentChromosome(Random generator, Configuration config, Graph graph) {
-		this.generator = generator;
+	public GeneratorDifferentChromosome(Configuration config, Graph graph, Random generator) {
 		this.config = config;
 		this.graph = graph;
+		this.generator = generator;
 	}
 
 	public void execute() throws Exception {

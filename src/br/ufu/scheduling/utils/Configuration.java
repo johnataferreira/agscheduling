@@ -12,22 +12,11 @@ import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.enums.MetricType;
 import br.ufu.scheduling.enums.MutationType;
 import br.ufu.scheduling.enums.SelectionType;
+import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.file.normalization.with.cost.LoaderNormalizationWithCost;
 import br.ufu.scheduling.file.normalization.without.cost.LoaderNormalizationWithoutCost;
 
 public class Configuration {
-	public static final String USE_DEFAULT_GRAPH = "-1";
-	public static final int    MAXIMIZATION_PROBLEM = 0;
-	public final static String READ_ME_FILE_NAME = "README.conf";
-	public final static String NORMALIZATION_BASE_FILE_NAME = "DAGBase-normalization.txt";
-	public final static String SUFIX_NORMLIZATION_FILE_NAME = "-normalization";
-	public final static String PACKAGE_BASE = "br" + File.separator + "ufu" + File.separator + "scheduling" + File.separator + "file";
-	public final static String PACKAGE_NORMALIZATION_WITH_COST =  PACKAGE_BASE + File.separator + "normalization" + File.separator + "with" + File.separator + "cost" + File.separator;
-	public final static String PACKAGE_NORMALIZATION_WITHOUT_COST = PACKAGE_BASE + File.separator + "normalization" + File.separator + "without" + File.separator + "cost" + File.separator;
-    public final static String PACKAGE_DAG_WITH_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "with" + File.separator + "cost" + File.separator;
-    public final static String PACKAGE_DAG_WITHOUT_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "without" + File.separator + "cost" + File.separator;
-    public final static String PACKAGE_CSV = PACKAGE_BASE + File.separator + "csv" + File.separator;
-
 	private Integer initialPopulation;
 	private Double mutationRate;
 	private Double crossoverRate;
@@ -64,7 +53,7 @@ public class Configuration {
 	private Integer totalGenerationsToResetTableScore;
 	private Boolean printComparisonNonDominatedChromosomes;
 	private Integer totalGenerationsToApplyMutation;
-	private Boolean useWeightToCalculateAverageFunction;
+	private SortFunctionType sortFunctionType;
 	private Boolean calculateMaximusAndMinimusForNormalization;
 	private Integer objective1;
 	private Integer objective2;
@@ -110,6 +99,7 @@ public class Configuration {
 	private int mutation;
 	private int selection;
 	private int algorithm;
+	private int sortFunction;
 
 	public Configuration() throws Exception {
 		readConfiguration();
@@ -251,8 +241,8 @@ public class Configuration {
 		return totalGenerationsToApplyMutation;
 	}
 
-	public Boolean isUseWeightToCalculateAverageFunction() {
-		return useWeightToCalculateAverageFunction;
+	public SortFunctionType getSortFunctionType() {
+		return sortFunctionType;
 	}
 
 	public Boolean isCalculateMaximusAndMinimusForNormalization() {
@@ -632,9 +622,29 @@ public class Configuration {
 		this.totalGenerationsToApplyMutation = totalGenerationsToApplyMutation;
 	}
 
-	private void setUseWeightToCalculateAverageFunction(Boolean useWeightToCalculateAverageFunction) {
-		this.useWeightToCalculateAverageFunction = useWeightToCalculateAverageFunction;
-	}
+    private void setSortFunction(Integer sortFunction) {
+        this.sortFunction = sortFunction;
+        setSortFunctionType(sortFunction);
+    }
+
+    private void setSortFunctionType(Integer sortFunction) {
+        switch (sortFunction) {
+        case 0:
+            sortFunctionType = SortFunctionType.WEIGHT;
+            break;
+
+        case 1:
+            sortFunctionType = SortFunctionType.SINGLE_AVERAGE;
+            break;
+
+        case 2:
+            sortFunctionType = SortFunctionType.HARMONIC_AVERAGE;
+            break;
+
+        default:
+            throw new IllegalArgumentException("Invalid value of sortFunction: " + sortFunction + ". Valid values: " + Arrays.asList(0, 1, 2).toString());   
+        }        
+    }
 
 	private void setCalculateMaximusAndMinimusForNormalization(Boolean calculateMaximusAndMinimusForNormalization) {
 		this.calculateMaximusAndMinimusForNormalization = calculateMaximusAndMinimusForNormalization;
@@ -783,7 +793,7 @@ public class Configuration {
 	}
 
 	private void readConfiguration() throws Exception {
-		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(READ_ME_FILE_NAME)))) {
+		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(Constants.READ_ME_FILE_NAME)))) {
 			String line = null;
 
 			while ((line = buffer.readLine()) != null) {
@@ -797,10 +807,10 @@ public class Configuration {
 				method.invoke(this, getConvertedValue(vector[2], vector[1]));
 			}
 
-			if (getAlgorithmType() != AlgorithmType.SINGLE_OBJECTIVE && !isUseWeightToCalculateAverageFunction()) {
+			if (getAlgorithmType() != AlgorithmType.SINGLE_OBJECTIVE && getSortFunctionType() != SortFunctionType.WEIGHT) {
 				readConfigurationForDataNormalization();
 				
-				if (getMaximizationConstant() != Configuration.MAXIMIZATION_PROBLEM) {
+				if (getMaximizationConstant() != Constants.MAXIMIZATION_PROBLEM) {
 					invertMaximumAndMinimumObjectiveValues();
 				}
 			}
@@ -814,21 +824,21 @@ public class Configuration {
 	private void readConfigurationForDataNormalization() throws Exception {
 		String fileName;
 
-		if (USE_DEFAULT_GRAPH.equals(getTaskGraphFileName())) {
-			fileName = NORMALIZATION_BASE_FILE_NAME;
+		if (Constants.USE_DEFAULT_GRAPH.equals(getTaskGraphFileName())) {
+			fileName = Constants.NORMALIZATION_BASE_FILE_NAME;
 		} else {
-			fileName = getTaskGraphFileName().split(".stg")[0] + SUFIX_NORMLIZATION_FILE_NAME + ".txt";
+			fileName = getTaskGraphFileName().split(".stg")[0] + Constants.SUFIX_NORMLIZATION_FILE_NAME + ".txt";
 		} 
 
 		Class cls = null;
 		String packagePath = null;
 
-		if (USE_DEFAULT_GRAPH.equals(getTaskGraphFileName()) || isGraphWithCommunicationCost()) {
+		if (Constants.USE_DEFAULT_GRAPH.equals(getTaskGraphFileName()) || isGraphWithCommunicationCost()) {
 		    cls = LoaderNormalizationWithCost.class;
-		    packagePath = PACKAGE_NORMALIZATION_WITH_COST;
+		    packagePath = Constants.PACKAGE_NORMALIZATION_WITH_COST;
 		} else {
 		    cls = LoaderNormalizationWithoutCost.class;
-		    packagePath = PACKAGE_NORMALIZATION_WITHOUT_COST;
+		    packagePath = Constants.PACKAGE_NORMALIZATION_WITHOUT_COST;
 		}
 
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(cls.getClassLoader().getResourceAsStream(packagePath + fileName)))) {
@@ -916,7 +926,7 @@ public class Configuration {
 	}
 
 	public double getTransformedObjectiveValue(double objectiveValue) {
-		if (getMaximizationConstant() == Configuration.MAXIMIZATION_PROBLEM) {
+		if (getMaximizationConstant() == Constants.MAXIMIZATION_PROBLEM) {
 			return objectiveValue;
 		}
 

@@ -9,13 +9,12 @@ import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.Graph;
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 import br.ufu.scheduling.utils.Crossover;
 import br.ufu.scheduling.utils.Printer;
 
 public class AEMMT {
-	public static final int DOUBLE_TOURNAMENT= 2;
-
-	private Random generator = new Random();
+	private Random generator;
 	private Configuration config;
 	private Graph graph;
 
@@ -31,13 +30,10 @@ public class AEMMT {
 	private int generationAccumulatedForResetTableScore;
 	private int generationAccumulatedForApplyMutation;
 
-	public AEMMT() {
-		//For tests
-	}
-
-	public AEMMT(Configuration config, Graph graph) throws Exception {
+	public AEMMT(Configuration config, Graph graph, Random generator) throws Exception {
 		this.config = config;
 		this.graph = graph;
+		this.generator = generator;
 
 		createTables();
 
@@ -379,7 +375,7 @@ public class AEMMT {
 	private Table raffleTableByDoubleTournament() {
 		Table table = null;
 
-		for (int tour = 0; tour < DOUBLE_TOURNAMENT; tour++) {
+		for (int tour = 0; tour < Constants.DOUBLE_TOURNAMENT; tour++) {
 			int raffleIndex = raffleIndex(tables.size());
 
 			if (table == null || table.getScore() > tables.get(raffleIndex).getScore()) { 
@@ -462,18 +458,5 @@ public class AEMMT {
 		} else {
 			Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime);
 		}
-	}
-
-	public static void main(String args[]) throws Exception {
-		AEMMT a = new AEMMT();
-		//System.out.println(a.simpleCombination(2, 1) + a.simpleCombination(2, 2));
-		//System.out.println(a.simpleCombination(3, 1) + a.simpleCombination(3, 2) + a.simpleCombination(3, 3));
-		//System.out.println(a.simpleCombination(4, 1) + a.simpleCombination(4, 2) + a.simpleCombination(4, 3) + a.simpleCombination(4, 4));
-		//System.out.println(a.simpleCombination(5, 1) + a.simpleCombination(5, 2) + a.simpleCombination(5, 3) + a.simpleCombination(5, 4) + a.simpleCombination(5, 5));
-		System.out.println(a.simpleCombination(5, 1));
-		System.out.println(a.simpleCombination(5, 2));
-		System.out.println(a.simpleCombination(5, 3));
-		System.out.println(a.simpleCombination(5, 4));
-		System.out.println(a.simpleCombination(5, 5));
 	}
 }

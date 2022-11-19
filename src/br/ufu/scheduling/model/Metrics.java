@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.ufu.scheduling.ag.AGScheduling;
 import br.ufu.scheduling.enums.MetricType;
 import br.ufu.scheduling.exceptions.BetterChromosomeFoundException;
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 import br.ufu.scheduling.utils.Printer;
 
 public class Metrics implements Cloneable {
@@ -27,7 +27,7 @@ public class Metrics implements Cloneable {
 	private double fitnessForWaitingTime;
 	private double fitnessForSLengthPlusWaitingTime;
 
-	private double aemmtValue;
+	private double valueForSort;
 
 	public Metrics() {
 	}
@@ -61,7 +61,7 @@ public class Metrics implements Cloneable {
 	}
 
 	public int getFitnessAjusted() {
-		return Long.valueOf(Math.round(Math.abs(fitness) * AGScheduling.ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE)).intValue();
+		return Long.valueOf(Math.round(Math.abs(fitness) * Constants.ADJUST_VALUE_FOR_FITNESS_IN_ROULLETE)).intValue();
 	}
 
 	public double getFitnessForSLength() {
@@ -88,12 +88,12 @@ public class Metrics implements Cloneable {
 	    return fitnessForSLengthPlusWaitingTime;
 	}
 
-	public double getAemmtValue() {
-		return aemmtValue;
+	public double getValueForSort() {
+		return valueForSort;
 	}
 
-	public void setAemmtValue(double aemmtValue) {
-		this.aemmtValue = aemmtValue;
+	public void setValueForSort(double valueForSort) {
+		this.valueForSort = valueForSort;
 	}
 
 	public void calculateMetrics(Graph graph, int[] mapping, int[] scheduling, Configuration config) {
@@ -174,7 +174,7 @@ public class Metrics implements Cloneable {
 	private void calculateSLenght(int[] finalTimeTask, Configuration config) {
 		sLength = maxValueFromVector(finalTimeTask);
 		
-		if (config.isConvergenceForTheBestSolution() && sLength < AGScheduling.BEST_SLENGTH) {
+		if (config.isConvergenceForTheBestSolution() && sLength < Constants.BEST_SLENGTH) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLength: " + sLength + ".");
 		}
 	}
@@ -197,7 +197,7 @@ public class Metrics implements Cloneable {
 		// Rounding off above double number to 9 precision
 		loadBalance = Math.round(loadBalance * 1000000000) / 1000000000.0;
 
-		if (config.isConvergenceForTheBestSolution() && loadBalance < AGScheduling.BEST_LOAD_BALANCE) {
+		if (config.isConvergenceForTheBestSolution() && loadBalance < Constants.BEST_LOAD_BALANCE) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. LoadBalance: " + loadBalance + ".");
 		}
 	}
@@ -210,13 +210,13 @@ public class Metrics implements Cloneable {
 					.mapToInt(Integer::intValue)
 					.sum();
 
-		if (config.isConvergenceForTheBestSolution() && flowTime < AGScheduling.BEST_FLOW_TIME) {
+		if (config.isConvergenceForTheBestSolution() && flowTime < Constants.BEST_FLOW_TIME) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. FlowTime: " + flowTime + ".");
 		}		
 	}
 
 	private void validateCommunicationCost(Configuration config) {
-		if (config.isConvergenceForTheBestSolution() && communicationCost < AGScheduling.BEST_COMMUNICATION_COST) {
+		if (config.isConvergenceForTheBestSolution() && communicationCost < Constants.BEST_COMMUNICATION_COST) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. CommunicationCost: " + communicationCost + ".");
 		}
 	}
@@ -244,7 +244,7 @@ public class Metrics implements Cloneable {
 			}
 		}
 
-		if (config.isConvergenceForTheBestSolution() && waitingTime < AGScheduling.BEST_WAITING_TIME) {
+		if (config.isConvergenceForTheBestSolution() && waitingTime < Constants.BEST_WAITING_TIME) {
 			throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. WaitingTime: " + waitingTime + ".");
 		}
 	}
@@ -252,7 +252,7 @@ public class Metrics implements Cloneable {
     private void calculateSLenghtPlusWaitingTime(Configuration config) {
         sLengthPlusWaitingTime = sLength + waitingTime;
 
-        if (config.isConvergenceForTheBestSolution() && sLengthPlusWaitingTime < AGScheduling.BEST_SLENGTH_PLUS_WAITING_TIME) {
+        if (config.isConvergenceForTheBestSolution() && sLengthPlusWaitingTime < Constants.BEST_SLENGTH_PLUS_WAITING_TIME) {
             throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLengthPlusWaitingTime: " + sLengthPlusWaitingTime + ".");
         }
     }
@@ -341,7 +341,7 @@ public class Metrics implements Cloneable {
 		clone.fitnessForCommunicationCost = this.fitnessForCommunicationCost;
 		clone.fitnessForWaitingTime = this.fitnessForWaitingTime;
 		clone.fitnessForSLengthPlusWaitingTime = this.fitnessForSLengthPlusWaitingTime;
-		clone.aemmtValue = this.aemmtValue;
+		clone.valueForSort = this.valueForSort;
 		return clone;
 	}
 

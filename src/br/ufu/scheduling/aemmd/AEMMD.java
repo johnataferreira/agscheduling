@@ -9,13 +9,12 @@ import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.Graph;
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 import br.ufu.scheduling.utils.Crossover;
 import br.ufu.scheduling.utils.Printer;
 
 public class AEMMD {
-	public static final int DOUBLE_TOURNAMENT= 2;
-
-	private Random generator = new Random();
+	private Random generator;
 	private Configuration config;
 	private Graph graph;
 
@@ -29,17 +28,13 @@ public class AEMMD {
 	private int generationAccumulated;
 	private int generationAccumulatedForApplyMutation;
 
-	public AEMMD() {
-		//For tests
-	}
-
-	public AEMMD(Configuration config, Graph graph) throws Exception {
+	public AEMMD(Configuration config, Graph graph, Random generator) throws Exception {
 		this.config = config;
 		this.graph = graph;
+		this.generator = generator;
 
 		createTables();
 
-		//TODO: no AMMED não existe tamanho das tabelas, logo verificar o tamanho da população inicial
 		initialPopulation = tables.size() * config.getSizeOfTables();
 	}
 
@@ -204,7 +199,7 @@ public class AEMMD {
 	private Table raffleTableByDoubleTournament() {
 		Table table = null;
 
-		for (int tour = 0; tour < DOUBLE_TOURNAMENT; tour++) {
+		for (int tour = 0; tour < Constants.DOUBLE_TOURNAMENT; tour++) {
 			int raffleIndex = raffleIndex(tables.size());
 
 			if (table == null || table.getScore() > tables.get(raffleIndex).getScore()) { 
@@ -262,18 +257,5 @@ public class AEMMD {
 		} else {
 			Printer.printFinalResultForAEMMD(config, tables.get(tables.size() - 1), initialTime);
 		}
-	}
-
-	public static void main(String args[]) throws Exception {
-		AEMMD a = new AEMMD();
-		//System.out.println(a.simpleCombination(2, 1) + a.simpleCombination(2, 2));
-		//System.out.println(a.simpleCombination(3, 1) + a.simpleCombination(3, 2) + a.simpleCombination(3, 3));
-		//System.out.println(a.simpleCombination(4, 1) + a.simpleCombination(4, 2) + a.simpleCombination(4, 3) + a.simpleCombination(4, 4));
-		//System.out.println(a.simpleCombination(5, 1) + a.simpleCombination(5, 2) + a.simpleCombination(5, 3) + a.simpleCombination(5, 4) + a.simpleCombination(5, 5));
-		System.out.println(a.simpleCombination(5, 1));
-		System.out.println(a.simpleCombination(5, 2));
-		System.out.println(a.simpleCombination(5, 3));
-		System.out.println(a.simpleCombination(5, 4));
-		System.out.println(a.simpleCombination(5, 5));
 	}
 }

@@ -24,7 +24,7 @@ public class Crossover {
 	}
 
 	private static CrossoverType solveCrossoverType(Random generator) {
-		return generator.nextDouble() < AGScheduling.RANDOM_NUMBER_FIXED_IN_ARTICLE ? CrossoverType.CROSSOVER_MAP : CrossoverType.ORDER_CROSSOVER;
+		return generator.nextDouble() < Constants.RANDOM_NUMBER_FIXED_IN_ARTICLE ? CrossoverType.CROSSOVER_MAP : CrossoverType.ORDER_CROSSOVER;
 	}
 
 	private static List<Chromosome> getCrossoverMap(Chromosome parent1, Chromosome parent2, Graph graph, Configuration config) {

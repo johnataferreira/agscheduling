@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufu.scheduling.utils.Configuration;
+import br.ufu.scheduling.utils.Constants;
 
 public class BestResultByObjective {
     private double bestSlength = Double.MAX_VALUE;
@@ -111,9 +112,9 @@ public class BestResultByObjective {
             System.out.println("Worst WaitingTime: " + worstWaitingTime);
             System.out.println("Worst SLengthPlusWaitingTime: " + worstSLengthPlusWaitingTime);
             System.out.println("");
-            System.out.println("Graph: " + (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
+            System.out.println("Graph: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
             System.out.println("Processors: " + config.getTotalProcessors());
-            System.out.println("With CommunicationCost: " + (Configuration.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()));
+            System.out.println("With CommunicationCost: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()));
         }        
     }    
 }
