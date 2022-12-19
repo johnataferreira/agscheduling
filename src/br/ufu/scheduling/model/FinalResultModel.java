@@ -11,7 +11,6 @@ public class FinalResultModel {
 	private double totalFlowTime;
 	private double totalCommunicationCost;
 	private double totalWaitingTime;
-	private double totalSLengthPlusWaitingTime;
 	private double totalFitness;
 	private int totalNumberOfChromosomes;
 
@@ -44,10 +43,6 @@ public class FinalResultModel {
 
 	public double getTotalWaitingTime() {
 		return totalWaitingTime;
-	}
-
-	public double getTotalSLengthPlusWaitingTime() {
-	    return totalSLengthPlusWaitingTime;
 	}
 
 	public double getTotalFitness() {
@@ -86,10 +81,6 @@ public class FinalResultModel {
 		this.totalWaitingTime = totalWaitingTime;
 	}
 
-	public void setTotalSLengthPlusWaitingTime(double totalSLengthPlusWaitingTime) {
-	    this.totalSLengthPlusWaitingTime = totalSLengthPlusWaitingTime;
-	}
-
 	public void setTotalFitness(double totalFitness) {
 		this.totalFitness = totalFitness;
 	}
@@ -104,7 +95,7 @@ public class FinalResultModel {
 		System.out.println("## Best Chromosome ##");
 
 		if (bestChromosomeFound != null) {
-			bestChromosomeFound.printChromosome();
+			bestChromosomeFound.printChromosome(config.getAlgorithmType());
 		} else {
 			System.out.println("[ There was no convergence for the best chromosome! ]");
 		}

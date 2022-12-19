@@ -3,15 +3,12 @@ package br.ufu.scheduling.utils;
 import java.util.List;
 
 import br.ufu.scheduling.agmo.Table;
+import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.model.AGMOResultModel;
 import br.ufu.scheduling.model.Chromosome;
 import br.ufu.scheduling.model.FinalResultModel;
 
 public class Printer {
-	public static final String LINE_BREAK = "\n";
-	public static final String ALGORITHM_AEMMT = "AEMMT";
-	public static final String ALGORITHM_AEMMD = "AEMMD";
-
 	public static void printExecutionOrder(int[] startTimeTask, int[] finalTimeTask, int[] readinessTime, int task, Integer totalProcessors) {
 		StringBuilder sbExecutionOrder = new StringBuilder();
 
@@ -34,12 +31,12 @@ public class Printer {
 		System.out.println(sbExecutionOrder);
 	}
 
-	public static void printChromosome(Chromosome chromosome) {
-		printChromosome(chromosome, true);
+	public static void printChromosome(Chromosome chromosome, AlgorithmType algorithmType) {
+		printChromosome(chromosome, true, algorithmType);
 	}
 
-	public static void printChromosome(Chromosome chromosome, boolean printFitness) {
-		System.out.print(getObjectivesFromChromosomeFormatted(chromosome, printFitness));
+	public static void printChromosome(Chromosome chromosome, boolean printFitness, AlgorithmType algorithmType) {
+		System.out.print(getObjectivesFromChromosomeFormatted(chromosome, printFitness, algorithmType));
 	}
 
 	public static void printChromosomeVectors(int[] mapping, int[] scheduling) {
@@ -85,22 +82,37 @@ public class Printer {
 		append(builder, "Average FlowTime: " + (result.getTotalFlowTime() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average CommunicationCost: " + (result.getTotalCommunicationCost() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average WaitingTime: " + (result.getTotalWaitingTime() / result.getTotalNumberOfChromosomes()));
-		append(builder, "Average S_Length_Plus_Waiting_Time: " + (result.getTotalSLengthPlusWaitingTime() / result.getTotalNumberOfChromosomes()));
 		append(builder, "Average Fitness: " + (result.getTotalFitness() / result.getTotalNumberOfChromosomes()));
 
 		System.out.println(builder.toString());
 	}
 
 	private static void append(StringBuilder builder, String message) {
-		builder.append(message + LINE_BREAK);
+		builder.append(message + Constants.LINE_BREAK);
 	}
 
+   public static void printFinalResultForNSGA2(Configuration config, List<Chromosome> chromosomeList, long initialTime) {
+       print(getHeadFinalResult(Constants.ALGORITHM_NSGA2));
+
+       AGMOResultModel resultModel = new AGMOResultModel(config, chromosomeList.size());
+
+       for (int i = 0; i < chromosomeList.size(); i++) {
+           print("## Chromosome " + (i + 1) + " ##");
+           print(getObjectivesFromChromosomeFormatted(chromosomeList.get(i), false, AlgorithmType.NSGAII));
+
+           resultModel.processChromosome(chromosomeList.get(i));
+       }
+
+       print(getGeneralData(config, chromosomeList.size(), initialTime));
+       resultModel.showResult();
+    }
+
 	public static void printFinalResultForAEMMT(Configuration config, Table resultTable, long initialTime) {
-	    printFinalResult(config, resultTable, initialTime, ALGORITHM_AEMMT);
+	    printFinalResult(config, resultTable, initialTime, Constants.ALGORITHM_AEMMT);
 	}
 
     public static void printFinalResultForAEMMD(Configuration config, Table resultTable, long initialTime) {
-        printFinalResult(config, resultTable, initialTime, ALGORITHM_AEMMD);
+        printFinalResult(config, resultTable, initialTime, Constants.ALGORITHM_AEMMD);
     }
 
     private static void printFinalResult(Configuration config, Table resultTable, long initialTime, String algorithmName) {
@@ -110,12 +122,12 @@ public class Printer {
 
         for (int i = 0; i < resultTable.getTotalChromosomes(); i++) {
             print("## Chromosome " + (i + 1) + " ##");
-            print(getObjectivesFromChromosomeFormatted(resultTable.getChromosomeFromIndex(i), false));
+            print(getObjectivesFromChromosomeFormatted(resultTable.getChromosomeFromIndex(i), false, AlgorithmType.AEMMT));
 
             resultModel.processChromosome(resultTable.getChromosomeFromIndex(i));
         }
 
-        print(getGeneralData(config, resultTable, initialTime));
+        print(getGeneralData(config, resultTable.getTotalChromosomes(), initialTime));
         resultModel.showResult();
     }
 
@@ -138,7 +150,7 @@ public class Printer {
         return builder.toString();
     }
 
-	private static String getObjectivesFromChromosomeFormatted(Chromosome chromosome, boolean showFitness) {
+	private static String getObjectivesFromChromosomeFormatted(Chromosome chromosome, boolean showFitness, AlgorithmType algorithmType) {
 		StringBuilder builder = new StringBuilder();
 
 		append(builder, "Mapping (Processors) : " + getFormattedVector(chromosome.getMapping()));
@@ -148,8 +160,17 @@ public class Printer {
 		append(builder, "FlowTime: " + chromosome.getFlowTime());
 		append(builder, "CommunicationCost: " + chromosome.getCommunicationCost());
 		append(builder, "WaitingTime: " + chromosome.getWaitingTime());
-		append(builder, "SLength_Plus_WaitingTime: " + chromosome.getSLengthPlusWaitingTime());
-		append(builder, "Value For Sort (normalization): " + chromosome.getValueForSort());
+		append(builder, "SingleAverage: " + chromosome.getSingleAverage());
+		append(builder, "HarmonicAverage: " + chromosome.getHarmonicAvegare());
+
+        if (AlgorithmType.AEMMT == algorithmType) {
+            append(builder, "Value For Sort (normalization): " + chromosome.getValueForSort());
+        }
+
+        if (AlgorithmType.NSGAII == algorithmType) {
+            append(builder, "Rank: " + chromosome.getRank());
+            append(builder, "CrowndingDistance: " + chromosome.getCrowdingDistance());
+        }
 
 		if (showFitness) {
 			append(builder, "Fitness : " + chromosome.getFitness());
@@ -158,25 +179,41 @@ public class Printer {
 		return builder.toString();
 	}
 
-	private static String getGeneralData(Configuration config, Table tableNonDominated, long initialTime) {
+	private static String getGeneralData(Configuration config, int totalChromosomes, long initialTime) {
 		StringBuilder builder = new StringBuilder();
 
         append(builder, "##################################");
         append(builder, "");
-		append(builder, "Total Chromosomes Non-Dominated: " + tableNonDominated.getTotalChromosomes() + ".");
+		append(builder, "Total Chromosomes Non-Dominated: " + totalChromosomes + ".");
 		append(builder, "Runtime for " + config.getTotalGenerations() + " generations: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.\n");
 
 		return builder.toString();
 	}
 
+    public static void printFinalResultForNSGA2WithComparedToNonDominated(Configuration config, List<Chromosome> chromosomeList, long initialTime) {
+        print(getHeadFinalResult(Constants.ALGORITHM_NSGA2));
+
+        for (int chromosomeAIndex = 0; chromosomeAIndex < chromosomeList.size(); chromosomeAIndex++) {
+            Chromosome chromosomeA = chromosomeList.get(chromosomeAIndex);
+            print(getDataFromChromosomeA(chromosomeAIndex, chromosomeA, AlgorithmType.NSGAII));
+
+            for (int chromosomeBIndex = 0; chromosomeBIndex < chromosomeList.size(); chromosomeBIndex++) {
+                Chromosome chromosomeB = chromosomeList.get(chromosomeBIndex);
+                print(getDataFromChromosomeB(config, chromosomeA, chromosomeBIndex, chromosomeB, AlgorithmType.NSGAII));
+            }
+        }
+
+        print(getGeneralData(config, chromosomeList.size(), initialTime));
+    }
+    
 	public static void printFinalResultForAEMMTWithComparedToNonDominated(Configuration config, List<Table> tables, long initialTime) {
-		print(getHeadFinalResult(ALGORITHM_AEMMT));
+		print(getHeadFinalResult(Constants.ALGORITHM_AEMMT));
 
 		Table nonDominatedTable = tables.get(tables.size() - 1);
 
 		for (int chromosomeNonDominatedIndex = 0; chromosomeNonDominatedIndex < nonDominatedTable.getTotalChromosomes(); chromosomeNonDominatedIndex++) {
 		    Chromosome chromosomeA = nonDominatedTable.getChromosomeFromIndex(chromosomeNonDominatedIndex);
-		    print(getDataFromChromosomeA(chromosomeNonDominatedIndex, chromosomeA));
+		    print(getDataFromChromosomeA(chromosomeNonDominatedIndex, chromosomeA, AlgorithmType.AEMMT));
 
 			int totalCromossomesAnalised = 0;
 			for (int tableIndex = 0; tableIndex < tables.size(); tableIndex++) {
@@ -184,56 +221,53 @@ public class Printer {
 
 				for (int chromosomeIndex = 0; chromosomeIndex < table.getTotalChromosomes(); chromosomeIndex++) {
 					Chromosome chromosomeB = table.getChromosomeFromIndex(chromosomeIndex);
-					print(getDataFromChromosomeB(config, chromosomeA, totalCromossomesAnalised, chromosomeB));
+					print(getDataFromChromosomeB(config, chromosomeA, totalCromossomesAnalised, chromosomeB, AlgorithmType.AEMMT));
 
 					totalCromossomesAnalised++;
 				}
 			}
 		}
 
-		print(getGeneralData(config, nonDominatedTable, initialTime));
+		print(getGeneralData(config, nonDominatedTable.getTotalChromosomes(), initialTime));
 	}
 
     public static void printFinalResultForAEMMDWithComparedToNonDominated(Configuration config, Table resultTable, long initialTime) {
-        print(getHeadFinalResult(ALGORITHM_AEMMD));
+        print(getHeadFinalResult(Constants.ALGORITHM_AEMMD));
 
         for (int chromosomeNonDominatedIndex = 0; chromosomeNonDominatedIndex < resultTable.getTotalChromosomes(); chromosomeNonDominatedIndex++) {
             Chromosome chromosomeA = resultTable.getChromosomeFromIndex(chromosomeNonDominatedIndex);
-            print(getDataFromChromosomeA(chromosomeNonDominatedIndex, chromosomeA));
+            print(getDataFromChromosomeA(chromosomeNonDominatedIndex, chromosomeA, AlgorithmType.AEMMD));
 
-            int totalCromossomesAnalised = 0;
             for (int chromosomeIndex = 0; chromosomeIndex < resultTable.getTotalChromosomes(); chromosomeIndex++) {
                 Chromosome chromosomeB = resultTable.getChromosomeFromIndex(chromosomeIndex);
-                print(getDataFromChromosomeB(config, chromosomeA, totalCromossomesAnalised, chromosomeB));
-
-                totalCromossomesAnalised++;
+                print(getDataFromChromosomeB(config, chromosomeA, chromosomeIndex, chromosomeB, AlgorithmType.AEMMD));
             }
         }
 
-        print(getGeneralData(config, resultTable, initialTime));
+        print(getGeneralData(config, resultTable.getTotalChromosomes(), initialTime));
     }
 
-    private static String getDataFromChromosomeA(int chromosomeNonDominatedIndex, Chromosome chromosomeA) {
+    private static String getDataFromChromosomeA(int chromosomeNonDominatedIndex, Chromosome chromosomeA, AlgorithmType algorithmType) {
         StringBuilder builder = new StringBuilder();
 
         append(builder, "##################################");
         append(builder, "Chromosome A: - " + (chromosomeNonDominatedIndex + 1));
         append(builder, "");
 
-        append(builder, getObjectivesFromChromosomeFormatted(chromosomeA, false));
+        append(builder, getObjectivesFromChromosomeFormatted(chromosomeA, false, algorithmType));
         append(builder, "");
 
         return builder.toString();
     }
 
-    private static String getDataFromChromosomeB(Configuration config, Chromosome chromosomeA, int totalCromossomesAnalised, Chromosome chromosomeB) {
+    private static String getDataFromChromosomeB(Configuration config, Chromosome chromosomeA, int totalCromossomesAnalised, Chromosome chromosomeB, AlgorithmType algorithmType) {
         StringBuilder builder = new StringBuilder();
 
         append(builder, "----------------------------------");
         append(builder, "Chromosome B: - " + (totalCromossomesAnalised + 1));
         append(builder, "");
 
-        append(builder, getObjectivesFromChromosomeFormatted(chromosomeB, false));
+        append(builder, getObjectivesFromChromosomeFormatted(chromosomeB, false, algorithmType));
         append(builder, "");
 
         append(builder, "SLength : ");

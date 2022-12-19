@@ -41,7 +41,6 @@ public class AGScheduling {
 	private double totalFlowTimeOfBestChromosomes;
 	private double totalCommunicationCostOfBestChromosomes;
 	private double totalWaitingTimeOfBestChromosomes;
-	private double totalSLengthPlusWaitingTime;
 	private double totalFitnessOfBestChromosomes;
 	private int totalNumberOfChromosomes;
 
@@ -499,7 +498,7 @@ public class AGScheduling {
 
 		if (config.isPrintBestChromosomeOfGeneration()) {
 			System.out.println("Best Chromosome of Generation: ");
-			bestChromosomeOfGeneration.printChromosome();
+			bestChromosomeOfGeneration.printChromosome(config.getAlgorithmType());
 		}
 
 		updateBestChromosome(bestChromosomeOfGeneration);
@@ -539,12 +538,6 @@ public class AGScheduling {
 				}
 				break;
 
-            case MAKESPAN_PLUS_WAITING_TIME:
-                if (Constants.BEST_SLENGTH_PLUS_WAITING_TIME < bestChromosome.getSLengthPlusWaitingTime()) {
-                    return false;
-                }
-                break;
-
 			default:
 				throw new IllegalArgumentException("Metric type not implemented.");
 			}
@@ -567,7 +560,6 @@ public class AGScheduling {
 		totalFlowTimeOfBestChromosomes += chromosome.getFlowTime();
 		totalCommunicationCostOfBestChromosomes += chromosome.getCommunicationCost();
 		totalWaitingTimeOfBestChromosomes += chromosome.getWaitingTime();
-		totalSLengthPlusWaitingTime += chromosome.getSLengthPlusWaitingTime();
 		totalFitnessOfBestChromosomes += chromosome.getFitness();
 		totalNumberOfChromosomes += 1;
 	}
@@ -591,11 +583,17 @@ public class AGScheduling {
 		result.setTotalFlowTime(totalFlowTimeOfBestChromosomes);
 		result.setTotalCommunicationCost(totalCommunicationCostOfBestChromosomes);
 		result.setTotalWaitingTime(totalWaitingTimeOfBestChromosomes);
-		result.setTotalSLengthPlusWaitingTime(totalSLengthPlusWaitingTime);
 		result.setTotalFitness(totalFitnessOfBestChromosomes);
 		result.setTotalNumberOfChromosomes(totalNumberOfChromosomes);
 
 		result.showResult(bestChromosomeFound, config);
 		bestResult.showResult();
+	}
+
+	public static void main(String[] args) {
+	    Random r = new Random();
+	    for (int i = 0; i < 10; i++) {
+	        System.out.println(r.nextInt(Integer.MAX_VALUE));
+	    }
 	}
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import br.ufu.scheduling.enums.MetricType;
 import br.ufu.scheduling.exceptions.BetterChromosomeFoundException;
+import br.ufu.scheduling.utils.CalculateValueForSort;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
 import br.ufu.scheduling.utils.Printer;
@@ -17,7 +18,6 @@ public class Metrics implements Cloneable {
 	private double flowTime; /* sum of processor times */
 	private double communicationCost;
 	private double waitingTime;
-	private double sLengthPlusWaitingTime;
 
 	private double fitness;
 	private double fitnessForSlength;
@@ -25,8 +25,16 @@ public class Metrics implements Cloneable {
 	private double fitnessForFlowTime;
 	private double fitnessForCommunicationCost;
 	private double fitnessForWaitingTime;
-	private double fitnessForSLengthPlusWaitingTime;
 
+	//NSGA2
+	private int rank = -1;
+	private double crowdingDistance = 0;
+	private List<Chromosome> dominatedChromosomes = new ArrayList<>();
+    private int dominatedCount = 0;
+    private final List<Double> normalizedObjectiveValues = new ArrayList<>();
+
+	private double singleAvegare;
+	private double harmonicAverage;
 	private double valueForSort;
 
 	public Metrics() {
@@ -50,10 +58,6 @@ public class Metrics implements Cloneable {
 
 	public double getWaitingTime() {
 		return waitingTime;
-	}
-
-	public double getSLengthPlusWaitingTime() {
-	    return sLengthPlusWaitingTime;
 	}
 
 	public double getFitness() {
@@ -84,9 +88,73 @@ public class Metrics implements Cloneable {
 		return fitnessForWaitingTime;
 	}
 
-	public double getFitnessForSLengthPlusWaitingTime() {
-	    return fitnessForSLengthPlusWaitingTime;
-	}
+	//NSGA2
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public double getCrowdingDistance() {
+        return crowdingDistance;
+    }
+
+    public void setCrowdingDistance(double crowdingDistance) {
+        this.crowdingDistance = crowdingDistance;
+    }
+
+    public List<Chromosome> getDominatedChromosomes() {
+        return dominatedChromosomes;
+    }
+
+    public void setDominatedChromosomes(List<Chromosome> dominatedChromosomes) {
+        this.dominatedChromosomes = dominatedChromosomes;
+    }
+
+    public int getDominatedCount() {
+        return dominatedCount;
+    }
+
+    public void setDominatedCount(int dominationCount) {
+        this.dominatedCount = dominationCount;
+    }
+
+    public void addDominatedChromosome(Chromosome chromosome) {
+        dominatedChromosomes.add(chromosome);
+    }
+
+    public void incrementDominatedCount(int incrementValue) {
+        dominatedCount += incrementValue;
+    }
+
+    public void reset() {
+        dominatedCount = 0;
+        rank = -1;
+        dominatedChromosomes = new ArrayList<>();
+    }
+
+    public List<Double> getNormalizedObjectiveValues() {
+        return normalizedObjectiveValues;
+    }
+
+    public void setNormalizedObjectiveValue(int index, double value) {
+        if (getNormalizedObjectiveValues().size() <= index) {
+            this.normalizedObjectiveValues.add(index, value);
+        } else {
+            this.normalizedObjectiveValues.set(index, value);
+        }
+    }
+    //FIM NSGA2
+
+    public double getSingleAverage() {
+        return singleAvegare;
+    }
+
+    public double getHarmonicAverage() {
+        return harmonicAverage;
+    }
 
 	public double getValueForSort() {
 		return valueForSort;
@@ -96,7 +164,7 @@ public class Metrics implements Cloneable {
 		this.valueForSort = valueForSort;
 	}
 
-	public void calculateMetrics(Graph graph, int[] mapping, int[] scheduling, Configuration config) {
+	public void calculateMetrics(Graph graph, Chromosome chromosome, Configuration config) {
 		//To facilitate the calculation, we will not work with zero index for the auxiliary vectors created
 		int [] startTimeTask = new int[graph.getNumberOfVertices() + 1]; 
 		int [] finalTimeTask = new int[graph.getNumberOfVertices() + 1];
@@ -104,10 +172,10 @@ public class Metrics implements Cloneable {
 
 		for (int taskIndex = 1; taskIndex <= graph.getNumberOfVertices(); taskIndex++) {
 			//Need to subtract one because the scheduling/mapping vector starts from index 0
-			int task = scheduling[taskIndex - 1];
-			int processor = mapping[task - 1];
+			int task = chromosome.getScheduling()[taskIndex - 1];
+			int processor = chromosome.getMapping()[task - 1];
 
-			startTimeTask[task] = Integer.max(readinessTime[processor], dat(graph, finalTimeTask, task, processor, mapping));
+			startTimeTask[task] = Integer.max(readinessTime[processor], dat(graph, finalTimeTask, task, processor, chromosome.getMapping()));
 			finalTimeTask[task] = startTimeTask[task] + graph.getVertex(task).getComputationalCost();
 			readinessTime[processor] = finalTimeTask[task];
 
@@ -120,13 +188,13 @@ public class Metrics implements Cloneable {
 		calculateLoadBalance(readinessTime, config);
 		calculateFlowTime(finalTimeTask, config);
 		validateCommunicationCost(config);
-		calculateWaitingTime(startTimeTask, finalTimeTask, graph, scheduling, mapping, config);
-		calculateSLenghtPlusWaitingTime(config);
+		calculateWaitingTime(startTimeTask, finalTimeTask, graph, chromosome, config);
 		calculateFitnessForMetrics(config);
 		calculateFitness(config);
+		calculateAverages(chromosome, config);
 	}
 
-	private int dat(Graph graph, int [] finalTimeTask, int task, int processor, int[] mapping) {
+    private int dat(Graph graph, int [] finalTimeTask, int task, int processor, int[] mapping) {
 		int max = 0;
 		List<Integer> entries = graph.getVertex(task).getEntries();
 
@@ -221,12 +289,12 @@ public class Metrics implements Cloneable {
 		}
 	}
 
-	private void calculateWaitingTime(int [] startTimeTask, int [] finalTimeTask, Graph graph, int [] scheduling, int [] mapping, Configuration config) {
+	private void calculateWaitingTime(int [] startTimeTask, int [] finalTimeTask, Graph graph, Chromosome chromosome, Configuration config) {
 		waitingTime = 0.0;
 
 		for (int taskIndex = 1; taskIndex <= graph.getNumberOfVertices(); taskIndex++) {
 			//Need to subtract one because the scheduling/mapping vector starts from index 0
-			int task = scheduling[taskIndex - 1];
+			int task = chromosome.getScheduling()[taskIndex - 1];
 			List<Integer> entries = graph.getVertex(task).getEntries();
 
 			if (entries != null) {
@@ -249,21 +317,12 @@ public class Metrics implements Cloneable {
 		}
 	}
 
-    private void calculateSLenghtPlusWaitingTime(Configuration config) {
-        sLengthPlusWaitingTime = sLength + waitingTime;
-
-        if (config.isConvergenceForTheBestSolution() && sLengthPlusWaitingTime < Constants.BEST_SLENGTH_PLUS_WAITING_TIME) {
-            throw new BetterChromosomeFoundException("We found a better chromosome than the last one found. SLengthPlusWaitingTime: " + sLengthPlusWaitingTime + ".");
-        }
-    }
-
 	private void calculateFitnessForMetrics(Configuration config) {
 		fitnessForSlength = calculateFitnessForMetric(config, MetricType.MAKESPAN);
 		fitnessForLoadBalance = calculateFitnessForMetric(config, MetricType.LOAD_BALANCE);
 		fitnessForFlowTime = calculateFitnessForMetric(config, MetricType.FLOW_TIME);
 		fitnessForCommunicationCost = calculateFitnessForMetric(config, MetricType.COMMUNICATION_COST);
 		fitnessForWaitingTime = calculateFitnessForMetric(config, MetricType.WAITING_TIME);
-		fitnessForSLengthPlusWaitingTime = calculateFitnessForMetric(config, MetricType.MAKESPAN_PLUS_WAITING_TIME);
 	}
 
 	private Double calculateFitnessForMetric(Configuration config, MetricType metricType) {
@@ -292,10 +351,6 @@ public class Metrics implements Cloneable {
 			fitness = fitnessForWaitingTime;
 			break;
 
-	     case MAKESPAN_PLUS_WAITING_TIME:
-	         fitness = fitnessForSLengthPlusWaitingTime;
-	         break;
-
 		default:
 			throw new IllegalArgumentException("Metric type not implemented.");
 		}
@@ -317,14 +372,15 @@ public class Metrics implements Cloneable {
 
 		case WAITING_TIME:
 			return waitingTime;
-
-		case MAKESPAN_PLUS_WAITING_TIME:
-		    return sLengthPlusWaitingTime;
-
 		default:
 			throw new IllegalArgumentException("Metric type not implemented.");
 		}
 	}
+
+    private void calculateAverages(Chromosome chromosome, Configuration config) {
+        singleAvegare = CalculateValueForSort.calculateAverageBySingleAverage(chromosome, config);
+        harmonicAverage = CalculateValueForSort.calculateAverageByHarmonicAverage(chromosome, config);
+    }
 
 	public Object clone() throws CloneNotSupportedException {
 		Metrics clone = new Metrics();
@@ -333,14 +389,14 @@ public class Metrics implements Cloneable {
 		clone.flowTime = this.flowTime;
 		clone.communicationCost = this.communicationCost;
 		clone.waitingTime = this.waitingTime;
-		clone.sLengthPlusWaitingTime = this.sLengthPlusWaitingTime;
 		clone.fitness = this.fitness;
 		clone.fitnessForSlength = this.fitnessForSlength;
 		clone.fitnessForLoadBalance = this.fitnessForLoadBalance;
 		clone.fitnessForFlowTime = this.fitnessForFlowTime;
 		clone.fitnessForCommunicationCost = this.fitnessForCommunicationCost;
 		clone.fitnessForWaitingTime = this.fitnessForWaitingTime;
-		clone.fitnessForSLengthPlusWaitingTime = this.fitnessForSLengthPlusWaitingTime;
+		clone.singleAvegare = this.singleAvegare;
+		clone.harmonicAverage = this.harmonicAverage;
 		clone.valueForSort = this.valueForSort;
 		return clone;
 	}
@@ -392,18 +448,5 @@ public class Metrics implements Cloneable {
 				min_ST = st_time;
 			}
 		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		int [] mapping = {2, 3, 2, 1, 2, 1, 1, 1, 2};
-		int [] scheduling = {1, 2, 5, 7, 4, 3, 8, 6, 9};
-		
-//		int [] mapping = {3, 3, 1, 2, 3, 1, 3, 1, 1 };
-//		int [] scheduling = {1, 3, 2, 6, 7, 4, 8, 5, 9};
-
-		Graph graph = Graph.initializeGraph();
-		Metrics m = new Metrics();
-		m.calculateMetrics(graph, mapping, scheduling, new Configuration());
-		
 	}
 }

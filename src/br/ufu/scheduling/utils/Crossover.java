@@ -26,7 +26,7 @@ public class Crossover {
 		return generator.nextDouble() < Constants.RANDOM_NUMBER_FIXED_IN_ARTICLE ? CrossoverType.CROSSOVER_MAP : CrossoverType.ORDER_CROSSOVER;
 	}
 
-	private static List<Chromosome> getCrossoverMap(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
+	public static List<Chromosome> getCrossoverMap(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
 		List<Chromosome> childrenList = new ArrayList<>();
 		
 		//Add 1 to generate values between 1 and the total of tasks (inclusive)
@@ -71,7 +71,7 @@ public class Crossover {
 		return childrenList;
 	}
 
-	private static List<Chromosome> getOrderCrossover(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
+	public static List<Chromosome> getOrderCrossover(Chromosome parent1, Chromosome parent2, Graph graph, Random generator, Configuration config) {
 		List<Chromosome> childrenList = new ArrayList<>();
 		
 		//Add 1 to generate values between 1 and the total of tasks (inclusive)

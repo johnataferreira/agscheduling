@@ -20,7 +20,27 @@ public class CalculateValueForSort {
             throw new IllegalArgumentException("Sort Function type not implemented.");
         }
     }
-    
+
+    public static double calculateAverageBySingleAverage(Chromosome chromosome, Configuration config) {
+        double accumulatedValue = 0.0;
+
+        for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+            accumulatedValue += getValueForObjectiveBySingleAverage(chromosome, config, objective); 
+        }
+
+        return accumulatedValue / config.getTotalObjectives();
+    }
+
+    public static double calculateAverageByHarmonicAverage(Chromosome chromosome, Configuration config) {
+        double accumulatedValue = 0.0;
+
+        for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+            accumulatedValue += getValueForObjectiveByHarmonicAverage(chromosome, config, objective); 
+        }
+
+        return accumulatedValue / config.getTotalObjectives();
+    }
+
     private static double calculateAverageByWeight(Chromosome chromosome, Configuration config, List<Integer> objectives) {
         double accumulatedValue = 0.0;
 
@@ -58,66 +78,64 @@ public class CalculateValueForSort {
         double accumulatedValue = 0.0;
 
         for (Integer objective : objectives) {
-            switch (objective) {
-            case 1:
-                accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome);
-                break;
-
-            case 2:
-                accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2(), chromosome);
-                break;
-
-            case 3:
-                accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3(), chromosome);
-                break;
-
-            case 4:
-                accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4(), chromosome);
-                break;
-
-            case 5:
-                accumulatedValue += getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5(), chromosome);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
-            }
+            accumulatedValue += getValueForObjectiveBySingleAverage(chromosome, config, objective);
         }
 
         return accumulatedValue / objectives.size();
+    }
+
+    private static double getValueForObjectiveBySingleAverage(Chromosome chromosome, Configuration config, int objective) {
+        switch (objective) {
+        case 1:
+            return getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome);
+
+        case 2:
+            return getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2(), chromosome);
+
+        case 3:
+            return getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3(), chromosome);
+
+        case 4:
+            return getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4(), chromosome);
+
+        case 5:
+            return getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5(), chromosome);
+
+        default:
+            throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+        }
     }
 
     private static double calculateAverageByHarmonicAverage(Chromosome chromosome, Configuration config, List<Integer> objectives) {
         double accumulatedValue = 0.0;
 
         for (Integer objective : objectives) {
-            switch (objective) {
-            case 1:
-                accumulatedValue += (1 / getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome));
-                break;
-
-            case 2:
-                accumulatedValue += (1 / getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2(), chromosome));
-                break;
-
-            case 3:
-                accumulatedValue += (1 / getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3(), chromosome));
-                break;
-
-            case 4:
-                accumulatedValue += (1 / getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4(), chromosome));
-                break;
-
-            case 5:
-                accumulatedValue += (1 / getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5(), chromosome));
-                break;
-
-            default:
-                throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
-            }
+            accumulatedValue += getValueForObjectiveByHarmonicAverage(chromosome, config, objective);
         }
 
         return objectives.size() / accumulatedValue;
+    }
+
+    private static double getValueForObjectiveByHarmonicAverage(Chromosome chromosome, Configuration config, int objective) {
+        switch (objective) {
+        case 1:
+            return (1 / getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome));
+
+        case 2:
+            return (1 / getNormalizedObjectiveValue(config, config.getObjective2(), config.getMaxObjectiveValue2(), config.getMinObjectiveValue2(), chromosome));
+
+        case 3:
+            return (1 / getNormalizedObjectiveValue(config, config.getObjective3(), config.getMaxObjectiveValue3(), config.getMinObjectiveValue3(), chromosome));
+
+        case 4:
+            return (1 / getNormalizedObjectiveValue(config, config.getObjective4(), config.getMaxObjectiveValue4(), config.getMinObjectiveValue4(), chromosome));
+
+        case 5:
+            return (1 / getNormalizedObjectiveValue(config, config.getObjective5(), config.getMaxObjectiveValue5(), config.getMinObjectiveValue5(), chromosome));
+
+        default:
+            throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+        }
     }
 
     private static double getNormalizedObjectiveValue(Configuration config, Integer objectiveIndex, double maxObjectiveValue, double minObjectiveValue, Chromosome chromosome) {

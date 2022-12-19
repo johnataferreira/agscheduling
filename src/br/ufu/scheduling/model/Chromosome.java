@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.exceptions.BetterChromosomeFoundException;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Mutation;
@@ -41,7 +42,6 @@ public class Chromosome implements Cloneable {
 		return scheduling;
 	}
 
-
 	public double getSLength() {
 		return metrics.getSLength();
 	}
@@ -61,10 +61,6 @@ public class Chromosome implements Cloneable {
 	public double getWaitingTime() {
 		return metrics.getWaitingTime();
 	}
-
-    public double getSLengthPlusWaitingTime() {
-        return metrics.getSLengthPlusWaitingTime();
-    }
 
 	public double getFitness() {
 		return metrics.getFitness();
@@ -93,6 +89,68 @@ public class Chromosome implements Cloneable {
 	public double getFitnessForWaitingTime() {
 		return metrics.getFitnessForWaitingTime();
 	}
+
+	//NSGA2
+    public int getRank() {
+        return metrics.getRank();
+    }
+
+    public void setRank(int rank) {
+        metrics.setRank(rank);
+    }
+
+    public double getCrowdingDistance() {
+        return metrics.getCrowdingDistance();
+    }
+
+    public void setCrowdingDistance(double crowdingDistance) {
+        metrics.setCrowdingDistance(crowdingDistance);
+    }
+
+    public List<Chromosome> getDominatedChromosomes() {
+        return metrics.getDominatedChromosomes();
+    }
+
+    public void setDominatedChromosomes(List<Chromosome> dominatedChromosomes) {
+        metrics.setDominatedChromosomes(dominatedChromosomes);
+    }
+
+    public int getDominatedCount() {
+        return metrics.getDominatedCount();
+    }
+
+    public void setDominatedCount(int dominationCount) {
+        metrics.setDominatedCount(dominationCount);
+    }
+
+    public void addDominatedChromosome(Chromosome chromosome) {
+        metrics.addDominatedChromosome(chromosome);
+    }
+
+    public void incrementDominatedCount(int incrementValue) {
+        metrics.incrementDominatedCount(incrementValue);
+    }
+
+    public void reset() {
+        metrics.reset();
+    }
+
+    public List<Double> getNormalizedObjectiveValues() {
+        return metrics.getNormalizedObjectiveValues();
+    }
+
+    public void setNormalizedObjectiveValue(int index, double value) {
+        metrics.setNormalizedObjectiveValue(index, value);
+    }
+    //FIM NSGA2
+
+    public double getSingleAverage() {
+        return metrics.getSingleAverage();
+    }
+
+    public double getHarmonicAvegare() {
+        return metrics.getHarmonicAverage();
+    }
 
 	public double getValueForSort() {
 		return metrics.getValueForSort();
@@ -228,7 +286,7 @@ public class Chromosome implements Cloneable {
 
 	public void calculateMetrics(Graph graph, Configuration config) {
 		try {
-			metrics.calculateMetrics(graph, mapping, scheduling, config);
+			metrics.calculateMetrics(graph, this, config);
 		} catch (BetterChromosomeFoundException e) {
 			System.out.println("Better Chromosome Found:");
 			Printer.printChromosomeVectors(mapping, scheduling);
@@ -244,8 +302,8 @@ public class Chromosome implements Cloneable {
 		calculateMetrics(graph, config);
 	}
 
-	public void printChromosome() {
-		Printer.printChromosome(this);
+	public void printChromosome(AlgorithmType algorithmType) {
+		Printer.printChromosome(this, algorithmType);
 	}
 
 	public Object clone() throws CloneNotSupportedException {
@@ -351,6 +409,26 @@ public class Chromosome implements Cloneable {
 		return equals;
 	}
 
+    @Override
+    public String toString() {
+
+        StringBuilder response = new StringBuilder("Objective values: [ ");
+
+        response.append(getSLength()).append(" ");
+        response.append(getLoadBalance()).append(" ");
+        response.append(getFlowTime()).append(" ");
+        response.append(getCommunicationCost()).append(" ");
+        response.append(getWaitingTime()).append(" ");
+
+        response
+            .append("] | Rank: ")
+            .append(getRank())
+            .append(" | Crowding Distance: ")
+            .append(getCrowdingDistance());
+
+        return response.toString();
+    }
+
 	public static void main(String args[]) throws Exception {
 		Configuration config = new Configuration();
 
@@ -378,6 +456,6 @@ public class Chromosome implements Cloneable {
 		chromosome.scheduling[8] = 5;
 
 		chromosome.calculateMetrics(graph, config);
-		chromosome.printChromosome();
+		chromosome.printChromosome(config.getAlgorithmType());
 	}
 }

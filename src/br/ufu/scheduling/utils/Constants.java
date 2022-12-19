@@ -13,7 +13,10 @@ public class Constants {
     public final static String PACKAGE_DAG_WITH_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "with" + File.separator + "cost" + File.separator;
     public final static String PACKAGE_DAG_WITHOUT_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "without" + File.separator + "cost" + File.separator;
     public final static String PACKAGE_CSV = PACKAGE_BASE + File.separator + "csv" + File.separator;
-    public static final String QUEBRA_LINHA = "\n";
+    public static final String LINE_BREAK = "\n";
+    public static final String ALGORITHM_NSGA2 = "NSGA2";
+    public static final String ALGORITHM_AEMMT = "AEMMT";
+    public static final String ALGORITHM_AEMMD = "AEMMD";
 
     public static final int RANDOM_SEED = -1;
     public static final int TASK_NUMBER = 0;
@@ -32,7 +35,6 @@ public class Constants {
     public static final double BEST_FLOW_TIME = 80.0;
     public static final double BEST_COMMUNICATION_COST = 0.0;
     public static final double BEST_WAITING_TIME = 9.0;
-    public static final double BEST_SLENGTH_PLUS_WAITING_TIME = 25.0;
 
     public static final int MAKESPAN = 0;
     public static final int LOAD_BALANCE = 1;
@@ -56,4 +58,9 @@ public class Constants {
 
     public static final int TWO_DECIMAL_PLACES = 2;
     public static final int NINE_DECIMAL_PLACES = 9;
+
+    public static final int NSGA2_DOMINANT = 1;
+    public static final int NSGA2_INFERIOR = 2;
+    public static final int NSGA2_NON_DOMINATED = 3;
+    public static final int RANK_PARETO_BORDER = 1;
 }

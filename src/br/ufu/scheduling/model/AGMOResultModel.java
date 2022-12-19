@@ -3,6 +3,8 @@ package br.ufu.scheduling.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.ufu.scheduling.enums.AlgorithmType;
+import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
 
@@ -34,6 +36,7 @@ public class AGMOResultModel {
     private TotalCalculation totalCalculationWaitingTime = new TotalCalculation();
 
     private BestResultByObjective bestResult;
+    private StringBuilder sb = new StringBuilder();
 
 	public AGMOResultModel(Configuration config, int totalChromossomes) {
 	    this.totalChromossomes = totalChromossomes;
@@ -204,6 +207,9 @@ public class AGMOResultModel {
         printObjectiveFormatted("WaitingTime", totalCalculationWaitingTime, bestWaitingTime, worstWaitingTime, diffBetweenMaxAndMinWaitingTime);
 
         bestResult.showResult();
+
+        System.out.println("");
+        System.out.println(sb.toString());
     }
 
     private void printObjectiveFormatted(String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin) {
@@ -229,7 +235,7 @@ public class AGMOResultModel {
         double percTotalValueBetween10_20 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) * 100.0 / totalChromossomes), 2);
         double percTotalValueBetween0_10 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) * 100.0 / totalChromossomes), 2);
 
-        double bottomLimit90_100 = Math.round(bestValue * 100) / 100.0;
+        double bottomLimit90_100 = round(bestValue, decimalPlaces);
         double topLimit90_100 = round(bestValue + diffBetweenMaxAndMin, decimalPlaces);
 
         double bottomLimit80_90 = topLimit90_100;
@@ -270,6 +276,133 @@ public class AGMOResultModel {
         System.out.println("20-30 [" + bottomLimit20_30 + ", " + topLimit20_30 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) + " -> " + percTotalValueBetween20_30 + "%");
         System.out.println("10-20 [" + bottomLimit10_20 + ", " + topLimit10_20 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) + " -> " + percTotalValueBetween10_20 + "%");
         System.out.println("0-10 [" + bottomLimit0_10 + ", " + topLimit0_10 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) + " -> " + percTotalValueBetween0_10 + "%");
+
+        System.out.println();
+        
+        try {
+            Configuration config = new Configuration();
+
+            printResult(config, bestValue, worstValue, "90-100", bottomLimit90_100, topLimit90_100, objectiveName, percTotalValueBetween90_100, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "80-90", bottomLimit80_90, topLimit80_90, objectiveName, percTotalValueBetween80_90, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "70-80", bottomLimit70_80, topLimit70_80, objectiveName, percTotalValueBetween70_80, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "60-70", bottomLimit60_70, topLimit60_70, objectiveName, percTotalValueBetween60_70, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "50-60", bottomLimit50_60, topLimit50_60, objectiveName, percTotalValueBetween50_60, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "40-50", bottomLimit40_50, topLimit40_50, objectiveName, percTotalValueBetween40_50, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "30-40", bottomLimit30_40, topLimit30_40, objectiveName, percTotalValueBetween30_40, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "20-30", bottomLimit20_30, topLimit20_30, objectiveName, percTotalValueBetween20_30, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "10-20", bottomLimit10_20, topLimit10_20, objectiveName, percTotalValueBetween10_20, getBestValue(objectiveName));
+            printResult(config, bestValue, worstValue, "0-10", bottomLimit0_10, topLimit0_10, objectiveName, percTotalValueBetween0_10, getBestValue(objectiveName));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double getBestValue(String objectiveName) {
+        switch (objectiveName) {
+            case "SLength":
+                return bestResult.getBestSlength();
+
+            case "LoadBalance":
+                return bestResult.getBestLoadBalance();
+
+            case "FlowTime":
+                return bestResult.getBestFlowTime();
+
+            case "CommunicationCost":
+                return bestResult.getBestCommunicationCost();
+
+            case "WaitingTime":
+                return bestResult.getBestWaitingTime();
+
+            default:
+                throw new IllegalArgumentException("Objective invalid!");
+        }
+    }
+
+    private void printResult(Configuration config, double bestValue, double worstValue, String interval, double bottomLimit, double topLimit, String objectiveName, double perc, double bestResult) {
+        if (config.getSortFunctionType() == SortFunctionType.SINGLE_AVERAGE) {
+//            System.out.println(
+//                    getAlgorithmName(config) + "\t" +
+//                            config.getTotalProcessors() + "\t" + 
+//                            config.getSeed() + "\t" +
+//                            getStringValue(bestValue) + "\t" + 
+//                            getStringValue(worstValue) + "\t" +
+//                            (objectiveName == "SLength" ? "Makespan" : objectiveName) + "\t" +
+//                            interval + "\t" +
+//                            getStringValue(bottomLimit) + "\t" +
+//                            getStringValue(topLimit) + "\t" +
+//                            getStringValue(bestResult) + "\t" +
+//                            getStringValue(perc) + "\t" +
+//                            getSortFunction(config)
+//                    );
+            
+            sb.append(
+                            config.getTotalProcessors() + "\t" + 
+                            config.getSeed() + "\t" +
+                            getStringValue(bestValue) + "\t" + 
+                            getStringValue(worstValue) + "\t" +
+                            (objectiveName == "SLength" ? "Makespan" : objectiveName) + "\t" +
+                            interval + "\t" +
+                            getStringValue(bottomLimit) + "\t" +
+                            getStringValue(topLimit) + "\t" +
+                            getAlgorithmName(config) + "\t" +
+                            getStringValue(bestResult) + "\t" +
+                            getStringValue(perc) + "\t" +
+                            getSortFunction(config) + "\n"
+                    );
+        } else if (config.getSortFunctionType() == SortFunctionType.HARMONIC_AVERAGE) {
+            sb.append(
+                    getStringValue(bestResult) + "\t" +
+                            getStringValue(perc) + "\n"
+                    );
+        }
+    }
+
+    private String getSortFunction(Configuration config) {
+        if (config.getAlgorithmType() != AlgorithmType.AEMMT) {
+            return "Não se aplica";
+        }
+
+        switch (config.getSortFunctionType()) {
+            case WEIGHT:
+                return "Peso";
+
+            case SINGLE_AVERAGE:
+                return "Média Simples";
+
+            case HARMONIC_AVERAGE:
+                return "Média Harmônica";
+
+            default:
+                throw new IllegalArgumentException("SortFunction invalid!");
+        }
+    }
+
+    private String getAlgorithmName(Configuration config) {
+        switch (config.getAlgorithmType()) {
+            case SINGLE_OBJECTIVE:
+                return "SingleObjective";
+
+            case NSGAII:
+                return "NSGAII";
+
+            case SPEA2:
+                return "SPEA2";
+
+            case AEMMT:
+                return "AEMMT";
+
+            case AEMMD:
+                return "AEMMD";
+
+            default:
+                throw new IllegalArgumentException("Algorithm invalid!");
+        }
+    }
+
+    private String getStringValue(double source) {
+        return Double.toString(source).replace(".", ",");
     }
 
     private double round(double value, int decimalPlaces) {
@@ -297,5 +430,11 @@ public class AGMOResultModel {
             mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_10_20, Constants.DEFAULT_RANGE_VALUE);
             mapTotalValueBetweenBottonAndTopLimit.put(Constants.RANGE_0_10, Constants.DEFAULT_RANGE_VALUE);
         }
+    }
+
+    public static void main (String args[]) {
+        double t = 1.424528302;
+        System.out.println(t);
+        System.out.println(Double.toString(t).replace(".", ","));
     }
 }

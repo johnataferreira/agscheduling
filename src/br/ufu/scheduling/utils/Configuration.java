@@ -434,10 +434,6 @@ public class Configuration {
 			metricType = MetricType.WAITING_TIME;
 			break;
 
-        case 5:
-            metricType = MetricType.MAKESPAN_PLUS_WAITING_TIME;
-            break;
-
 		default:
 			throw new IllegalArgumentException("Invalid value of metric: " + metric + ". Valid values: " + Arrays.asList(0, 1, 2, 3, 4, 5).toString());
 		}

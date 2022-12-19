@@ -12,19 +12,37 @@ public class BestResultByObjective {
     private double bestFlowTime = Double.MAX_VALUE;
     private double bestCommunicationCost = Double.MAX_VALUE;
     private double bestWaitingTime = Double.MAX_VALUE;
-    private double bestSLengthPlusWaitingTime = Double.MAX_VALUE;
 
     private double worstSlength = Double.MIN_VALUE;
     private double worstLoadBalance = Double.MIN_VALUE;
     private double worstFlowTime = Double.MIN_VALUE;
     private double worstCommunicationCost = Double.MIN_VALUE;
     private double worstWaitingTime = Double.MIN_VALUE;
-    private double worstSLengthPlusWaitingTime = Double.MIN_VALUE;
 
     private Configuration config;
 
     public BestResultByObjective(Configuration config) {
         this.config = config;
+    }
+
+    public double getBestSlength() {
+        return bestSlength;
+    }
+
+    public double getBestLoadBalance() {
+        return bestLoadBalance;
+    }
+
+    public double getBestFlowTime() {
+        return bestFlowTime;
+    }
+
+    public double getBestCommunicationCost() {
+        return bestCommunicationCost;
+    }
+
+    public double getBestWaitingTime() {
+        return bestWaitingTime;
     }
 
     public void verifyBestAndWorstSolutions(Chromosome chromosome) {
@@ -60,10 +78,6 @@ public class BestResultByObjective {
                     bestWaitingTime = chromosome.getWaitingTime();
                 }
 
-                if (chromosome.getSLengthPlusWaitingTime() < bestSLengthPlusWaitingTime) {
-                    bestSLengthPlusWaitingTime = chromosome.getSLengthPlusWaitingTime();
-                }
-
                 //Worst Solutions
                 if (chromosome.getSLength() > worstSlength) {
                     worstSlength = chromosome.getSLength();
@@ -84,10 +98,6 @@ public class BestResultByObjective {
                 if (chromosome.getWaitingTime() > worstWaitingTime) {
                     worstWaitingTime = chromosome.getWaitingTime();
                 }
-
-                if (chromosome.getSLengthPlusWaitingTime() > worstSLengthPlusWaitingTime) {
-                    worstSLengthPlusWaitingTime = chromosome.getSLengthPlusWaitingTime();
-                }
             }
         }
     }
@@ -103,18 +113,40 @@ public class BestResultByObjective {
             System.out.println("Best FlowTime: " + bestFlowTime);
             System.out.println("Best CommunicationCost: " + bestCommunicationCost);
             System.out.println("Best WaitingTime: " + bestWaitingTime);
-            System.out.println("Best SLengthPlusWaitingTime: " + bestSLengthPlusWaitingTime);
             System.out.println("");
             System.out.println("Worst SLength: " + worstSlength);
             System.out.println("Worst LoadBalance: " + worstLoadBalance);
             System.out.println("Worst FlowTime: " + worstFlowTime);
             System.out.println("Worst CommunicationCost: " + worstCommunicationCost);
             System.out.println("Worst WaitingTime: " + worstWaitingTime);
-            System.out.println("Worst SLengthPlusWaitingTime: " + worstSLengthPlusWaitingTime);
             System.out.println("");
             System.out.println("Graph: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
             System.out.println("Processors: " + config.getTotalProcessors());
             System.out.println("With CommunicationCost: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()));
+            System.out.println("Seed: " + config.getSeed());
+            System.out.println("Algorithm: " + getAlgorithmName());
         }        
     }    
+
+    private String getAlgorithmName() {
+        switch (config.getAlgorithmType()) {
+            case SINGLE_OBJECTIVE:
+                return "SingleObjective";
+
+            case NSGAII:
+                return "NSGAII";
+
+            case SPEA2:
+                return "SPEA2";
+
+            case AEMMT:
+                return "AEMMT";
+
+            case AEMMD:
+                return "AEMMD";
+
+            default:
+                throw new IllegalArgumentException("Algorithm invalid!");
+        }
+    }
 }
