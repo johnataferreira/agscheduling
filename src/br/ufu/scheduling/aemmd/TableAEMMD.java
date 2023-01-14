@@ -20,7 +20,7 @@ public class TableAEMMD extends Table {
 	        return true;
 	    }
 
-	    if (isChromosomeDominated(chromosome)) {
+	    if (isChromosomeDominated(chromosome, config)) {
 	        return false;
 	    }
 
@@ -29,18 +29,18 @@ public class TableAEMMD extends Table {
             return false;
         }
 
-	    removeChromosomeFromTable(chromosome);
+	    removeChromosomeFromTable(chromosome, config);
 
         Chromosome clone = buildChromosomeClone(chromosome);
         chromosomeList.add(clone);
         return true;
 	}
 
-	private boolean isChromosomeDominated(Chromosome chromosome) {
+	private boolean isChromosomeDominated(Chromosome chromosome, Configuration config) {
         for (int chromosomeIndex = 0; chromosomeIndex < chromosomeList.size(); chromosomeIndex++) {
             Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
 
-            if (chromosome.isChromosomeDominated(objectives, chromosomeB)) {
+            if (chromosome.isChromosomeDominated(config, objectives, chromosomeB)) {
                 return true;
             }
         }

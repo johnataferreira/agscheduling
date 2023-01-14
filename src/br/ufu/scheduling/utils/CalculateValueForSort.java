@@ -10,8 +10,8 @@ public class CalculateValueForSort {
         case WEIGHT:
             return calculateAverageByWeight(chromosome, config, objectives);
 
-        case SINGLE_AVERAGE:
-            return calculateAverageBySingleAverage(chromosome, config, objectives);
+        case SIMPLE_AVERAGE:
+            return calculateAverageBySimpleAverage(chromosome, config, objectives);
 
         case HARMONIC_AVERAGE:
             return calculateAverageByHarmonicAverage(chromosome, config, objectives);
@@ -21,11 +21,11 @@ public class CalculateValueForSort {
         }
     }
 
-    public static double calculateAverageBySingleAverage(Chromosome chromosome, Configuration config) {
+    public static double calculateAverageBySimpleAverage(Chromosome chromosome, Configuration config) {
         double accumulatedValue = 0.0;
 
         for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
-            accumulatedValue += getValueForObjectiveBySingleAverage(chromosome, config, objective); 
+            accumulatedValue += getValueForObjectiveBySimpleAverage(chromosome, config, objective); 
         }
 
         return accumulatedValue / config.getTotalObjectives();
@@ -38,7 +38,7 @@ public class CalculateValueForSort {
             accumulatedValue += getValueForObjectiveByHarmonicAverage(chromosome, config, objective); 
         }
 
-        return accumulatedValue / config.getTotalObjectives();
+        return config.getTotalObjectives() / accumulatedValue;
     }
 
     private static double calculateAverageByWeight(Chromosome chromosome, Configuration config, List<Integer> objectives) {
@@ -74,17 +74,17 @@ public class CalculateValueForSort {
         return accumulatedValue /= objectives.size();
     }
 
-    private static double calculateAverageBySingleAverage(Chromosome chromosome, Configuration config, List<Integer> objectives) {
+    private static double calculateAverageBySimpleAverage(Chromosome chromosome, Configuration config, List<Integer> objectives) {
         double accumulatedValue = 0.0;
 
         for (Integer objective : objectives) {
-            accumulatedValue += getValueForObjectiveBySingleAverage(chromosome, config, objective);
+            accumulatedValue += getValueForObjectiveBySimpleAverage(chromosome, config, objective);
         }
 
         return accumulatedValue / objectives.size();
     }
 
-    private static double getValueForObjectiveBySingleAverage(Chromosome chromosome, Configuration config, int objective) {
+    private static double getValueForObjectiveBySimpleAverage(Chromosome chromosome, Configuration config, int objective) {
         switch (objective) {
         case 1:
             return getNormalizedObjectiveValue(config, config.getObjective1(), config.getMaxObjectiveValue1(), config.getMinObjectiveValue1(), chromosome);
@@ -142,28 +142,28 @@ public class CalculateValueForSort {
         double objectiveValue = 0.0;
 
         switch (objectiveIndex) {
-        case 0:
-            objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForSLength(), maxObjectiveValue, minObjectiveValue);
-            break;
+            case Constants.MAKESPAN:
+                objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForSLength(), maxObjectiveValue, minObjectiveValue);
+                break;
 
-        case 1:
-            objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForLoadBalance(), maxObjectiveValue, minObjectiveValue);
-            break;
+            case Constants.LOAD_BALANCE:
+                objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForLoadBalance(), maxObjectiveValue, minObjectiveValue);
+                break;
 
-        case 2:
-            objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForFlowTime(), maxObjectiveValue, minObjectiveValue);
-            break;
+            case Constants.FLOW_TIME:
+                objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForFlowTime(), maxObjectiveValue, minObjectiveValue);
+                break;
 
-        case 3:
-            objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForCommunicationCost(), maxObjectiveValue, minObjectiveValue);
-            break;
+            case Constants.COMMUNICATION_COST:
+                objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForCommunicationCost(), maxObjectiveValue, minObjectiveValue);
+                break;
 
-        case 4:
-            objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForWaitingTime(), maxObjectiveValue, minObjectiveValue);
-            break;
+            case Constants.WAITING_TIME:
+                objectiveValue = calculateNormalizedObjectiveValue(config, chromosome.getFitnessForWaitingTime(), maxObjectiveValue, minObjectiveValue);
+                break;
 
-        default:
-            throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
+            default:
+                throw new IllegalArgumentException("Type of objective invalid. Value: " + objectiveIndex + ".");
         }
 
         return objectiveValue;
@@ -171,7 +171,7 @@ public class CalculateValueForSort {
 
     private static double calculateNormalizedObjectiveValue(Configuration config, double objectiveValue, double maxObjectiveValue, double minObjectiveValue) {
         double differenceToMinimum = objectiveValue - minObjectiveValue;
-        double differenceBetweenExtremes = maxObjectiveValue - minObjectiveValue;
+        double differenceBetweenExtremes = Math.abs(maxObjectiveValue - minObjectiveValue);
 
         return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
     }

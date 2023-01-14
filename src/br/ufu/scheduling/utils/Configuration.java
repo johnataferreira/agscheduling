@@ -14,6 +14,7 @@ import br.ufu.scheduling.enums.MutationType;
 import br.ufu.scheduling.enums.SelectionType;
 import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.file.normalization.with.cost.LoaderNormalizationWithCost;
+import br.ufu.scheduling.file.normalization.with.cost.backup.LoaderNormalizationWithCostBackup;
 import br.ufu.scheduling.file.normalization.without.cost.LoaderNormalizationWithoutCost;
 
 public class Configuration {
@@ -44,6 +45,7 @@ public class Configuration {
 	private Boolean printGraphAtTheBeginningOfRun;
 	private Boolean printBestResultsByObjectives;
 	private Integer seed;
+	private Boolean systemOutPrintInFile;
 
 	//AGMO
 	private Boolean executeMultiObjectiveGA;
@@ -103,8 +105,12 @@ public class Configuration {
 	private int sortFunction;
 
 	public Configuration() throws Exception {
-		readConfiguration();
+		readConfiguration(null);
 	}
+
+	public Configuration(String fileNameForDataNormalization) throws Exception {
+	    readConfiguration(fileNameForDataNormalization);
+    }
 
 	public Integer getInitialPopulation() {
 		return initialPopulation;
@@ -212,6 +218,10 @@ public class Configuration {
 
     public Integer getSeed() {
         return seed;
+    }
+
+    public Boolean isSystemOutPrintInFile() {
+        return systemOutPrintInFile;
     }
 
     public Boolean isExecuteMultiObjectiveGA() {
@@ -491,7 +501,7 @@ public class Configuration {
 		}
 	}
 
-    private void setAlgorithm(Integer algorithm) {
+    public void setAlgorithm(Integer algorithm) {
         this.algorithm = algorithm;
         setAlgorithmType(algorithm);
     }
@@ -507,7 +517,7 @@ public class Configuration {
             break;
 
         case 2:
-            algorithmType = AlgorithmType.SPEA2;
+            algorithmType = AlgorithmType.SPEAII;
             break;
 
         case 3:
@@ -535,7 +545,7 @@ public class Configuration {
         this.printGenerations = printGenerations;
     }
 
-	private void setTotalProcessors(Integer totalProcessors) {
+	public void setTotalProcessors(Integer totalProcessors) {
 		this.totalProcessors = totalProcessors;
 	}
 
@@ -567,7 +577,7 @@ public class Configuration {
 		this.convergenceForTheBestSolution = convergenceForTheBestSolution;
 	}
 
-	private void setTaskGraphFileName(String taskGraphFileName) {
+	public void setTaskGraphFileName(String taskGraphFileName) {
 		this.taskGraphFileName = taskGraphFileName;
 	}
 
@@ -595,11 +605,15 @@ public class Configuration {
         this.seed = seed;
     }
 
+    private void setSystemOutPrintInFile(Boolean systemOutPrintInFile) {
+        this.systemOutPrintInFile = systemOutPrintInFile;
+    }
+
     public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {
 		this.executeMultiObjectiveGA = executeMultiObjectiveGA;
 	}
 
-	private void setTotalObjectives(Integer totalObjectives) {
+	public void setTotalObjectives(Integer totalObjectives) {
 		this.totalObjectives = totalObjectives;
 	}
 
@@ -611,7 +625,7 @@ public class Configuration {
 		this.sizeOfNonDominatedTable= sizeOfNonDominatedTable;
 	}
 
-	private void setTotalGenerations(Integer totalGenerations) {
+	public void setTotalGenerations(Integer totalGenerations) {
 		this.totalGenerations = totalGenerations;
 	}
 
@@ -627,7 +641,7 @@ public class Configuration {
 		this.totalGenerationsToApplyMutation = totalGenerationsToApplyMutation;
 	}
 
-    private void setSortFunction(Integer sortFunction) {
+    public void setSortFunction(Integer sortFunction) {
         this.sortFunction = sortFunction;
         setSortFunctionType(sortFunction);
     }
@@ -639,7 +653,7 @@ public class Configuration {
             break;
 
         case 1:
-            sortFunctionType = SortFunctionType.SINGLE_AVERAGE;
+            sortFunctionType = SortFunctionType.SIMPLE_AVERAGE;
             break;
 
         case 2:
@@ -797,7 +811,7 @@ public class Configuration {
 		this.maximumAttemptsGenerateDifferentChromosomes = maximumAttemptsGenerateDifferentChromosomes;
 	}
 
-	private void readConfiguration() throws Exception {
+	private void readConfiguration(String fileNameForDataNormalization) throws Exception {
 		try (BufferedReader buffer = new BufferedReader(new FileReader(new File(Constants.READ_ME_FILE_NAME)))) {
 			String line = null;
 
@@ -813,7 +827,11 @@ public class Configuration {
 			}
 
 			if (getAlgorithmType() != AlgorithmType.SINGLE_OBJECTIVE && getSortFunctionType() != SortFunctionType.WEIGHT) {
-				readConfigurationForDataNormalization();
+			    if (fileNameForDataNormalization == null) {
+			        readConfigurationForDataNormalization();
+			    } else {
+			        readConfigurationForDataNormalizationByFileName(fileNameForDataNormalization);
+			    }
 				
 				if (getMaximizationConstant() != Constants.MAXIMIZATION_PROBLEM) {
 					invertMaximumAndMinimumObjectiveValues();
@@ -865,6 +883,32 @@ public class Configuration {
 			throw e2;
 		}
 	}
+
+   private void readConfigurationForDataNormalizationByFileName(String fileNameForDataNormalization) throws Exception {
+        String fileName = fileNameForDataNormalization;
+
+        Class cls = LoaderNormalizationWithCostBackup.class;
+        String packagePath = Constants.PACKAGE_NORMALIZATION_WITH_COST_BACKUP;
+
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(cls.getClassLoader().getResourceAsStream(packagePath + fileName)))) {
+            String line = null;
+
+            while ((line = buffer.readLine()) != null) {
+                if (line.startsWith("#")) continue;
+
+                //0 - FieldName
+                //1 - Type (int, double, String)
+                //2 - Value
+                String[] vector = line.split(":");
+                Method method = this.getClass().getDeclaredMethod(getMethodName(vector[0]), getParameterType(vector[1]));
+                method.invoke(this, getConvertedValue(vector[2], vector[1]));
+            }
+        } catch (Exception e) {
+            Exception e2 = new Exception("Error loading " + fileName + " file: " + e.getMessage());
+            e2.initCause(e);
+            throw e2;
+        }
+    }
 
 	private void invertMaximumAndMinimumObjectiveValues() {
 		double aux = maxObjectiveValue1;

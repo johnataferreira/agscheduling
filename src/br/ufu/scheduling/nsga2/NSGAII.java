@@ -1,32 +1,47 @@
 package br.ufu.scheduling.nsga2;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import br.ufu.scheduling.model.Chromosome;
+import br.ufu.scheduling.model.DataForSpreadsheet;
 import br.ufu.scheduling.model.Graph;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
 import br.ufu.scheduling.utils.Crossover;
 import br.ufu.scheduling.utils.Printer;
+import br.ufu.scheduling.utils.Utils;
 
-public class NSGA2 {
+public class NSGAII {
     private Random generator;
     private Configuration config;
     private Graph graph;
+    private Map<String, DataForSpreadsheet> mapDataForSpreadsheet = new LinkedHashMap<>();
+    private BufferedWriter finalResultWriterForSpreadsheet = null;
 
     private List<Chromosome> chromosomeList = new ArrayList<>();
     private List<Chromosome> childrenList   = new ArrayList<>();
 
     private int generationAccumulated;
 
-    public NSGA2(Configuration config, Graph graph, Random generator) throws Exception {
+    public NSGAII(Configuration config, Graph graph, Random generator) throws Exception {
         this.config = config;
         this.graph = graph;
         this.generator = generator;
+    }
+
+    public Map<String, DataForSpreadsheet> executeForSpreadsheet(long initialTime, BufferedWriter finalResultWriter) throws Exception {
+        this.finalResultWriterForSpreadsheet = finalResultWriter; 
+
+        execute(initialTime);
+
+        return mapDataForSpreadsheet;
     }
 
     public void execute(long initialTime) throws Exception {
@@ -142,23 +157,24 @@ public class NSGA2 {
     private void calculateCrowdingDistance(List<Chromosome> chromosomeList) {
         int size = chromosomeList.size();
 
-        for (int i = 0; i < config.getTotalObjectives(); i++) {
-            int iFinal = i;
+        for (int objectiveIndex = 1; objectiveIndex <= config.getTotalObjectives(); objectiveIndex++) {
+            int realIndex = Utils.getActualObjectiveIndex(config, objectiveIndex); 
+            int iFinal = realIndex;
 
             chromosomeList.sort(Collections.reverseOrder(Comparator.comparingDouble(c -> c.getObjectiveValue(iFinal))));
 
-            Service.normalizeSortedObjectiveValues(chromosomeList, i);
+            Service.normalizeSortedObjectiveValues(chromosomeList, realIndex);
 
             chromosomeList.get(0).setCrowdingDistance(Double.MAX_VALUE);
             chromosomeList.get(chromosomeList.size() - 1).setCrowdingDistance(Double.MAX_VALUE);
 
-            double maxNormalizedObjectiveValue = selectMaximumNormalizedObjectiveValue(i, chromosomeList);
-            double minNormalizedObjectiveValue = selectMinimumNormalizedObjectiveValue(i, chromosomeList);
+            double maxNormalizedObjectiveValue = selectMaximumNormalizedObjectiveValue(realIndex, chromosomeList);
+            double minNormalizedObjectiveValue = selectMinimumNormalizedObjectiveValue(realIndex, chromosomeList);
 
             for (int j = 1; j < size; j++)
                 if (chromosomeList.get(j).getCrowdingDistance() < Double.MAX_VALUE) {
-                    double previousChromosomeObjectiveValue = chromosomeList.get(j - 1).getNormalizedObjectiveValues().get(i);
-                    double nextChromosomeObjectiveValue = chromosomeList.get(j + 1).getNormalizedObjectiveValues().get(i);
+                    double previousChromosomeObjectiveValue = chromosomeList.get(j - 1).getNormalizedObjectiveValues().get(realIndex);
+                    double nextChromosomeObjectiveValue = chromosomeList.get(j + 1).getNormalizedObjectiveValues().get(realIndex);
                     double objectiveDifference = nextChromosomeObjectiveValue - previousChromosomeObjectiveValue;
                     double minMaxDifference = maxNormalizedObjectiveValue - minNormalizedObjectiveValue;
 
@@ -202,7 +218,7 @@ public class NSGA2 {
         selectBestChromosomesForReinsertion();        
     }
 
-    private void executeSelection() {
+    private void executeSelection() throws Exception {
         for (int pair = 0; pair < config.getInitialPopulation() / 2; pair++) {
             processPairSelection();
         }
@@ -210,7 +226,7 @@ public class NSGA2 {
         applyMutationOnChildren();
     }
 
-    private void processPairSelection() {
+    private void processPairSelection() throws Exception {
         Chromosome parent1 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), null);
         Chromosome parent2 = raffleChromosomeByTournament(new ArrayList<>(chromosomeList), parent1);
 
@@ -281,11 +297,11 @@ public class NSGA2 {
         return generator.nextInt(limit);
     }
 
-    private void selectChildren(Chromosome parent1, Chromosome parent2) {
+    private void selectChildren(Chromosome parent1, Chromosome parent2) throws Exception {
         childrenList.addAll(getCrossoverChildren(parent1, parent2));
     }
 
-    private List<Chromosome> getCrossoverChildren(Chromosome parent1, Chromosome parent2) {
+    private List<Chromosome> getCrossoverChildren(Chromosome parent1, Chromosome parent2) throws Exception {
         List<Chromosome> generatedChildren = Crossover.getCrossover(parent1, parent2, graph, generator, config);
 
         //If the crossover was executed that generates only one child, I must execute it again, 
@@ -297,7 +313,7 @@ public class NSGA2 {
         return generatedChildren;
     }
 
-    private void applyMutationOnChildren() {
+    private void applyMutationOnChildren() throws Exception {
         List<Integer> raffledIndexList = new ArrayList<>();
 
         for (int mutatedChromosomeIndex = 0; mutatedChromosomeIndex < getNumberOfChromosomesMutated(); mutatedChromosomeIndex++) {
@@ -321,7 +337,7 @@ public class NSGA2 {
         return (int) Math.ceil(config.getInitialPopulation() * config.getMutationRate() / 100);
     }
 
-    private void applyMutation(Chromosome chromosome) {
+    private void applyMutation(Chromosome chromosome) throws Exception {
         chromosome.applyMutation(generator, graph, config);
     }
 
@@ -371,22 +387,16 @@ public class NSGA2 {
         chromosomeList.sort(Comparator.comparingDouble(Chromosome::getCrowdingDistance));
     }
 
-    private void showResult(long initialTime) {
+    private void showResult(long initialTime) throws Exception {
+        if (finalResultWriterForSpreadsheet != null) {
+            Printer.printFinalResultForNSGA2(config, chromosomeList, initialTime, mapDataForSpreadsheet, finalResultWriterForSpreadsheet);
+            return;
+        }
+
         if (config.isPrintComparisonNonDominatedChromosomes()) {
             Printer.printFinalResultForNSGA2WithComparedToNonDominated(config, chromosomeList, initialTime);
         } else {
-            Printer.printFinalResultForNSGA2(config, chromosomeList, initialTime);
+            Printer.printFinalResultForNSGA2(config, chromosomeList, initialTime, mapDataForSpreadsheet);
         }
-    }
-
-    private void printarTodoMundo() {
-        int cont = 1;
-        for (Chromosome c : chromosomeList) {
-            System.out.println("# Chromosome: " + cont++);
-            c.printChromosome(config.getAlgorithmType());
-            System.out.println("");
-        }
-        
-        System.exit(0);
     }
 }

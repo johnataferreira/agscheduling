@@ -33,7 +33,7 @@ public class Metrics implements Cloneable {
     private int dominatedCount = 0;
     private final List<Double> normalizedObjectiveValues = new ArrayList<>();
 
-	private double singleAvegare;
+	private double simpleAvegare;
 	private double harmonicAverage;
 	private double valueForSort;
 
@@ -148,8 +148,8 @@ public class Metrics implements Cloneable {
     }
     //FIM NSGA2
 
-    public double getSingleAverage() {
-        return singleAvegare;
+    public double getSimpleAverage() {
+        return simpleAvegare;
     }
 
     public double getHarmonicAverage() {
@@ -164,7 +164,7 @@ public class Metrics implements Cloneable {
 		this.valueForSort = valueForSort;
 	}
 
-	public void calculateMetrics(Graph graph, Chromosome chromosome, Configuration config) {
+	public void calculateMetrics(Graph graph, Chromosome chromosome, Configuration config) throws Exception {
 		//To facilitate the calculation, we will not work with zero index for the auxiliary vectors created
 		int [] startTimeTask = new int[graph.getNumberOfVertices() + 1]; 
 		int [] finalTimeTask = new int[graph.getNumberOfVertices() + 1];
@@ -378,7 +378,7 @@ public class Metrics implements Cloneable {
 	}
 
     private void calculateAverages(Chromosome chromosome, Configuration config) {
-        singleAvegare = CalculateValueForSort.calculateAverageBySingleAverage(chromosome, config);
+        simpleAvegare = CalculateValueForSort.calculateAverageBySimpleAverage(chromosome, config);
         harmonicAverage = CalculateValueForSort.calculateAverageByHarmonicAverage(chromosome, config);
     }
 
@@ -395,7 +395,7 @@ public class Metrics implements Cloneable {
 		clone.fitnessForFlowTime = this.fitnessForFlowTime;
 		clone.fitnessForCommunicationCost = this.fitnessForCommunicationCost;
 		clone.fitnessForWaitingTime = this.fitnessForWaitingTime;
-		clone.singleAvegare = this.singleAvegare;
+		clone.simpleAvegare = this.simpleAvegare;
 		clone.harmonicAverage = this.harmonicAverage;
 		clone.valueForSort = this.valueForSort;
 		return clone;

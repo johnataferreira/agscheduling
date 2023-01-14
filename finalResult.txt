@@ -1,0 +1,1333 @@
+######################################
+############ Final Result ############
+######################################
+
+############ AEMMT ############
+## Chromosomes Non-Dominated ##
+
+
+## Chromosome 1 ##
+Mapping (Processors) : [ 3, 2, 2, 2, 1, 2, 1, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 7, 5, 6, 4, 8, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 129.0
+CommunicationCost: 31.0
+WaitingTime: 34.0
+SingleAverage: 0.40799163157342655
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 2 ##
+Mapping (Processors) : [ 1, 2, 3, 3, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 6, 7, 9, 5 ]
+SLength: 20.0
+LoadBalance: 1.132075472
+FlowTime: 110.0
+CommunicationCost: 28.0
+WaitingTime: 28.0
+SingleAverage: 0.48761496263017057
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 3 ##
+Mapping (Processors) : [ 3, 3, 2, 2, 2, 3, 3, 3, 3 ]
+Scheduling (Tasks) : [ 1, 5, 3, 2, 7, 6, 4, 8, 9 ]
+SLength: 21.0
+LoadBalance: 1.75
+FlowTime: 104.0
+CommunicationCost: 5.0
+WaitingTime: 21.0
+SingleAverage: 0.40629347532450366
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 4 ##
+Mapping (Processors) : [ 2, 2, 3, 2, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 4, 8, 6, 7, 9, 5 ]
+SLength: 20.0
+LoadBalance: 1.25
+FlowTime: 97.0
+CommunicationCost: 14.0
+WaitingTime: 26.0
+SingleAverage: 0.49582722548595737
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 5 ##
+Mapping (Processors) : [ 1, 1, 3, 1, 2, 3, 1, 2, 1 ]
+Scheduling (Tasks) : [ 1, 4, 2, 6, 3, 7, 8, 5, 9 ]
+SLength: 28.0
+LoadBalance: 1.166666667
+FlowTime: 138.0
+CommunicationCost: 15.0
+WaitingTime: 43.0
+SingleAverage: 0.33422429217218025
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 6 ##
+Mapping (Processors) : [ 1, 3, 2, 2, 2, 3, 1, 1, 1 ]
+Scheduling (Tasks) : [ 1, 2, 6, 4, 3, 8, 5, 7, 9 ]
+SLength: 20.0
+LoadBalance: 1.25
+FlowTime: 110.0
+CommunicationCost: 15.0
+WaitingTime: 25.0
+SingleAverage: 0.46772674215801063
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 7 ##
+Mapping (Processors) : [ 1, 1, 1, 1, 1, 1, 3, 2, 2 ]
+Scheduling (Tasks) : [ 1, 2, 7, 3, 4, 6, 8, 9, 5 ]
+SLength: 23.0
+LoadBalance: 1.15
+FlowTime: 120.0
+CommunicationCost: 24.0
+WaitingTime: 43.0
+SingleAverage: 0.40578958518361974
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 8 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 3, 1, 1, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 5, 2, 7, 4, 8, 6, 9 ]
+SLength: 22.0
+LoadBalance: 1.736842105
+FlowTime: 101.0
+CommunicationCost: 8.0
+WaitingTime: 19.0
+SingleAverage: 0.4139095768748561
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 9 ##
+Mapping (Processors) : [ 3, 1, 3, 3, 3, 2, 1, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 5, 2, 6, 7, 9 ]
+SLength: 20.0
+LoadBalance: 1.153846154
+FlowTime: 106.0
+CommunicationCost: 25.0
+WaitingTime: 25.0
+SingleAverage: 0.4991591853919064
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 10 ##
+Mapping (Processors) : [ 3, 3, 3, 3, 3, 1, 3, 2, 1 ]
+Scheduling (Tasks) : [ 1, 2, 7, 6, 3, 5, 4, 8, 9 ]
+SLength: 32.0
+LoadBalance: 1.215189873
+FlowTime: 134.0
+CommunicationCost: 14.0
+WaitingTime: 39.0
+SingleAverage: 0.3100633857674449
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 11 ##
+Mapping (Processors) : [ 2, 2, 2, 3, 2, 1, 2, 3, 1 ]
+Scheduling (Tasks) : [ 1, 2, 6, 7, 4, 3, 8, 9, 5 ]
+SLength: 23.0
+LoadBalance: 1.210526316
+FlowTime: 102.0
+CommunicationCost: 14.0
+WaitingTime: 25.0
+SingleAverage: 0.46157865745327814
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 12 ##
+Mapping (Processors) : [ 3, 3, 3, 2, 3, 3, 3, 3, 3 ]
+Scheduling (Tasks) : [ 1, 4, 2, 6, 7, 3, 8, 9, 5 ]
+SLength: 26.0
+LoadBalance: 2.363636364
+FlowTime: 119.0
+CommunicationCost: 2.0
+WaitingTime: 35.0
+SingleAverage: 0.2406807922170136
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 13 ##
+Mapping (Processors) : [ 1, 1, 3, 3, 2, 1, 1, 2, 1 ]
+Scheduling (Tasks) : [ 1, 3, 5, 2, 7, 6, 4, 8, 9 ]
+SLength: 21.0
+LoadBalance: 1.369565217
+FlowTime: 89.0
+CommunicationCost: 10.0
+WaitingTime: 16.0
+SingleAverage: 0.5309942405411161
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 14 ##
+Mapping (Processors) : [ 3, 3, 1, 2, 3, 3, 3, 3, 3 ]
+Scheduling (Tasks) : [ 1, 4, 5, 3, 2, 8, 7, 6, 9 ]
+SLength: 23.0
+LoadBalance: 1.916666667
+FlowTime: 109.0
+CommunicationCost: 4.0
+WaitingTime: 22.0
+SingleAverage: 0.3527607860298959
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 15 ##
+Mapping (Processors) : [ 1, 1, 3, 1, 1, 2, 1, 2, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 6, 4, 8, 7, 5, 9 ]
+SLength: 20.0
+LoadBalance: 1.153846154
+FlowTime: 97.0
+CommunicationCost: 20.0
+WaitingTime: 26.0
+SingleAverage: 0.5184938921140314
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 16 ##
+Mapping (Processors) : [ 1, 1, 3, 3, 1, 1, 1, 2, 1 ]
+Scheduling (Tasks) : [ 1, 2, 7, 4, 6, 5, 3, 8, 9 ]
+SLength: 21.0
+LoadBalance: 1.369565217
+FlowTime: 100.0
+CommunicationCost: 9.0
+WaitingTime: 27.0
+SingleAverage: 0.44923738319567297
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 17 ##
+Mapping (Processors) : [ 3, 2, 3, 3, 1, 2, 1, 2, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 6, 7, 5, 4, 8, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 115.0
+CommunicationCost: 34.0
+WaitingTime: 33.0
+SingleAverage: 0.4338619042195281
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 18 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 1, 2, 2, 2, 2 ]
+Scheduling (Tasks) : [ 1, 5, 3, 2, 7, 4, 8, 6, 9 ]
+SLength: 22.0
+LoadBalance: 1.941176471
+FlowTime: 107.0
+CommunicationCost: 3.0
+WaitingTime: 20.0
+SingleAverage: 0.37393142735728857
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 19 ##
+Mapping (Processors) : [ 2, 2, 3, 1, 3, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 4, 5, 3, 8, 2, 6, 7, 9 ]
+SLength: 17.0
+LoadBalance: 1.378378378
+FlowTime: 85.0
+CommunicationCost: 16.0
+WaitingTime: 11.0
+SingleAverage: 0.6559999266359416
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 20 ##
+Mapping (Processors) : [ 2, 2, 2, 2, 3, 3, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 2, 6, 7, 5, 4, 8, 9 ]
+SLength: 27.0
+LoadBalance: 1.227272727
+FlowTime: 122.0
+CommunicationCost: 14.0
+WaitingTime: 31.0
+SingleAverage: 0.3685964918360103
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 21 ##
+Mapping (Processors) : [ 2, 1, 2, 3, 3, 2, 3, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 2, 6, 7, 5, 3, 8, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 131.0
+CommunicationCost: 31.0
+WaitingTime: 36.0
+SingleAverage: 0.40174770480386535
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 22 ##
+Mapping (Processors) : [ 1, 1, 2, 3, 1, 3, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 5, 2, 4, 3, 8, 6, 7, 9 ]
+SLength: 21.0
+LoadBalance: 1.26
+FlowTime: 93.0
+CommunicationCost: 20.0
+WaitingTime: 13.0
+SingleAverage: 0.5686540438592503
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 23 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 1, 3, 2, 1, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 8, 5, 2, 6, 7, 9 ]
+SLength: 19.0
+LoadBalance: 1.212765957
+FlowTime: 93.0
+CommunicationCost: 15.0
+WaitingTime: 19.0
+SingleAverage: 0.5568419601470831
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 24 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 2, 3, 2, 1, 1 ]
+Scheduling (Tasks) : [ 1, 5, 2, 6, 7, 3, 4, 8, 9 ]
+SLength: 24.0
+LoadBalance: 1.263157895
+FlowTime: 119.0
+CommunicationCost: 14.0
+WaitingTime: 20.0
+SingleAverage: 0.4245611519181541
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 25 ##
+Mapping (Processors) : [ 3, 2, 1, 1, 3, 3, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 7, 6, 5, 9 ]
+SLength: 20.0
+LoadBalance: 1.132075472
+FlowTime: 110.0
+CommunicationCost: 27.0
+WaitingTime: 28.0
+SingleAverage: 0.48761496263017057
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 26 ##
+Mapping (Processors) : [ 1, 1, 1, 1, 3, 3, 1, 2, 2 ]
+Scheduling (Tasks) : [ 1, 4, 5, 3, 8, 2, 7, 6, 9 ]
+SLength: 23.0
+LoadBalance: 1.232142857
+FlowTime: 107.0
+CommunicationCost: 15.0
+WaitingTime: 19.0
+SingleAverage: 0.46983580502052824
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 27 ##
+Mapping (Processors) : [ 3, 3, 2, 2, 2, 3, 3, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 5, 2, 4, 7, 8, 6, 9 ]
+SLength: 25.0
+LoadBalance: 1.875
+FlowTime: 117.0
+CommunicationCost: 5.0
+WaitingTime: 30.0
+SingleAverage: 0.29906239383588884
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 28 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 2, 3, 2, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 7, 6, 9 ]
+SLength: 24.0
+LoadBalance: 1.220338983
+FlowTime: 107.0
+CommunicationCost: 14.0
+WaitingTime: 18.0
+SingleAverage: 0.4690342391523915
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 29 ##
+Mapping (Processors) : [ 1, 1, 3, 1, 1, 3, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 2, 6, 4, 7, 5, 8, 9 ]
+SLength: 20.0
+LoadBalance: 1.153846154
+FlowTime: 97.0
+CommunicationCost: 19.0
+WaitingTime: 26.0
+SingleAverage: 0.5184938921140314
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 30 ##
+Mapping (Processors) : [ 1, 3, 2, 3, 2, 3, 1, 2, 1 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 5, 6, 7, 9 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 19.0
+WaitingTime: 39.0
+SingleAverage: 0.3976875577614409
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 31 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 1, 2, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 4, 5, 6, 3, 7, 8, 9 ]
+SLength: 22.0
+LoadBalance: 1.346938776
+FlowTime: 103.0
+CommunicationCost: 9.0
+WaitingTime: 27.0
+SingleAverage: 0.4349343131868529
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 32 ##
+Mapping (Processors) : [ 2, 2, 1, 1, 1, 2, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 5, 3, 4, 8, 2, 6, 7, 9 ]
+SLength: 26.0
+LoadBalance: 1.278688525
+FlowTime: 109.0
+CommunicationCost: 10.0
+WaitingTime: 26.0
+SingleAverage: 0.40192030939405815
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 33 ##
+Mapping (Processors) : [ 3, 3, 1, 3, 3, 3, 3, 3, 3 ]
+Scheduling (Tasks) : [ 1, 2, 4, 3, 8, 6, 7, 9, 5 ]
+SLength: 27.0
+LoadBalance: 2.454545455
+FlowTime: 122.0
+CommunicationCost: 2.0
+WaitingTime: 44.0
+SingleAverage: 0.2112972971957697
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 34 ##
+Mapping (Processors) : [ 2, 2, 2, 2, 3, 2, 2, 2, 2 ]
+Scheduling (Tasks) : [ 1, 5, 3, 4, 8, 2, 6, 7, 9 ]
+SLength: 25.0
+LoadBalance: 2.272727273
+FlowTime: 122.0
+CommunicationCost: 1.0
+WaitingTime: 19.0
+SingleAverage: 0.29640613822162776
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 35 ##
+Mapping (Processors) : [ 3, 3, 1, 1, 2, 3, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 3, 5, 2, 7, 6, 4, 8, 9 ]
+SLength: 20.0
+LoadBalance: 1.428571429
+FlowTime: 87.0
+CommunicationCost: 8.0
+WaitingTime: 15.0
+SingleAverage: 0.5476849247738407
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 36 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 3, 2, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 8, 2, 6, 5, 7, 9 ]
+SLength: 18.0
+LoadBalance: 1.14893617
+FlowTime: 97.0
+CommunicationCost: 25.0
+WaitingTime: 20.0
+SingleAverage: 0.5708027507743285
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 37 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 2, 7, 8, 6, 9 ]
+SLength: 19.0
+LoadBalance: 1.325581395
+FlowTime: 86.0
+CommunicationCost: 16.0
+WaitingTime: 12.0
+SingleAverage: 0.6158447258514026
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 38 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 7, 6, 9 ]
+SLength: 18.0
+LoadBalance: 1.459459459
+FlowTime: 90.0
+CommunicationCost: 8.0
+WaitingTime: 11.0
+SingleAverage: 0.6089408502005483
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 39 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 5, 2, 7, 3, 8, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.307692308
+FlowTime: 86.0
+CommunicationCost: 11.0
+WaitingTime: 11.0
+SingleAverage: 0.6658377415362855
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 40 ##
+Mapping (Processors) : [ 1, 1, 1, 1, 1, 1, 3, 2, 2 ]
+Scheduling (Tasks) : [ 1, 2, 7, 4, 3, 8, 6, 9, 5 ]
+SLength: 23.0
+LoadBalance: 1.15
+FlowTime: 121.0
+CommunicationCost: 24.0
+WaitingTime: 44.0
+SingleAverage: 0.4029882847273649
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 41 ##
+Mapping (Processors) : [ 2, 2, 3, 2, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 2, 4, 7, 3, 8, 6, 9, 5 ]
+SLength: 20.0
+LoadBalance: 1.25
+FlowTime: 97.0
+CommunicationCost: 14.0
+WaitingTime: 26.0
+SingleAverage: 0.49582722548595737
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 42 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 4, 5, 2, 7, 6, 8, 9 ]
+SLength: 19.0
+LoadBalance: 1.325581395
+FlowTime: 86.0
+CommunicationCost: 16.0
+WaitingTime: 12.0
+SingleAverage: 0.6158447258514026
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 43 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 6, 7, 9 ]
+SLength: 19.0
+LoadBalance: 1.325581395
+FlowTime: 86.0
+CommunicationCost: 16.0
+WaitingTime: 12.0
+SingleAverage: 0.6158447258514026
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 44 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 5, 2, 6, 7, 9 ]
+SLength: 19.0
+LoadBalance: 1.163265306
+FlowTime: 95.0
+CommunicationCost: 15.0
+WaitingTime: 21.0
+SingleAverage: 0.5531101385666691
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 45 ##
+Mapping (Processors) : [ 1, 1, 2, 3, 1, 3, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 5, 2, 3, 4, 8, 6, 7, 9 ]
+SLength: 21.0
+LoadBalance: 1.26
+FlowTime: 93.0
+CommunicationCost: 20.0
+WaitingTime: 13.0
+SingleAverage: 0.5686540438592503
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 46 ##
+Mapping (Processors) : [ 3, 3, 1, 1, 2, 3, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 5, 3, 4, 8, 2, 6, 7, 9 ]
+SLength: 20.0
+LoadBalance: 1.428571429
+FlowTime: 87.0
+CommunicationCost: 8.0
+WaitingTime: 15.0
+SingleAverage: 0.5476849247738407
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 47 ##
+Mapping (Processors) : [ 1, 2, 3, 3, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 6, 7, 5, 9 ]
+SLength: 20.0
+LoadBalance: 1.132075472
+FlowTime: 110.0
+CommunicationCost: 28.0
+WaitingTime: 28.0
+SingleAverage: 0.48761496263017057
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 48 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 5, 8, 2, 7, 6, 9 ]
+SLength: 19.0
+LoadBalance: 1.295454545
+FlowTime: 86.0
+CommunicationCost: 15.0
+WaitingTime: 12.0
+SingleAverage: 0.6218096381568798
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 49 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 6, 7, 9 ]
+SLength: 19.0
+LoadBalance: 1.295454545
+FlowTime: 86.0
+CommunicationCost: 15.0
+WaitingTime: 12.0
+SingleAverage: 0.6218096381568798
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 50 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 3, 2, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 2, 6, 7, 8, 9, 5 ]
+SLength: 18.0
+LoadBalance: 1.14893617
+FlowTime: 97.0
+CommunicationCost: 25.0
+WaitingTime: 20.0
+SingleAverage: 0.5708027507743285
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 51 ##
+Mapping (Processors) : [ 3, 2, 2, 2, 1, 2, 1, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 7, 5, 4, 8, 6, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 125.0
+CommunicationCost: 31.0
+WaitingTime: 38.0
+SingleAverage: 0.408229470764193
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 52 ##
+Mapping (Processors) : [ 1, 2, 3, 3, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 6, 5, 7, 9 ]
+SLength: 20.0
+LoadBalance: 1.132075472
+FlowTime: 110.0
+CommunicationCost: 28.0
+WaitingTime: 28.0
+SingleAverage: 0.48761496263017057
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 53 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 7, 6, 9 ]
+SLength: 19.0
+LoadBalance: 1.295454545
+FlowTime: 86.0
+CommunicationCost: 15.0
+WaitingTime: 12.0
+SingleAverage: 0.6218096381568798
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 54 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 3, 2, 3 ]
+Scheduling (Tasks) : [ 1, 4, 2, 3, 8, 6, 7, 9, 5 ]
+SLength: 19.0
+LoadBalance: 1.163265306
+FlowTime: 100.0
+CommunicationCost: 25.0
+WaitingTime: 28.0
+SingleAverage: 0.5162029452101435
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 55 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 2, 4, 7, 3, 8, 6, 9, 5 ]
+SLength: 18.0
+LoadBalance: 1.285714286
+FlowTime: 84.0
+CommunicationCost: 9.0
+WaitingTime: 16.0
+SingleAverage: 0.604721024914785
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 56 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 6, 7, 9 ]
+SLength: 17.0
+LoadBalance: 1.416666667
+FlowTime: 86.0
+CommunicationCost: 8.0
+WaitingTime: 9.0
+SingleAverage: 0.6856463539805684
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 57 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 1 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 2, 7, 6, 8, 9 ]
+SLength: 19.0
+LoadBalance: 1.325581395
+FlowTime: 86.0
+CommunicationCost: 16.0
+WaitingTime: 12.0
+SingleAverage: 0.6158447258514026
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 58 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 5, 2, 7, 3, 6, 8, 9 ]
+SLength: 17.0
+LoadBalance: 1.307692308
+FlowTime: 86.0
+CommunicationCost: 11.0
+WaitingTime: 11.0
+SingleAverage: 0.6658377415362855
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 59 ##
+Mapping (Processors) : [ 1, 2, 1, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 7, 6, 9, 5 ]
+SLength: 20.0
+LoadBalance: 1.132075472
+FlowTime: 108.0
+CommunicationCost: 28.0
+WaitingTime: 27.0
+SingleAverage: 0.4945232026256061
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 60 ##
+Mapping (Processors) : [ 3, 3, 2, 1, 1, 1, 3, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 6, 5, 7, 9 ]
+SLength: 26.0
+LoadBalance: 1.114285714
+FlowTime: 132.0
+CommunicationCost: 22.0
+WaitingTime: 37.0
+SingleAverage: 0.37777243058240473
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 61 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 5, 2, 7, 6, 9 ]
+SLength: 19.0
+LoadBalance: 1.163265306
+FlowTime: 95.0
+CommunicationCost: 15.0
+WaitingTime: 21.0
+SingleAverage: 0.5531101385666691
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 62 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 7, 6, 8, 9 ]
+SLength: 17.0
+LoadBalance: 1.307692308
+FlowTime: 81.0
+CommunicationCost: 11.0
+WaitingTime: 13.0
+SingleAverage: 0.6566186153857819
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 63 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 1, 1 ]
+Scheduling (Tasks) : [ 1, 4, 5, 2, 7, 6, 3, 8, 9 ]
+SLength: 17.0
+LoadBalance: 1.307692308
+FlowTime: 86.0
+CommunicationCost: 11.0
+WaitingTime: 11.0
+SingleAverage: 0.6658377415362855
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 64 ##
+Mapping (Processors) : [ 3, 2, 3, 3, 1, 2, 1, 2, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 6, 7, 4, 8, 5, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 115.0
+CommunicationCost: 34.0
+WaitingTime: 33.0
+SingleAverage: 0.4338619042195281
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 65 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 8, 5, 2, 7, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.416666667
+FlowTime: 86.0
+CommunicationCost: 8.0
+WaitingTime: 9.0
+SingleAverage: 0.6856463539805684
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 66 ##
+Mapping (Processors) : [ 2, 2, 3, 1, 3, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 4, 5, 3, 8, 2, 7, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.378378378
+FlowTime: 85.0
+CommunicationCost: 16.0
+WaitingTime: 11.0
+SingleAverage: 0.6559999266359416
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 67 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 2, 7, 8, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.416666667
+FlowTime: 86.0
+CommunicationCost: 8.0
+WaitingTime: 9.0
+SingleAverage: 0.6856463539805684
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 68 ##
+Mapping (Processors) : [ 1, 3, 2, 3, 1, 1, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 7, 3, 4, 6, 8, 9, 5 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 25.0
+WaitingTime: 39.0
+SingleAverage: 0.3976875577614409
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 69 ##
+Mapping (Processors) : [ 2, 2, 3, 1, 3, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 4, 5, 2, 7, 3, 8, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.378378378
+FlowTime: 85.0
+CommunicationCost: 16.0
+WaitingTime: 11.0
+SingleAverage: 0.6559999266359416
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 70 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 5, 4, 8, 2, 7, 6, 9 ]
+SLength: 17.0
+LoadBalance: 1.416666667
+FlowTime: 86.0
+CommunicationCost: 8.0
+WaitingTime: 9.0
+SingleAverage: 0.6856463539805684
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 71 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 2, 1, 2 ]
+Scheduling (Tasks) : [ 1, 3, 2, 7, 6, 5, 4, 8, 9 ]
+SLength: 17.0
+LoadBalance: 1.416666667
+FlowTime: 86.0
+CommunicationCost: 8.0
+WaitingTime: 9.0
+SingleAverage: 0.6856463539805684
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 72 ##
+Mapping (Processors) : [ 3, 1, 1, 1, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 4, 2, 3, 8, 6, 7, 9, 5 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 130.0
+CommunicationCost: 29.0
+WaitingTime: 41.0
+SingleAverage: 0.3889829964739662
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 73 ##
+Mapping (Processors) : [ 1, 2, 2, 3, 1, 1, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 7, 6, 9, 5 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 25.0
+WaitingTime: 40.0
+SingleAverage: 0.396424399866704
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 74 ##
+Mapping (Processors) : [ 1, 3, 2, 3, 2, 3, 1, 2, 1 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 5, 7, 6, 9 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 19.0
+WaitingTime: 39.0
+SingleAverage: 0.3976875577614409
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 75 ##
+Mapping (Processors) : [ 1, 3, 2, 3, 1, 1, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 7, 6, 9, 5 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 25.0
+WaitingTime: 39.0
+SingleAverage: 0.3976875577614409
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 76 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 2, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 7, 6, 8, 9 ]
+SLength: 16.0
+LoadBalance: 1.333333333
+FlowTime: 82.0
+CommunicationCost: 11.0
+WaitingTime: 12.0
+SingleAverage: 0.6791395079203681
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 77 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 1, 1, 1, 2, 3 ]
+Scheduling (Tasks) : [ 1, 2, 7, 3, 6, 5, 4, 8, 9 ]
+SLength: 30.0
+LoadBalance: 1.097560976
+FlowTime: 156.0
+CommunicationCost: 31.0
+WaitingTime: 65.0
+SingleAverage: 0.30356430761207126
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 78 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 1, 1, 1, 2, 3 ]
+Scheduling (Tasks) : [ 1, 2, 7, 3, 4, 6, 8, 9, 5 ]
+SLength: 30.0
+LoadBalance: 1.097560976
+FlowTime: 156.0
+CommunicationCost: 31.0
+WaitingTime: 65.0
+SingleAverage: 0.30356430761207126
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 79 ##
+Mapping (Processors) : [ 1, 3, 2, 3, 1, 1, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 3, 4, 8, 7, 6, 5, 9 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 126.0
+CommunicationCost: 25.0
+WaitingTime: 39.0
+SingleAverage: 0.3976875577614409
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 80 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 1, 3, 1 ]
+Scheduling (Tasks) : [ 1, 4, 5, 3, 8, 2, 7, 6, 9 ]
+SLength: 18.0
+LoadBalance: 1.285714286
+FlowTime: 88.0
+CommunicationCost: 25.0
+WaitingTime: 11.0
+SingleAverage: 0.6468749171079544
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 81 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 2, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 6, 7, 9 ]
+SLength: 16.0
+LoadBalance: 1.333333333
+FlowTime: 82.0
+CommunicationCost: 11.0
+WaitingTime: 12.0
+SingleAverage: 0.6791395079203681
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 82 ##
+Mapping (Processors) : [ 2, 2, 1, 2, 2, 2, 2, 1, 3 ]
+Scheduling (Tasks) : [ 1, 2, 7, 3, 4, 6, 8, 9, 5 ]
+SLength: 24.0
+LoadBalance: 1.125
+FlowTime: 116.0
+CommunicationCost: 18.0
+WaitingTime: 37.0
+SingleAverage: 0.41790108462827114
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 83 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 3, 2, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 7, 6, 9 ]
+SLength: 18.0
+LoadBalance: 1.285714286
+FlowTime: 88.0
+CommunicationCost: 25.0
+WaitingTime: 11.0
+SingleAverage: 0.6468749171079544
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 84 ##
+Mapping (Processors) : [ 3, 3, 2, 1, 1, 1, 3, 2, 3 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 7, 6, 9, 5 ]
+SLength: 18.0
+LoadBalance: 1.173913043
+FlowTime: 86.0
+CommunicationCost: 15.0
+WaitingTime: 19.0
+SingleAverage: 0.6033859636626866
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 85 ##
+Mapping (Processors) : [ 1, 1, 3, 2, 3, 2, 1, 2, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 7, 6, 9 ]
+SLength: 16.0
+LoadBalance: 1.333333333
+FlowTime: 82.0
+CommunicationCost: 11.0
+WaitingTime: 12.0
+SingleAverage: 0.6791395079203681
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 86 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 7, 6, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 87 ##
+Mapping (Processors) : [ 3, 3, 2, 1, 1, 1, 3, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 6, 7, 9, 5 ]
+SLength: 26.0
+LoadBalance: 1.114285714
+FlowTime: 132.0
+CommunicationCost: 22.0
+WaitingTime: 37.0
+SingleAverage: 0.37777243058240473
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 88 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 3, 1, 2, 2, 2 ]
+Scheduling (Tasks) : [ 1, 2, 4, 7, 3, 8, 5, 6, 9 ]
+SLength: 16.0
+LoadBalance: 1.263157895
+FlowTime: 80.0
+CommunicationCost: 11.0
+WaitingTime: 12.0
+SingleAverage: 0.701096491176781
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 89 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 8, 7, 6, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 90 ##
+Mapping (Processors) : [ 2, 2, 1, 1, 3, 1, 1, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 4, 7, 3, 8, 6, 9, 5 ]
+SLength: 30.0
+LoadBalance: 1.097560976
+FlowTime: 155.0
+CommunicationCost: 33.0
+WaitingTime: 64.0
+SingleAverage: 0.305094742807129
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 91 ##
+Mapping (Processors) : [ 3, 3, 2, 1, 1, 1, 3, 3, 2 ]
+Scheduling (Tasks) : [ 1, 3, 4, 8, 2, 7, 6, 9, 5 ]
+SLength: 26.0
+LoadBalance: 1.114285714
+FlowTime: 132.0
+CommunicationCost: 22.0
+WaitingTime: 37.0
+SingleAverage: 0.37777243058240473
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 92 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 8, 6, 7, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 93 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 3, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 2, 4, 7, 3, 8, 6, 5, 9 ]
+SLength: 17.0
+LoadBalance: 1.186046512
+FlowTime: 83.0
+CommunicationCost: 15.0
+WaitingTime: 17.0
+SingleAverage: 0.6400182078713866
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 94 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 7, 6, 8, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 95 ##
+Mapping (Processors) : [ 2, 2, 2, 1, 3, 2, 3, 1, 3 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 8, 2, 6, 7, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 96 ##
+Mapping (Processors) : [ 1, 1, 1, 3, 2, 1, 2, 3, 2 ]
+Scheduling (Tasks) : [ 1, 4, 3, 5, 2, 7, 6, 8, 9 ]
+SLength: 18.0
+LoadBalance: 1.317073171
+FlowTime: 87.0
+CommunicationCost: 24.0
+WaitingTime: 10.0
+SingleAverage: 0.6618300406693839
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 97 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 4, 6, 7, 8, 9, 5 ]
+SLength: 16.0
+LoadBalance: 1.2
+FlowTime: 80.0
+CommunicationCost: 15.0
+WaitingTime: 14.0
+SingleAverage: 0.6918045112834177
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 98 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 4, 8, 7, 6, 9, 5 ]
+SLength: 16.0
+LoadBalance: 1.2
+FlowTime: 80.0
+CommunicationCost: 15.0
+WaitingTime: 14.0
+SingleAverage: 0.6918045112834177
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 99 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 7, 6, 5, 4, 8, 9 ]
+SLength: 16.0
+LoadBalance: 1.2
+FlowTime: 80.0
+CommunicationCost: 15.0
+WaitingTime: 14.0
+SingleAverage: 0.6918045112834177
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+## Chromosome 100 ##
+Mapping (Processors) : [ 2, 2, 1, 3, 2, 1, 2, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 4, 8, 7, 6, 5, 9 ]
+SLength: 16.0
+LoadBalance: 1.2
+FlowTime: 80.0
+CommunicationCost: 15.0
+WaitingTime: 14.0
+SingleAverage: 0.6918045112834177
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+##################################
+######## General Analysis ########
+
+## SLength##
+Total Best SLength Founded: 8 -> 8.0%
+
+SLength Between Min and Max: [16.0, 43.0]
+90-100 [16.0, 18.7): 34 -> 34.0%
+80-90 [18.7, 21.4): 29 -> 29.0%
+70-80 [21.4, 24.1): 23 -> 23.0%
+60-70 [24.1, 26.8): 7 -> 7.0%
+50-60 [26.8, 29.5): 3 -> 3.0%
+40-50 [29.5, 32.2): 4 -> 4.0%
+30-40 [32.2, 34.9): 0 -> 0.0%
+20-30 [34.9, 37.6): 0 -> 0.0%
+10-20 [37.6, 40.3): 0 -> 0.0%
+0-10 [40.3, 43.0): 0 -> 0.0%
+
+
+## LoadBalance##
+Total Best LoadBalance Founded: 0 -> 0.0%
+
+LoadBalance Between Min and Max: [1.085106383, 3.0]
+90-100 [1.085106383, 1.276595745): 54 -> 54.0%
+80-90 [1.276595745, 1.468085106): 38 -> 38.0%
+70-80 [1.468085106, 1.659574468): 0 -> 0.0%
+60-70 [1.659574468, 1.85106383): 2 -> 2.0%
+50-60 [1.85106383, 2.042553192): 3 -> 3.0%
+40-50 [2.042553192, 2.234042553): 0 -> 0.0%
+30-40 [2.234042553, 2.425531915): 2 -> 2.0%
+20-30 [2.425531915, 2.617021277): 1 -> 1.0%
+10-20 [2.617021277, 2.808510638): 0 -> 0.0%
+0-10 [2.808510638, 3.0): 0 -> 0.0%
+
+
+## FlowTime##
+Total Best FlowTime Founded: 5 -> 5.0%
+
+FlowTime Between Min and Max: [80.0, 214.0]
+90-100 [80.0, 93.4): 45 -> 45.0%
+80-90 [93.4, 106.8): 15 -> 15.0%
+70-80 [106.8, 120.2): 18 -> 18.0%
+60-70 [120.2, 133.6): 17 -> 17.0%
+50-60 [133.6, 147.0): 2 -> 2.0%
+40-50 [147.0, 160.4): 3 -> 3.0%
+30-40 [160.4, 173.8): 0 -> 0.0%
+20-30 [173.8, 187.2): 0 -> 0.0%
+10-20 [187.2, 200.6): 0 -> 0.0%
+0-10 [200.6, 214.0): 0 -> 0.0%
+
+
+## CommunicationCost##
+Total Best CommunicationCost Founded: 0 -> 0.0%
+
+CommunicationCost Between Min and Max: [0.0, 37.0]
+90-100 [0.0, 3.7): 4 -> 4.0%
+80-90 [3.7, 7.4): 3 -> 3.0%
+70-80 [7.4, 11.1): 22 -> 22.0%
+60-70 [11.1, 14.8): 7 -> 7.0%
+50-60 [14.8, 18.5): 23 -> 23.0%
+40-50 [18.5, 22.2): 9 -> 9.0%
+30-40 [22.2, 25.9): 18 -> 18.0%
+20-30 [25.9, 29.6): 6 -> 6.0%
+10-20 [29.6, 33.3): 6 -> 6.0%
+0-10 [33.3, 37.0): 2 -> 2.0%
+
+
+## WaitingTime##
+Total Best WaitingTime Founded: 5 -> 5.0%
+
+WaitingTime Between Min and Max: [9.0, 104.0]
+90-100 [9.0, 18.5): 44 -> 44.0%
+80-90 [18.5, 28.0): 24 -> 24.0%
+70-80 [28.0, 37.5): 16 -> 16.0%
+60-70 [37.5, 47.0): 13 -> 13.0%
+50-60 [47.0, 56.5): 0 -> 0.0%
+40-50 [56.5, 66.0): 3 -> 3.0%
+30-40 [66.0, 75.5): 0 -> 0.0%
+20-30 [75.5, 85.0): 0 -> 0.0%
+10-20 [85.0, 94.5): 0 -> 0.0%
+0-10 [94.5, 104.0): 0 -> 0.0%
+
+
+##################################
+## Best And Worst Results By Objectives ##
+
+Best SLength: 16.0
+Best LoadBalance: 1.097560976
+Best FlowTime: 80.0
+Best CommunicationCost: 1.0
+Best WaitingTime: 9.0
+
+Worst SLength: 32.0
+Worst LoadBalance: 2.454545455
+Worst FlowTime: 156.0
+Worst CommunicationCost: 34.0
+Worst WaitingTime: 65.0
+
+Graph: Graph_Omara_Arafa
+Processors: 3
+With CommunicationCost: true
+Seed: -1995383100
+Algorithm: AEMMT - Harmonic Average
+
+##################################
+## Best Non-Dominated Chromosome ##
+
+## Harmonic Average ##
+Mapping (Processors) : [ 3, 2, 2, 2, 1, 2, 1, 3, 3 ]
+Scheduling (Tasks) : [ 1, 3, 2, 7, 5, 6, 4, 8, 9 ]
+SLength: 23.0
+LoadBalance: 1.131147541
+FlowTime: 129.0
+CommunicationCost: 31.0
+WaitingTime: 34.0
+SingleAverage: 0.40799163157342655
+HarmonicAverage: 0.0
+Value For Sort (normalization): 0.0
+
+##################################
+
+Total Chromosomes Non-Dominated: 100.
+Runtime for 15000 generations: 0.63 segundos.
+
+

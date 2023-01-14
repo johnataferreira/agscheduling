@@ -1,12 +1,16 @@
 package br.ufu.scheduling.aemmt;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.model.Chromosome;
+import br.ufu.scheduling.model.DataForSpreadsheet;
 import br.ufu.scheduling.model.Graph;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
@@ -17,6 +21,8 @@ public class AEMMT {
 	private Random generator;
 	private Configuration config;
 	private Graph graph;
+    private Map<String, DataForSpreadsheet> mapDataForSpreadsheet = new LinkedHashMap<>();
+    private BufferedWriter finalResultWriterForSpreadsheet = null;
 
 	private List<Table> tables = new ArrayList<>();
 	private List<Chromosome> chromosomeInitialList = new ArrayList<>();
@@ -168,6 +174,14 @@ public class AEMMT {
 
 		return accumulatedValue;
 	}
+
+    public Map<String, DataForSpreadsheet> executeForSpreadsheet(long initialTime, BufferedWriter finalResultWriter) throws Exception {
+        this.finalResultWriterForSpreadsheet = finalResultWriter;
+
+        execute(initialTime);
+
+        return mapDataForSpreadsheet;
+    }
 
 	public void execute(long initialTime) throws Exception {
 		initialize();
@@ -344,7 +358,7 @@ public class AEMMT {
 			}
 		}
 
-		nonDominatedTable.removeChromosomeFromTable(chromosome);
+		nonDominatedTable.removeChromosomeFromTable(chromosome, config);
 		nonDominatedTable.add(chromosome, config);
 	}
 
@@ -390,7 +404,7 @@ public class AEMMT {
 		return generator.nextInt(limit);
 	}
 
-	private Chromosome processPairSelection() {
+	private Chromosome processPairSelection() throws Exception {
 		Chromosome parent1 = raflleChromosomeFromTable(table1ForDoubleTournament);
 		Chromosome parent2 = raflleChromosomeFromTable(table2ForDoubleTournament);
 
@@ -401,7 +415,7 @@ public class AEMMT {
 		return table.getChromosomeFromIndex(raffleIndex(table.getTotalChromosomes()));
 	}
 
-	private Chromosome getCrossoverChildren(Chromosome parent1, Chromosome parent2) {
+	private Chromosome getCrossoverChildren(Chromosome parent1, Chromosome parent2) throws Exception {
 		List<Chromosome> generatedChildren = Crossover.getCrossover(parent1, parent2, graph, generator, config);
 
 		if (generatedChildren.size() == 0) {
@@ -411,7 +425,7 @@ public class AEMMT {
 		return generatedChildren.get(raffleIndex(generatedChildren.size()));
 	}
 
-	private void applyMutation(Chromosome chromosome) {
+	private void applyMutation(Chromosome chromosome) throws Exception {
 		if (config.getTotalGenerationsToApplyMutation() > 0 && generationAccumulatedForApplyMutation > config.getTotalGenerationsToApplyMutation()) {
 			chromosome.applyMutation(generator, graph, config);
 			generationAccumulatedForApplyMutation = 1;
@@ -452,11 +466,16 @@ public class AEMMT {
 		generationAccumulated++;
 	}
 
-	private void showResult(long initialTime) {
+	private void showResult(long initialTime) throws Exception {
+        if (finalResultWriterForSpreadsheet != null) {
+            Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime, mapDataForSpreadsheet, finalResultWriterForSpreadsheet);
+            return;
+        }
+
 		if (config.isPrintComparisonNonDominatedChromosomes()) {
 			Printer.printFinalResultForAEMMTWithComparedToNonDominated(config, tables, initialTime);
 		} else {
-			Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime);
+			Printer.printFinalResultForAEMMT(config, tables.get(nonDominatedTableIndex), initialTime, mapDataForSpreadsheet);
 		}
 	}
 }

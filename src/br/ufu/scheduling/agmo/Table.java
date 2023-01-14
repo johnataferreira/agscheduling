@@ -87,14 +87,14 @@ public abstract class Table {
 		return clone;
 	}
 
-    public void removeChromosomeFromTable(Chromosome chromosome) {
+    public void removeChromosomeFromTable(Chromosome chromosome, Configuration config) {
         int totalChromosomes = chromosomeList.size();
         int chromosomeIndex = 0;
 
         while (chromosomeIndex < totalChromosomes) {
             Chromosome chromosomeB = chromosomeList.get(chromosomeIndex);
 
-            if (chromosomeB.isChromosomeDominated(objectives, chromosome)) {
+            if (chromosomeB.isChromosomeDominated(config, objectives, chromosome)) {
                 chromosomeList.remove(chromosomeIndex);
                 totalChromosomes--;
 

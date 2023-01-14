@@ -1,10 +1,13 @@
 package br.ufu.scheduling.model;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
+import br.ufu.scheduling.utils.Utils;
 
 public class BestResultByObjective {
     private double bestSlength = Double.MAX_VALUE;
@@ -18,6 +21,9 @@ public class BestResultByObjective {
     private double worstFlowTime = Double.MIN_VALUE;
     private double worstCommunicationCost = Double.MIN_VALUE;
     private double worstWaitingTime = Double.MIN_VALUE;
+
+    private Chromosome bestSolutionBySimpleAverage;
+    private Chromosome bestSolutionByHarmonicAverage;
 
     private Configuration config;
 
@@ -43,6 +49,14 @@ public class BestResultByObjective {
 
     public double getBestWaitingTime() {
         return bestWaitingTime;
+    }
+
+    public Chromosome getBestSolutionBySimpleAverage() {
+        return bestSolutionBySimpleAverage;
+    }
+
+    public Chromosome getBestSolutionByHarmonicAverage() {
+        return bestSolutionByHarmonicAverage;
     }
 
     public void verifyBestAndWorstSolutions(Chromosome chromosome) {
@@ -98,55 +112,119 @@ public class BestResultByObjective {
                 if (chromosome.getWaitingTime() > worstWaitingTime) {
                     worstWaitingTime = chromosome.getWaitingTime();
                 }
+                
+                //Best Non-Dominated Chromosome
+                if (bestSolutionBySimpleAverage == null || bestSolutionBySimpleAverage.getSimpleAverage() < chromosome.getSimpleAverage()) {
+                    bestSolutionBySimpleAverage = chromosome;
+                }
+
+                if (bestSolutionByHarmonicAverage == null || bestSolutionByHarmonicAverage.getHarmonicAverage() < chromosome.getHarmonicAverage()) {
+                    bestSolutionByHarmonicAverage = chromosome;
+                }
             }
         }
     }
 
-    public void showResult() {
+    public void showResult() throws Exception {
+        showResult(null);
+    }
+
+    public void showResult(BufferedWriter finalResultWriter) throws Exception {
         if (config.isPrintBestResultsByObjectives()) {
-            System.out.println("");
-            System.out.println("##################################");
-            System.out.println("## Best And Worst Results By Objectives ##");
-            System.out.println("");
-            System.out.println("Best SLength: " + bestSlength);
-            System.out.println("Best LoadBalance: " + bestLoadBalance);
-            System.out.println("Best FlowTime: " + bestFlowTime);
-            System.out.println("Best CommunicationCost: " + bestCommunicationCost);
-            System.out.println("Best WaitingTime: " + bestWaitingTime);
-            System.out.println("");
-            System.out.println("Worst SLength: " + worstSlength);
-            System.out.println("Worst LoadBalance: " + worstLoadBalance);
-            System.out.println("Worst FlowTime: " + worstFlowTime);
-            System.out.println("Worst CommunicationCost: " + worstCommunicationCost);
-            System.out.println("Worst WaitingTime: " + worstWaitingTime);
-            System.out.println("");
-            System.out.println("Graph: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()));
-            System.out.println("Processors: " + config.getTotalProcessors());
-            System.out.println("With CommunicationCost: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()));
-            System.out.println("Seed: " + config.getSeed());
-            System.out.println("Algorithm: " + getAlgorithmName());
+            Utils.print("", finalResultWriter);
+            Utils.print("##################################", finalResultWriter);
+            Utils.print("## Best And Worst Results By Objectives ##", finalResultWriter);
+            Utils.print("", finalResultWriter);
+
+            for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+                int realObjective = Utils.getActualObjectiveIndex(config, objective);
+
+                switch (realObjective) {
+                    case Constants.MAKESPAN:
+                        Utils.print("Best SLength: " + bestSlength, finalResultWriter);
+                        break;
+
+                    case Constants.LOAD_BALANCE:
+                        Utils.print("Best LoadBalance: " + bestLoadBalance, finalResultWriter);
+                        break;
+
+                    case Constants.FLOW_TIME:
+                        Utils.print("Best FlowTime: " + bestFlowTime, finalResultWriter);
+                        break;
+
+                    case Constants.COMMUNICATION_COST:
+                        Utils.print("Best CommunicationCost: " + bestCommunicationCost, finalResultWriter);
+                        break;
+
+                    case Constants.WAITING_TIME:
+                        Utils.print("Best WaitingTime: " + bestWaitingTime, finalResultWriter);
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+                }
+            }
+            Utils.print("", finalResultWriter);
+
+            for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+                int realObjective = Utils.getActualObjectiveIndex(config, objective);
+
+                switch (realObjective) {
+                    case Constants.MAKESPAN:
+                        Utils.print("Worst SLength: " + worstSlength, finalResultWriter);
+                        break;
+
+                    case Constants.LOAD_BALANCE:
+                        Utils.print("Worst LoadBalance: " + worstLoadBalance, finalResultWriter);
+                        break;
+
+                    case Constants.FLOW_TIME:
+                        Utils.print("Worst FlowTime: " + worstFlowTime, finalResultWriter);
+                        break;
+
+                    case Constants.COMMUNICATION_COST:
+                        Utils.print("Worst CommunicationCost: " + worstCommunicationCost, finalResultWriter);
+                        break;
+
+                    case Constants.WAITING_TIME:
+                        Utils.print("Worst WaitingTime: " + worstWaitingTime, finalResultWriter);
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+                }
+            }
+            Utils.print("", finalResultWriter);
+            
+            Utils.print("Graph: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()), finalResultWriter);
+            Utils.print("Processors: " + config.getTotalProcessors(), finalResultWriter);
+            Utils.print("With CommunicationCost: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? true : config.isGraphWithCommunicationCost()), finalResultWriter);
+            Utils.print("Seed: " + config.getSeed(), finalResultWriter);
+            Utils.print("Algorithm: " + Utils.getAlgorithmName(config) + (Utils.getAlgorithmName(config) == Constants.ALGORITHM_AEMMT ? " - " + Utils.getSortFunction(config) : ""), finalResultWriter);
+
+            Utils.print("", finalResultWriter);
+            Utils.print("##################################", finalResultWriter);
+            Utils.print("## Best Non-Dominated Chromosome ##", finalResultWriter);
+            Utils.print("", finalResultWriter);
+
+            if (Utils.getAlgorithmName(config) == Constants.ALGORITHM_AEMMT) {
+                if (config.getSortFunctionType() == SortFunctionType.SIMPLE_AVERAGE) {
+                    Utils.print("## Simple Average ##", finalResultWriter);
+                    bestSolutionBySimpleAverage.printChromosome(config, config.getAlgorithmType(), false, finalResultWriter);
+
+                } else if (config.getSortFunctionType() == SortFunctionType.HARMONIC_AVERAGE) {
+                    Utils.print("## Harmonic Average ##", finalResultWriter);
+                    bestSolutionByHarmonicAverage.printChromosome(config, config.getAlgorithmType(), false, finalResultWriter);
+                }
+            } else {
+                Utils.print("## Simple Average ##", finalResultWriter);
+                bestSolutionBySimpleAverage.printChromosome(config, config.getAlgorithmType(), false, finalResultWriter);
+
+                Utils.print("", finalResultWriter);
+
+                Utils.print("## Harmonic Average ##", finalResultWriter);
+                bestSolutionByHarmonicAverage.printChromosome(config, config.getAlgorithmType(), false, finalResultWriter);
+            }
         }        
     }    
-
-    private String getAlgorithmName() {
-        switch (config.getAlgorithmType()) {
-            case SINGLE_OBJECTIVE:
-                return "SingleObjective";
-
-            case NSGAII:
-                return "NSGAII";
-
-            case SPEA2:
-                return "SPEA2";
-
-            case AEMMT:
-                return "AEMMT";
-
-            case AEMMD:
-                return "AEMMD";
-
-            default:
-                throw new IllegalArgumentException("Algorithm invalid!");
-        }
-    }
 }

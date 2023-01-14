@@ -1,12 +1,13 @@
 package br.ufu.scheduling.model;
 
+import java.io.BufferedWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import br.ufu.scheduling.enums.AlgorithmType;
-import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
+import br.ufu.scheduling.utils.Utils;
 
 public class AGMOResultModel {
     private int totalChromossomes;
@@ -36,7 +37,6 @@ public class AGMOResultModel {
     private TotalCalculation totalCalculationWaitingTime = new TotalCalculation();
 
     private BestResultByObjective bestResult;
-    private StringBuilder sb = new StringBuilder();
 
 	public AGMOResultModel(Configuration config, int totalChromossomes) {
 	    this.totalChromossomes = totalChromossomes;
@@ -196,33 +196,53 @@ public class AGMOResultModel {
         return calculation;
     }
 
-    public void showResult() {
-        System.out.println("##################################");
-        System.out.println("######## General Analysis ########");
+    public void showResult(Configuration config, Map<String, DataForSpreadsheet> mapDataForSpreadsheet, BufferedWriter finalResultWriter) throws Exception {
+        Utils.print("##################################", finalResultWriter);
+        Utils.print("######## General Analysis ########", finalResultWriter);
 
-        printObjectiveFormatted("SLength", totalCalculationSLength, bestSLength, worstSLength, diffBetweenMaxAndMinSLength);
-        printObjectiveFormatted("LoadBalance", totalCalculationLoadBalance, bestLoadBalance, worstLoadBalance, diffBetweenMaxAndMinLoadBalance, Constants.NINE_DECIMAL_PLACES);
-        printObjectiveFormatted("FlowTime", totalCalculationFlowTime, bestFlowTime, worstFlowTime, diffBetweenMaxAndMinFlowTime);
-        printObjectiveFormatted("CommunicationCost", totalCalculationCommunicationCost, bestCommunicationCost, worstCommunicationCost, diffBetweenMaxAndMinCommunicationCost);
-        printObjectiveFormatted("WaitingTime", totalCalculationWaitingTime, bestWaitingTime, worstWaitingTime, diffBetweenMaxAndMinWaitingTime);
+        for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+            int realObjective = Utils.getActualObjectiveIndex(config, objective);
+            
+            switch (realObjective) {
+                case Constants.MAKESPAN:
+                    printObjectiveFormatted(config, "SLength", totalCalculationSLength, bestSLength, worstSLength, diffBetweenMaxAndMinSLength, mapDataForSpreadsheet, finalResultWriter);
+                    break;
 
-        bestResult.showResult();
+                case Constants.LOAD_BALANCE:
+                    printObjectiveFormatted(config, "LoadBalance", totalCalculationLoadBalance, bestLoadBalance, worstLoadBalance, diffBetweenMaxAndMinLoadBalance, Constants.NINE_DECIMAL_PLACES, mapDataForSpreadsheet, finalResultWriter);
+                    break;
 
-        System.out.println("");
-        System.out.println(sb.toString());
+                case Constants.FLOW_TIME:
+                    printObjectiveFormatted(config, "FlowTime", totalCalculationFlowTime, bestFlowTime, worstFlowTime, diffBetweenMaxAndMinFlowTime, mapDataForSpreadsheet, finalResultWriter);
+                    break;
+
+                case Constants.COMMUNICATION_COST:
+                    printObjectiveFormatted(config, "CommunicationCost", totalCalculationCommunicationCost, bestCommunicationCost, worstCommunicationCost, diffBetweenMaxAndMinCommunicationCost, mapDataForSpreadsheet, finalResultWriter);
+                    break;
+
+                case Constants.WAITING_TIME:
+                    printObjectiveFormatted(config, "WaitingTime", totalCalculationWaitingTime, bestWaitingTime, worstWaitingTime, diffBetweenMaxAndMinWaitingTime, mapDataForSpreadsheet, finalResultWriter);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
+            }
+        }
+
+        bestResult.showResult(finalResultWriter);
     }
 
-    private void printObjectiveFormatted(String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin) {
-        printObjectiveFormatted(objectiveName, totalCalculation, bestValue, worstValue, diffBetweenMaxAndMin, Constants.TWO_DECIMAL_PLACES);
+    private void printObjectiveFormatted(Configuration config, String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin, Map<String, DataForSpreadsheet> mapDataForSpreadsheet, BufferedWriter finalResultWriter) throws Exception {
+        printObjectiveFormatted(config, objectiveName, totalCalculation, bestValue, worstValue, diffBetweenMaxAndMin, Constants.TWO_DECIMAL_PLACES, mapDataForSpreadsheet, finalResultWriter);
     }
 
-    private void printObjectiveFormatted(String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin, int decimalPlaces) {
-        System.out.println("");
-        System.out.println("## " + objectiveName + "##");
+    private void printObjectiveFormatted(Configuration config, String objectiveName, TotalCalculation totalCalculation, double bestValue, double worstValue, double diffBetweenMaxAndMin, int decimalPlaces, Map<String, DataForSpreadsheet> mapDataForSpreadsheet, BufferedWriter finalResultWriter) throws Exception {
+        Utils.print("", finalResultWriter);
+        Utils.print("## " + objectiveName + "##", finalResultWriter);
 
         double percTotalBestObjective = round((totalCalculation.totalBest * 100.0 / totalChromossomes), 2);
-        System.out.println("Total Best " + objectiveName + " Founded: " + totalCalculation.totalBest + " -> " + percTotalBestObjective + "%");
-        System.out.println("");
+        Utils.print("Total Best " + objectiveName + " Founded: " + totalCalculation.totalBest + " -> " + percTotalBestObjective + "%", finalResultWriter);
+        Utils.print("", finalResultWriter);
 
         double percTotalValueBetween90_100 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) * 100.0 / totalChromossomes), 2);
         double percTotalValueBetween80_90 = round((totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) * 100.0 / totalChromossomes), 2);
@@ -265,37 +285,30 @@ public class AGMOResultModel {
         double bottomLimit0_10 = topLimit10_20;
         double topLimit0_10 = round(bestValue + 10 * diffBetweenMaxAndMin, decimalPlaces);
 
-        System.out.println(objectiveName + " Between Min and Max: [" + bestValue + ", " + worstValue + "]");
-        System.out.println("90-100 [" + bottomLimit90_100 + ", " + topLimit90_100 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) + " -> " + percTotalValueBetween90_100 + "%");
-        System.out.println("80-90 [" + bottomLimit80_90 + ", " + topLimit80_90 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) + " -> " + percTotalValueBetween80_90 + "%");
-        System.out.println("70-80 [" + bottomLimit70_80 + ", " + topLimit70_80 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80) + " -> " + percTotalValueBetween70_80 + "%");
-        System.out.println("60-70 [" + bottomLimit60_70 + ", " + topLimit60_70 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70) + " -> " + percTotalValueBetween60_70 + "%");
-        System.out.println("50-60 [" + bottomLimit50_60 + ", " + topLimit50_60 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60) + " -> " + percTotalValueBetween50_60 + "%");
-        System.out.println("40-50 [" + bottomLimit40_50 + ", " + topLimit40_50 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50) + " -> " + percTotalValueBetween40_50 + "%");
-        System.out.println("30-40 [" + bottomLimit30_40 + ", " + topLimit30_40 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40) + " -> " + percTotalValueBetween30_40 + "%");
-        System.out.println("20-30 [" + bottomLimit20_30 + ", " + topLimit20_30 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) + " -> " + percTotalValueBetween20_30 + "%");
-        System.out.println("10-20 [" + bottomLimit10_20 + ", " + topLimit10_20 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) + " -> " + percTotalValueBetween10_20 + "%");
-        System.out.println("0-10 [" + bottomLimit0_10 + ", " + topLimit0_10 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) + " -> " + percTotalValueBetween0_10 + "%");
+        Utils.print(objectiveName + " Between Min and Max: [" + bestValue + ", " + worstValue + "]", finalResultWriter);
+        Utils.print("90-100 [" + bottomLimit90_100 + ", " + topLimit90_100 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_90_100) + " -> " + percTotalValueBetween90_100 + "%", finalResultWriter);
+        Utils.print("80-90 [" + bottomLimit80_90 + ", " + topLimit80_90 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_80_90) + " -> " + percTotalValueBetween80_90 + "%", finalResultWriter);
+        Utils.print("70-80 [" + bottomLimit70_80 + ", " + topLimit70_80 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_70_80) + " -> " + percTotalValueBetween70_80 + "%", finalResultWriter);
+        Utils.print("60-70 [" + bottomLimit60_70 + ", " + topLimit60_70 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_60_70) + " -> " + percTotalValueBetween60_70 + "%", finalResultWriter);
+        Utils.print("50-60 [" + bottomLimit50_60 + ", " + topLimit50_60 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_50_60) + " -> " + percTotalValueBetween50_60 + "%", finalResultWriter);
+        Utils.print("40-50 [" + bottomLimit40_50 + ", " + topLimit40_50 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_40_50) + " -> " + percTotalValueBetween40_50 + "%", finalResultWriter);
+        Utils.print("30-40 [" + bottomLimit30_40 + ", " + topLimit30_40 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_30_40) + " -> " + percTotalValueBetween30_40 + "%", finalResultWriter);
+        Utils.print("20-30 [" + bottomLimit20_30 + ", " + topLimit20_30 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_20_30) + " -> " + percTotalValueBetween20_30 + "%", finalResultWriter);
+        Utils.print("10-20 [" + bottomLimit10_20 + ", " + topLimit10_20 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_10_20) + " -> " + percTotalValueBetween10_20 + "%", finalResultWriter);
+        Utils.print("0-10 [" + bottomLimit0_10 + ", " + topLimit0_10 + "): " + totalCalculation.mapTotalValueBetweenBottonAndTopLimit.get(Constants.RANGE_0_10) + " -> " + percTotalValueBetween0_10 + "%", finalResultWriter);
 
-        System.out.println();
-        
-        try {
-            Configuration config = new Configuration();
+        Utils.print("", finalResultWriter);
 
-            printResult(config, bestValue, worstValue, "90-100", bottomLimit90_100, topLimit90_100, objectiveName, percTotalValueBetween90_100, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "80-90", bottomLimit80_90, topLimit80_90, objectiveName, percTotalValueBetween80_90, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "70-80", bottomLimit70_80, topLimit70_80, objectiveName, percTotalValueBetween70_80, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "60-70", bottomLimit60_70, topLimit60_70, objectiveName, percTotalValueBetween60_70, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "50-60", bottomLimit50_60, topLimit50_60, objectiveName, percTotalValueBetween50_60, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "40-50", bottomLimit40_50, topLimit40_50, objectiveName, percTotalValueBetween40_50, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "30-40", bottomLimit30_40, topLimit30_40, objectiveName, percTotalValueBetween30_40, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "20-30", bottomLimit20_30, topLimit20_30, objectiveName, percTotalValueBetween20_30, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "10-20", bottomLimit10_20, topLimit10_20, objectiveName, percTotalValueBetween10_20, getBestValue(objectiveName));
-            printResult(config, bestValue, worstValue, "0-10", bottomLimit0_10, topLimit0_10, objectiveName, percTotalValueBetween0_10, getBestValue(objectiveName));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        fillDataForSpreadsheet(config, bestValue, worstValue, "90-100", bottomLimit90_100, topLimit90_100, objectiveName, percTotalValueBetween90_100, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "80-90", bottomLimit80_90, topLimit80_90, objectiveName, percTotalValueBetween80_90, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "70-80", bottomLimit70_80, topLimit70_80, objectiveName, percTotalValueBetween70_80, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "60-70", bottomLimit60_70, topLimit60_70, objectiveName, percTotalValueBetween60_70, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "50-60", bottomLimit50_60, topLimit50_60, objectiveName, percTotalValueBetween50_60, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "40-50", bottomLimit40_50, topLimit40_50, objectiveName, percTotalValueBetween40_50, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "30-40", bottomLimit30_40, topLimit30_40, objectiveName, percTotalValueBetween30_40, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "20-30", bottomLimit20_30, topLimit20_30, objectiveName, percTotalValueBetween20_30, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "10-20", bottomLimit10_20, topLimit10_20, objectiveName, percTotalValueBetween10_20, getBestValue(objectiveName), mapDataForSpreadsheet);
+        fillDataForSpreadsheet(config, bestValue, worstValue, "0-10", bottomLimit0_10, topLimit0_10, objectiveName, percTotalValueBetween0_10, getBestValue(objectiveName), mapDataForSpreadsheet);
     }
 
     private double getBestValue(String objectiveName) {
@@ -320,89 +333,33 @@ public class AGMOResultModel {
         }
     }
 
-    private void printResult(Configuration config, double bestValue, double worstValue, String interval, double bottomLimit, double topLimit, String objectiveName, double perc, double bestResult) {
-        if (config.getSortFunctionType() == SortFunctionType.SINGLE_AVERAGE) {
-//            System.out.println(
-//                    getAlgorithmName(config) + "\t" +
-//                            config.getTotalProcessors() + "\t" + 
-//                            config.getSeed() + "\t" +
-//                            getStringValue(bestValue) + "\t" + 
-//                            getStringValue(worstValue) + "\t" +
-//                            (objectiveName == "SLength" ? "Makespan" : objectiveName) + "\t" +
-//                            interval + "\t" +
-//                            getStringValue(bottomLimit) + "\t" +
-//                            getStringValue(topLimit) + "\t" +
-//                            getStringValue(bestResult) + "\t" +
-//                            getStringValue(perc) + "\t" +
-//                            getSortFunction(config)
-//                    );
-            
-            sb.append(
-                            config.getTotalProcessors() + "\t" + 
-                            config.getSeed() + "\t" +
-                            getStringValue(bestValue) + "\t" + 
-                            getStringValue(worstValue) + "\t" +
-                            (objectiveName == "SLength" ? "Makespan" : objectiveName) + "\t" +
-                            interval + "\t" +
-                            getStringValue(bottomLimit) + "\t" +
-                            getStringValue(topLimit) + "\t" +
-                            getAlgorithmName(config) + "\t" +
-                            getStringValue(bestResult) + "\t" +
-                            getStringValue(perc) + "\t" +
-                            getSortFunction(config) + "\n"
-                    );
-        } else if (config.getSortFunctionType() == SortFunctionType.HARMONIC_AVERAGE) {
-            sb.append(
-                    getStringValue(bestResult) + "\t" +
-                            getStringValue(perc) + "\n"
-                    );
-        }
-    }
-
-    private String getSortFunction(Configuration config) {
-        if (config.getAlgorithmType() != AlgorithmType.AEMMT) {
-            return "Não se aplica";
-        }
-
-        switch (config.getSortFunctionType()) {
-            case WEIGHT:
-                return "Peso";
-
-            case SINGLE_AVERAGE:
-                return "Média Simples";
-
-            case HARMONIC_AVERAGE:
-                return "Média Harmônica";
-
-            default:
-                throw new IllegalArgumentException("SortFunction invalid!");
-        }
-    }
-
-    private String getAlgorithmName(Configuration config) {
-        switch (config.getAlgorithmType()) {
-            case SINGLE_OBJECTIVE:
-                return "SingleObjective";
-
-            case NSGAII:
-                return "NSGAII";
-
-            case SPEA2:
-                return "SPEA2";
-
-            case AEMMT:
-                return "AEMMT";
-
-            case AEMMD:
-                return "AEMMD";
-
-            default:
-                throw new IllegalArgumentException("Algorithm invalid!");
-        }
-    }
-
     private String getStringValue(double source) {
         return Double.toString(source).replace(".", ",");
+    }
+
+    private void fillDataForSpreadsheet(Configuration config, double bestValue, double worstValue, String interval, double bottomLimit, double topLimit, String objectiveName, double perc, double bestResult, Map<String, DataForSpreadsheet> mapDataForSpreadsheet) {
+        DataForSpreadsheet dataForSpreadsheet = new DataForSpreadsheet();
+        dataForSpreadsheet.setTasks(config.getTaskGraphFileName());
+        dataForSpreadsheet.setProcessors(config.getTotalProcessors());
+        dataForSpreadsheet.setSeed(config.getSeed());
+        dataForSpreadsheet.setBestValue(getStringValue(bestValue));
+        dataForSpreadsheet.setWorstValue(getStringValue(worstValue));
+        dataForSpreadsheet.setObjective("SLength".equals(objectiveName) ? "Makespan" : objectiveName);
+        dataForSpreadsheet.setInterval(interval);
+        dataForSpreadsheet.setBottomLimit(getStringValue(bottomLimit));
+        dataForSpreadsheet.setTopLimit(getStringValue(topLimit));
+
+        ObjectiveDataForSpreadsheet objectiveDataForSpreadsheet = new ObjectiveDataForSpreadsheet();
+        objectiveDataForSpreadsheet.setAlgorithm(Utils.getAlgorithmName(config));
+        objectiveDataForSpreadsheet.setBestValueFounded(getStringValue(bestResult));
+        objectiveDataForSpreadsheet.setValuePercentageFounded(getStringValue(perc));
+        objectiveDataForSpreadsheet.setSortFunction(config.getAlgorithmType() == AlgorithmType.AEMMT ? Utils.getSortFunctionInPortuguese(config) : null);
+        objectiveDataForSpreadsheet.setBestSolutionSimpleAverage(getStringValue(this.bestResult.getBestSolutionBySimpleAverage().getSimpleAverage()));
+        objectiveDataForSpreadsheet.setBestSolutionHarmonicAverage(getStringValue(this.bestResult.getBestSolutionByHarmonicAverage().getHarmonicAverage()));
+
+        dataForSpreadsheet.addObjective(objectiveDataForSpreadsheet);
+
+        mapDataForSpreadsheet.put(dataForSpreadsheet.getKey(), dataForSpreadsheet);
     }
 
     private double round(double value, int decimalPlaces) {

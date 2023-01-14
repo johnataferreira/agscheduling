@@ -9,6 +9,7 @@ public class Constants {
     public final static String SUFIX_NORMLIZATION_FILE_NAME = "-normalization";
     public final static String PACKAGE_BASE = "br" + File.separator + "ufu" + File.separator + "scheduling" + File.separator + "file";
     public final static String PACKAGE_NORMALIZATION_WITH_COST =  PACKAGE_BASE + File.separator + "normalization" + File.separator + "with" + File.separator + "cost" + File.separator;
+    public final static String PACKAGE_NORMALIZATION_WITH_COST_BACKUP =  PACKAGE_NORMALIZATION_WITH_COST + File.separator + "backup" + File.separator;
     public final static String PACKAGE_NORMALIZATION_WITHOUT_COST = PACKAGE_BASE + File.separator + "normalization" + File.separator + "without" + File.separator + "cost" + File.separator;
     public final static String PACKAGE_DAG_WITH_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "with" + File.separator + "cost" + File.separator;
     public final static String PACKAGE_DAG_WITHOUT_COST =  PACKAGE_BASE + File.separator + "dag" + File.separator + "without" + File.separator + "cost" + File.separator;

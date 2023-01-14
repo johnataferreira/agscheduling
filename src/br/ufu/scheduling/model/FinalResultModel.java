@@ -89,13 +89,13 @@ public class FinalResultModel {
 		this.totalNumberOfChromosomes = totalNumberOfChromosomes;
 	}
 
-	public void showResult(Chromosome bestChromosomeFound, Configuration config) {
+	public void showResult(Chromosome bestChromosomeFound, Configuration config) throws Exception {
 		Printer.printFinalResult(this, config);
 
 		System.out.println("## Best Chromosome ##");
 
 		if (bestChromosomeFound != null) {
-			bestChromosomeFound.printChromosome(config.getAlgorithmType());
+			bestChromosomeFound.printChromosome(config, config.getAlgorithmType());
 		} else {
 			System.out.println("[ There was no convergence for the best chromosome! ]");
 		}

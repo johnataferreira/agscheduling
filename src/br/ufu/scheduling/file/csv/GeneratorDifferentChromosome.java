@@ -50,7 +50,7 @@ public class GeneratorDifferentChromosome {
 		generateCSVFile();		
 	}
 
-	private boolean generateDiferenteChromosome() {
+	private boolean generateDiferenteChromosome() throws Exception {
 		Chromosome chromosome = new Chromosome(generator, graph, config);
 		if (chromosomeList.contains(chromosome)) {
 			repeatedChromosomesList.add(chromosome);
