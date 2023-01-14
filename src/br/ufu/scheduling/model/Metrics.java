@@ -401,9 +401,9 @@ public class Metrics implements Cloneable {
 		return clone;
 	}
 
-	//FIXME: Not Finished!!!
+	//Not Finished!!!
 	//idle = ocioso
-	private void testSlots(Graph graph, int[] mapping, int[] scheduling, Integer totalProcessors, boolean testMode) {
+	/*private void testSlots(Graph graph, int[] mapping, int[] scheduling, Integer totalProcessors, boolean testMode) {
 		//To facilitate the calculation, we will not work with zero index for the auxiliary vectors created
 		int [] startTimeTask = new int[graph.getNumberOfVertices() + 1]; 
 		int [] finalTimeTask = new int[graph.getNumberOfVertices() + 1];
@@ -433,7 +433,7 @@ public class Metrics implements Cloneable {
 					}
 				}
 
-				//FIXME: I cannot understand when this list is fulfilled. The article is not clear about this.
+				//I cannot understand when this list is fulfilled. The article is not clear about this.
 				if (!idle_time.isEmpty()) {
 					for (int time_slot : idle_time) {
 						if ((e_idle_time - s_idle_time) >= graph.getVertex(taskIndex).getComputationalCost()
@@ -448,5 +448,5 @@ public class Metrics implements Cloneable {
 				min_ST = st_time;
 			}
 		}
-	}
+	}*/
 }
