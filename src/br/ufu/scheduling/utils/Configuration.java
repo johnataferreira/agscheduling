@@ -397,32 +397,32 @@ public class Configuration {
 	}
 
 	//The sets methods are used by the Java Reflection lib to populate the configuration
-	private void setInitialPopulation(Integer initialPopulation) {
+	public void setInitialPopulation(Integer initialPopulation) {
 		this.initialPopulation = initialPopulation;
 	}
 
-	private void setMutationRate(Double mutationRate) {
+	public void setMutationRate(Double mutationRate) {
 		this.mutationRate = mutationRate;
 	}
 
-	private void setCrossoverRate(Double crossoverRate) {
+	public void setCrossoverRate(Double crossoverRate) {
 		this.crossoverRate = crossoverRate;
 	}
 	
-	private void setIterations(Integer iterations) {
+	public void setIterations(Integer iterations) {
 		this.iterations = iterations;
 	}
 	
-	private void setGenerations(Integer generations) {
+	public void setGenerations(Integer generations) {
 		this.generations = generations;
 	}
 
-	private void setMetric(Integer metric) {
+	public void setMetric(Integer metric) {
 		this.metric = metric;
-		setMetricType(metric);
+		setMetricType(this.metric);
 	}
 
-	private void setMetricType(Integer metric) {
+	public void setMetricType(Integer metric) {
 		switch (metric) {
 		case 0:
 			metricType = MetricType.MAKESPAN;
@@ -449,12 +449,12 @@ public class Configuration {
 		}
 	}
 
-	private void setMutation(Integer mutation) {
+	public void setMutation(Integer mutation) {
 		this.mutation = mutation;
-		setMutationType(mutation);
+		setMutationType(this.mutation);
 	}
 
-	private void setMutationType(Integer mutation) {
+	public void setMutationType(Integer mutation) {
 		switch (mutation) {
 		case 0:
 			mutationType = MutationType.ONE_POINT;
@@ -469,12 +469,12 @@ public class Configuration {
 		}		
 	}
 
-	private void setSelection(Integer selection) {
+	public void setSelection(Integer selection) {
 		this.selection = selection;
-		setSelectionType(selection);
+		setSelectionType(this.selection);
 	}
 
-	private void setSelectionType(Integer selection) {
+	public void setSelectionType(Integer selection) {
 		switch (selection) {
 		case 0:
 			selectionType = SelectionType.ROULETTE;
@@ -503,7 +503,7 @@ public class Configuration {
 
     public void setAlgorithm(Integer algorithm) {
         this.algorithm = algorithm;
-        setAlgorithmType(algorithm);
+        setAlgorithmType(this.algorithm);
     }
 
 	private void setAlgorithmType(Integer algorithm) {
@@ -533,15 +533,15 @@ public class Configuration {
         }        
     }
 
-    private void setTourForTournament(Integer tourForTournament) {
+    public void setTourForTournament(Integer tourForTournament) {
 		this.tourForTournament = tourForTournament;
 	}
 
-	private void setPrintIterations(Boolean printIterations) {
+	public void setPrintIterations(Boolean printIterations) {
 		this.printIterations = printIterations;
 	}
 
-    private void setPrintGenerations(Boolean printGenerations) {
+    public void setPrintGenerations(Boolean printGenerations) {
         this.printGenerations = printGenerations;
     }
 
@@ -549,31 +549,31 @@ public class Configuration {
 		this.totalProcessors = totalProcessors;
 	}
 
-	private void setTestMode(Boolean testMode) {
+	public void setTestMode(Boolean testMode) {
 		this.testMode = testMode;
 	}
 
-	private void setMaximizationConstant(Integer maximizationConstant) {
+	public void setMaximizationConstant(Integer maximizationConstant) {
 		this.maximizationConstant = maximizationConstant;
 	}
 
-	private void setAttemptSelectParentNotRepeated(Integer attemptSelectParentNotRepeated) {
+	public void setAttemptSelectParentNotRepeated(Integer attemptSelectParentNotRepeated) {
 		this.attemptSelectParentNotRepeated = attemptSelectParentNotRepeated;
 	}
 
-	private void setStopGenerationIfFindBestSolution(Boolean stopGenerationIfFindBestSolution) {
+	public void setStopGenerationIfFindBestSolution(Boolean stopGenerationIfFindBestSolution) {
 		this.stopGenerationIfFindBestSolution = stopGenerationIfFindBestSolution;
 	}
 
-	private void setAllowApplyingMutationOnRepeatedChild(Boolean allowApplyingMutationOnRepeatedChild) {
+	public void setAllowApplyingMutationOnRepeatedChild(Boolean allowApplyingMutationOnRepeatedChild) {
 		this.allowApplyingMutationOnRepeatedChild = allowApplyingMutationOnRepeatedChild;
 	}
 
-	private void setPrintBestChromosomeOfGeneration(Boolean printBestChromosomeOfGeneration) {
+	public void setPrintBestChromosomeOfGeneration(Boolean printBestChromosomeOfGeneration) {
 		this.printBestChromosomeOfGeneration = printBestChromosomeOfGeneration;
 	}
 
-	private void setConvergenceForTheBestSolution(Boolean convergenceForTheBestSolution) {
+	public void setConvergenceForTheBestSolution(Boolean convergenceForTheBestSolution) {
 		this.convergenceForTheBestSolution = convergenceForTheBestSolution;
 	}
 
@@ -581,23 +581,23 @@ public class Configuration {
 		this.taskGraphFileName = taskGraphFileName;
 	}
 
-	private void setGraphWithCommunicationCost(Boolean graphWithCommunicationCost) {
+	public void setGraphWithCommunicationCost(Boolean graphWithCommunicationCost) {
 		this.graphWithCommunicationCost = graphWithCommunicationCost;
 	}
 
-    private void setGenerateRandomCommunicationCostForNoCostDag(Boolean generateRandomCommunicationCostForNoCostDag) {
+    public void setGenerateRandomCommunicationCostForNoCostDag(Boolean generateRandomCommunicationCostForNoCostDag) {
         this.generateRandomCommunicationCostForNoCostDag = generateRandomCommunicationCostForNoCostDag;
     }
 
-    private void setGenerateCommunicationCostFromDAGWithoutCommunicationCost(Boolean generateCommunicationCostFromDAGWithoutCommunicationCost) {
+    public void setGenerateCommunicationCostFromDAGWithoutCommunicationCost(Boolean generateCommunicationCostFromDAGWithoutCommunicationCost) {
         this.generateCommunicationCostFromDAGWithoutCommunicationCost = generateCommunicationCostFromDAGWithoutCommunicationCost;
     }
 
-	private void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
+	public void setPrintGraphAtTheBeginningOfRun(Boolean printGraphAtTheBeginningOfRun) {
 		this.printGraphAtTheBeginningOfRun = printGraphAtTheBeginningOfRun;
 	}
 
-    private void setPrintBestResultsByObjectives(Boolean printBestResultsByObjectives) {
+    public void setPrintBestResultsByObjectives(Boolean printBestResultsByObjectives) {
         this.printBestResultsByObjectives = printBestResultsByObjectives;
     }
 
@@ -605,7 +605,7 @@ public class Configuration {
         this.seed = seed;
     }
 
-    private void setSystemOutPrintInFile(Boolean systemOutPrintInFile) {
+    public void setSystemOutPrintInFile(Boolean systemOutPrintInFile) {
         this.systemOutPrintInFile = systemOutPrintInFile;
     }
 
@@ -617,11 +617,11 @@ public class Configuration {
 		this.totalObjectives = totalObjectives;
 	}
 
-	private void setSizeOfTables(Integer sizeOfTables) {
+	public void setSizeOfTables(Integer sizeOfTables) {
 		this.sizeOfTables= sizeOfTables;
 	}
 
-	private void setSizeOfNonDominatedTable(Integer sizeOfNonDominatedTable) {
+	public void setSizeOfNonDominatedTable(Integer sizeOfNonDominatedTable) {
 		this.sizeOfNonDominatedTable= sizeOfNonDominatedTable;
 	}
 
@@ -629,21 +629,21 @@ public class Configuration {
 		this.totalGenerations = totalGenerations;
 	}
 
-	private void setTotalGenerationsToResetTableScore(Integer totalGenerationsToResetTableScore) {
+	public void setTotalGenerationsToResetTableScore(Integer totalGenerationsToResetTableScore) {
 		this.totalGenerationsToResetTableScore = totalGenerationsToResetTableScore;
 	}
 
-	private void setPrintComparisonNonDominatedChromosomes(Boolean printComparisonNonDominatedChromosomes) {
+	public void setPrintComparisonNonDominatedChromosomes(Boolean printComparisonNonDominatedChromosomes) {
 		this.printComparisonNonDominatedChromosomes = printComparisonNonDominatedChromosomes;
 	}
 
-	private void setTotalGenerationsToApplyMutation(Integer totalGenerationsToApplyMutation) {
+	public void setTotalGenerationsToApplyMutation(Integer totalGenerationsToApplyMutation) {
 		this.totalGenerationsToApplyMutation = totalGenerationsToApplyMutation;
 	}
 
     public void setSortFunction(Integer sortFunction) {
         this.sortFunction = sortFunction;
-        setSortFunctionType(sortFunction);
+        setSortFunctionType(this.sortFunction);
     }
 
     private void setSortFunctionType(Integer sortFunction) {
@@ -665,96 +665,96 @@ public class Configuration {
         }        
     }
 
-	private void setCalculateMaximusAndMinimusForNormalization(Boolean calculateMaximusAndMinimusForNormalization) {
+	public void setCalculateMaximusAndMinimusForNormalization(Boolean calculateMaximusAndMinimusForNormalization) {
 		this.calculateMaximusAndMinimusForNormalization = calculateMaximusAndMinimusForNormalization;
 	}
 
-	private void setObjective1(Integer objective1) {
+	public void setObjective1(Integer objective1) {
 		this.objective1 = objective1;
 	}
 
-	private void setObjective2(Integer objective2) {
+	public void setObjective2(Integer objective2) {
 		this.objective2 = objective2;
 	}
 
-	private void setObjective3(Integer objective3) {
+	public void setObjective3(Integer objective3) {
 		this.objective3 = objective3;
 	}
 
-	private void setObjective4(Integer objective4) {
+	public void setObjective4(Integer objective4) {
 		this.objective4 = objective4;
 	}
 
-	private void setObjective5(Integer objective5) {
+	public void setObjective5(Integer objective5) {
 		this.objective5 = objective5;
 	}
 
-	private void setWeight1(Double weight1) {
+	public void setWeight1(Double weight1) {
 		this.weight1 = weight1;
 	}
 
-	private void setWeight2(Double weight2) {
+	public void setWeight2(Double weight2) {
 		this.weight2 = weight2;
 	}
 
-	private void setWeight3(Double weight3) {
+	public void setWeight3(Double weight3) {
 		this.weight3 = weight3;
 	}
 
-	private void setWeight4(Double weight4) {
+	public void setWeight4(Double weight4) {
 		this.weight4 = weight4;
 	}
 
-	private void setWeight5(Double weight5) {
+	public void setWeight5(Double weight5) {
 		this.weight5 = weight5;
 	}
 
-	private void setMaxObjectiveValue1(Double maxObjectiveValue1) {
+	public void setMaxObjectiveValue1(Double maxObjectiveValue1) {
 		this.maxObjectiveValue1 = getTransformedObjectiveValue(maxObjectiveValue1);
 		setRealMaxObjectiveValue1(maxObjectiveValue1);
 	}
 
-    private void setMinObjectiveValue1(Double minObjectiveValue1) {
+    public void setMinObjectiveValue1(Double minObjectiveValue1) {
 		this.minObjectiveValue1 = getTransformedObjectiveValue(minObjectiveValue1);
 		setRealMinObjectiveValue1(minObjectiveValue1);
 	}
 
-	private void setMaxObjectiveValue2(Double maxObjectiveValue2) {
+	public void setMaxObjectiveValue2(Double maxObjectiveValue2) {
 		this.maxObjectiveValue2 = getTransformedObjectiveValue(maxObjectiveValue2);
 		setRealMaxObjectiveValue2(maxObjectiveValue2);
 	}
 
-	private void setMinObjectiveValue2(Double minObjectiveValue2) {
+	public void setMinObjectiveValue2(Double minObjectiveValue2) {
 		this.minObjectiveValue2 = getTransformedObjectiveValue(minObjectiveValue2);
 		setRealMinObjectiveValue2(minObjectiveValue2);
 	}
 
-	private void setMaxObjectiveValue3(Double maxObjectiveValue3) {
+	public void setMaxObjectiveValue3(Double maxObjectiveValue3) {
 		this.maxObjectiveValue3 = getTransformedObjectiveValue(maxObjectiveValue3);
 		setRealMaxObjectiveValue3(maxObjectiveValue3);
 	}
 
-	private void setMinObjectiveValue3(Double minObjectiveValue3) {
+	public void setMinObjectiveValue3(Double minObjectiveValue3) {
 		this.minObjectiveValue3 = getTransformedObjectiveValue(minObjectiveValue3);
 		setRealMinObjectiveValue3(minObjectiveValue3);
 	}
 
-	private void setMaxObjectiveValue4(Double maxObjectiveValue4) {
+	public void setMaxObjectiveValue4(Double maxObjectiveValue4) {
 		this.maxObjectiveValue4 = getTransformedObjectiveValue(maxObjectiveValue4);
 		setRealMaxObjectiveValue4(maxObjectiveValue4);
 	}
 
-	private void setMinObjectiveValue4(Double minObjectiveValue4) {
+	public void setMinObjectiveValue4(Double minObjectiveValue4) {
 		this.minObjectiveValue4 = getTransformedObjectiveValue(minObjectiveValue4);
 		setRealMinObjectiveValue4(minObjectiveValue4);
 	}
 
-	private void setMaxObjectiveValue5(Double maxObjectiveValue5) {
+	public void setMaxObjectiveValue5(Double maxObjectiveValue5) {
 		this.maxObjectiveValue5 = getTransformedObjectiveValue(maxObjectiveValue5);
 		setRealMaxObjectiveValue5(maxObjectiveValue5);
 	}
 
-	private void setMinObjectiveValue5(Double minObjectiveValue5) {
+	public void setMinObjectiveValue5(Double minObjectiveValue5) {
 		this.minObjectiveValue5 = getTransformedObjectiveValue(minObjectiveValue5);
 		setRealMinObjectiveValue5(minObjectiveValue5);
 	}
@@ -799,15 +799,15 @@ public class Configuration {
         this.realMinObjectiveValue5 = realMinObjectiveValue5;
     }
 
-	private void setGenerateCsvFile(Boolean generateCsvFile) {
+	public void setGenerateCsvFile(Boolean generateCsvFile) {
 		this.generateCsvFile = generateCsvFile;
 	}
 
-	private void setTotalDifferentChromosomes(Integer totalDifferentChromosomes) {
+	public void setTotalDifferentChromosomes(Integer totalDifferentChromosomes) {
 		this.totalDifferentChromosomes = totalDifferentChromosomes;
 	}
 
-	private void setMaximumAttemptsGenerateDifferentChromosomes(Integer maximumAttemptsGenerateDifferentChromosomes) {
+	public void setMaximumAttemptsGenerateDifferentChromosomes(Integer maximumAttemptsGenerateDifferentChromosomes) {
 		this.maximumAttemptsGenerateDifferentChromosomes = maximumAttemptsGenerateDifferentChromosomes;
 	}
 
@@ -984,7 +984,7 @@ public class Configuration {
 	}
 
 	public static void main(String args[]) throws Exception {
-		Configuration config = new Configuration();
+		//Configuration config = new Configuration();
 		System.out.println("Teste");
 		
 		System.out.println(Arrays.asList(0, 1, 2).toString());

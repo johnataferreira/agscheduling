@@ -158,23 +158,6 @@ public class AEMMT {
 		tables.add(table);
 	}
 
-	private int simpleCombination(int numberOfElements, int numberInTheSet) {
-		return fat(numberOfElements) / (fat(numberInTheSet) * fat(numberOfElements - numberInTheSet));
-	}
-
-	private int fat(int value) {
-		if (value == 0 || value == 1) {
-			return 1;
-		}
-
-		int accumulatedValue = 1;
-		for (int i = 1; i <= value; i++) {
-			accumulatedValue *= i;
-		}
-
-		return accumulatedValue;
-	}
-
     public Map<String, DataForSpreadsheet> executeForSpreadsheet(long initialTime, BufferedWriter finalResultWriter) throws Exception {
         this.finalResultWriterForSpreadsheet = finalResultWriter;
 
