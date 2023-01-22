@@ -17,7 +17,7 @@ public class ExecuteAG {
 
     public static void main(String[] args) throws Exception {
         long initialTime = System.currentTimeMillis();
-        boolean generateDataBase = false;
+        boolean generateDataBase = true;
 
         try {
             if (generateDataBase) {
@@ -37,13 +37,13 @@ public class ExecuteAG {
     }
 
     public static void generateDataBase() throws Exception {
-        //String[] dags = { "rand0000-with-communication-costs-50-tasks.stg" };
-        String[] dags = {"rand0000-with-communication-costs-50-tasks.stg", "rand0055-with-communication-costs-100-tasks.stg", "rand0105-with-communication-costs-300-tasks.stg"};
-        //int[] processors = { 2 };
+        String[] dags = { "rand0000-with-communication-costs-50-tasks.stg" };
+        //String[] dags = {"rand0000-with-communication-costs-50-tasks.stg", "rand0055-with-communication-costs-100-tasks.stg", "rand0105-with-communication-costs-300-tasks.stg"};
+        //int[] processors = { 16 };
         int[] processors = {2, 4, 8, 16};
-        //int[] seeds = { -1995383100 };
+        //int[] seeds = { 918118122 };
         int[] seeds = {-1995383100, -1989726638, -1949695351, -813009771, -609065737, 64083307, 866349162, 918118122, 983153476, 1793184929};
-        //int[] algorithms = { -3 };
+        //int[] algorithms = { 4 };
         int[] algorithms = {3, -3, 4, 1};
 
         Map<String, DataForSpreadsheet> mapDataForSpreadsheet = new LinkedHashMap<>();

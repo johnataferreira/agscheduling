@@ -1,5 +1,7 @@
 package br.ufu.scheduling.utils;
 
+import java.awt.Label;
+import java.math.BigDecimal;
 import java.util.List;
 
 import br.ufu.scheduling.model.Chromosome;
@@ -174,5 +176,85 @@ public class CalculateValueForSort {
         double differenceBetweenExtremes = Math.abs(maxObjectiveValue - minObjectiveValue);
 
         return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
+    }
+
+    private static double calculateNormalizedObjectiveValue(double objectiveValue, double maxObjectiveValue, double minObjectiveValue) {
+        if (objectiveValue > maxObjectiveValue || objectiveValue < minObjectiveValue) {
+            throw new IllegalArgumentException("Invalid objectiveValue: " + objectiveValue + " -> minObjectiveValue: " + minObjectiveValue + " | maxObjectiveValue: " + maxObjectiveValue + ".");
+        }
+
+        double differenceToMinimum = objectiveValue - minObjectiveValue;
+        double differenceBetweenExtremes = Math.abs(maxObjectiveValue - minObjectiveValue);
+
+        return differenceBetweenExtremes > 0.0 ? differenceToMinimum / differenceBetweenExtremes : 0.0;
+    }
+
+    public static void main (String args[]) {
+        int maximizationCost = 1;
+        
+        double SLength = maximizationCost / 100.0;
+        double LoadBalance = maximizationCost / 1.114206128;
+        //double LoadBalance2 = maximizationCost / 1.184206128;
+        //double LoadBalance3 = maximizationCost / 1.094206128;
+        double FlowTime = maximizationCost / 2285.0;
+        double CommunicationCost = maximizationCost / 848.0;
+        double WaitingTime = maximizationCost / 334.0;
+        
+        System.out.println("Real Values");
+        System.out.println(SLength);
+        System.out.println(LoadBalance);
+        System.out.println(FlowTime);
+        System.out.println(CommunicationCost);
+        System.out.println(WaitingTime);
+        
+        double maxSLength = maximizationCost / 342.0;
+        double minSLength = maximizationCost / 73.0;
+        
+        double maxLoadBalance = maximizationCost / 1.804066543;
+        double minLoadBalance = maximizationCost / 1.0;
+        
+        double maxFlowTime = maximizationCost / 8148.0;
+        double minFlowTime = maximizationCost / 1894.0;
+
+        double maxCommunicationCost = maximizationCost / 641.0;
+        double minCommunicationCost = maximizationCost / 279.0;
+        
+        double maxWaitingTime = maximizationCost / 2546.0;
+        double minWaitingTime = maximizationCost / 251.0;
+
+        System.out.println("\nMax and min: ");
+        System.out.println(maxSLength);
+        System.out.println(minSLength);
+        System.out.println(maxLoadBalance);
+        System.out.println(minLoadBalance);
+        System.out.println(maxFlowTime);
+        System.out.println(minFlowTime);
+        System.out.println(maxCommunicationCost);
+        System.out.println(minCommunicationCost);
+        System.out.println(maxWaitingTime);
+        System.out.println(minWaitingTime);
+        
+        
+        double accumulatedSLength = 1 / calculateNormalizedObjectiveValue(SLength, minSLength, maxSLength);
+        double accumulatedLoadBalance = 1 / calculateNormalizedObjectiveValue(LoadBalance, minLoadBalance, maxLoadBalance);
+        double accumulatedFlowTime = 1 / calculateNormalizedObjectiveValue(FlowTime, minFlowTime, maxFlowTime);
+        double accumulatedCommunicationCost = 1 / calculateNormalizedObjectiveValue(CommunicationCost, minCommunicationCost, maxCommunicationCost);
+        double accumulatedWaitingTime = 1 / calculateNormalizedObjectiveValue(WaitingTime, minWaitingTime, maxWaitingTime);
+        
+        System.out.println("\nNormalized");
+        System.out.println(accumulatedSLength);
+        System.out.println(accumulatedLoadBalance);
+        System.out.println(accumulatedFlowTime);
+        System.out.println(accumulatedCommunicationCost);
+        System.out.println(accumulatedWaitingTime);
+        
+        double sum = accumulatedSLength + accumulatedLoadBalance + accumulatedFlowTime + accumulatedCommunicationCost + accumulatedWaitingTime;
+        
+        System.out.println("\nSum");
+        System.out.println(sum);
+        
+        double result = 5 / sum;
+        System.out.println("\nFinal Value");
+        System.out.println(result);
     }
 }
