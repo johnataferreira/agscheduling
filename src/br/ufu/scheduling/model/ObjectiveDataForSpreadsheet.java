@@ -1,5 +1,6 @@
 package br.ufu.scheduling.model;
 
+import br.ufu.scheduling.enums.SortFunctionType;
 import br.ufu.scheduling.utils.Utils;
 
 public class ObjectiveDataForSpreadsheet {
@@ -89,19 +90,17 @@ public class ObjectiveDataForSpreadsheet {
                 totalChromosomesNonDominated + "\t" + 
                 runtime + "\t";
 
-        switch (Utils.getTypeOfSortFunction(sortFunction)) {
-            case SIMPLE_AVERAGE:
-                dataBase += bestSolutionSimpleAverage + "\t";
-                break;
+        SortFunctionType sortFunctionType = Utils.getTypeOfSortFunction(sortFunction);
 
-            case HARMONIC_AVERAGE:
-                dataBase += bestSolutionHarmonicAverage + "\t";
-                break;
+        if (sortFunctionType == null) {
+            dataBase += bestSolutionSimpleAverage + "\t" +
+                    bestSolutionHarmonicAverage + "\t";
 
-            default:
-                dataBase += bestSolutionSimpleAverage + "\t" +
-                        bestSolutionHarmonicAverage + "\t";
-                break;
+        } else if (sortFunctionType == SortFunctionType.SIMPLE_AVERAGE) {
+            dataBase += bestSolutionSimpleAverage + "\t";
+
+        } else if (sortFunctionType == SortFunctionType.HARMONIC_AVERAGE) {
+            dataBase += bestSolutionHarmonicAverage + "\t";
         }
 
         return dataBase;

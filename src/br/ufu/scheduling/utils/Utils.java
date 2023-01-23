@@ -47,6 +47,10 @@ public class Utils {
     }
 
     public static SortFunctionType getTypeOfSortFunction(String sortFunction) {
+        if (sortFunction == null) {
+            return null;
+        }
+
         switch (sortFunction) {
             case "Não se aplica":
                 return null;
@@ -61,7 +65,7 @@ public class Utils {
                 return SortFunctionType.HARMONIC_AVERAGE;
 
             default:
-                throw new IllegalArgumentException("SortFunction invalid!");
+                throw new IllegalArgumentException("SortFunction invalid: " + sortFunction + ".");
         }
     }
 
