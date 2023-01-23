@@ -13,10 +13,10 @@ public class TableOverleaf {
 
     public static void main(String [] args) throws Exception {
         TableOverleaf t = new TableOverleaf();
-        int totalObjectives = 2;
+        int totalObjectives = 5;
         Map<Integer, Line> lines = t.readFile();
         
-        //t.generateIntervalValues(lines);
+        t.generateIntervalValues(lines);
         
         //Old Generation
         //t.generatePercentualByObjective(lines);
@@ -27,7 +27,7 @@ public class TableOverleaf {
         
         //New Generation
         //t.generateBestAndAverageChromosomeByAGMOBySimpleAverage(lines, totalObjectives);
-        t.generateBestAndAverageChromosomeByAGMOByHarmonicAverage(lines, totalObjectives);
+        //t.generateBestAndAverageChromosomeByAGMOByHarmonicAverage(lines, totalObjectives);
     }
 
     private void generateBestAndAverageChromosomeByAGMOByHarmonicAverage(Map<Integer, Line> lines, int totalObjectives) {
@@ -479,7 +479,7 @@ public class TableOverleaf {
                 sb.append(" \\footnotesize" + LINE_BREAK);
                 sb.append(" \\centering" + LINE_BREAK);
                 sb.append(" \\caption[Intervalo de valores obtidos para o \\textit{" + line.objective + "} em um DAG de " + line.task + " tarefas com " + line.processors + " processadores]{Intervalo de valores obtidos para o \\textit{" + line.objective + "} em um DAG de " + line.task + " tarefas com " + line.processors + " processadores.}" + LINE_BREAK);
-                sb.append(" \\label{tabInterval" + line.objective + line.processors + "Proc" + line.task + "Task}" + LINE_BREAK);
+                sb.append(" \\label{tabInterval" + handleObjectiveSeparated(line.objective) + line.processors + "Proc" + line.task + "Task}" + LINE_BREAK);
                 sb.append(" \\begin{tabular}{c|c|c|c|c}" + LINE_BREAK);
                 sb.append("  \\textbf{Melhor Valor} & \\textbf{Pior Valor}  & \\textbf{Intervalo}  & \\textbf{Limite Inferior}  & \\textbf{Limite Superior} \\\\ \\hline" + LINE_BREAK);
             }
@@ -643,6 +643,25 @@ public class TableOverleaf {
         }
     }
 
+    private String handleObjectiveSeparated(String objective) {
+        switch (objective) {
+            case "Load Balance":
+                return "LoadBalance";
+
+            case "Flow Time":
+                return "FlowTime";
+
+            case "Communication Cost":
+                return "CommunicationCost";
+
+            case "Waiting Time":
+                return "WaitingTime";
+
+            default:
+                return objective;
+        }
+    }
+    
     private String handleAcronymObjective(String objective) {
         switch (objective) {
             case "Makespan":

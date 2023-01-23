@@ -1,7 +1,5 @@
 package br.ufu.scheduling.utils;
 
-import java.awt.Label;
-import java.math.BigDecimal;
 import java.util.List;
 
 import br.ufu.scheduling.model.Chromosome;

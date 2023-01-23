@@ -1,5 +1,7 @@
 package br.ufu.scheduling.model;
 
+import br.ufu.scheduling.utils.Utils;
+
 public class ObjectiveDataForSpreadsheet {
     private String algorithm;
     private String bestValueFounded;
@@ -85,9 +87,22 @@ public class ObjectiveDataForSpreadsheet {
                 valuePercentageFounded + "\t" +
                 (sortFunction != null ? sortFunction + "\t" : "") + 
                 totalChromosomesNonDominated + "\t" + 
-                runtime + "\t" +
-                bestSolutionSimpleAverage + "\t" +
-                (sortFunction != null ? "" : bestSolutionHarmonicAverage + "\t");
+                runtime + "\t";
+
+        switch (Utils.getTypeOfSortFunction(sortFunction)) {
+            case SIMPLE_AVERAGE:
+                dataBase += bestSolutionSimpleAverage + "\t";
+                break;
+
+            case HARMONIC_AVERAGE:
+                dataBase += bestSolutionHarmonicAverage + "\t";
+                break;
+
+            default:
+                dataBase += bestSolutionSimpleAverage + "\t" +
+                        bestSolutionHarmonicAverage + "\t";
+                break;
+        }
 
         return dataBase;
     }

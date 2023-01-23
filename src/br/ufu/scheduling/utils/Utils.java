@@ -3,6 +3,7 @@ package br.ufu.scheduling.utils;
 import java.io.BufferedWriter;
 
 import br.ufu.scheduling.enums.AlgorithmType;
+import br.ufu.scheduling.enums.SortFunctionType;
 
 public class Utils {
     public static String getSortFunction(Configuration config) {
@@ -39,6 +40,25 @@ public class Utils {
 
             case HARMONIC_AVERAGE:
                 return "Media Harmonica";
+
+            default:
+                throw new IllegalArgumentException("SortFunction invalid!");
+        }
+    }
+
+    public static SortFunctionType getTypeOfSortFunction(String sortFunction) {
+        switch (sortFunction) {
+            case "Não se aplica":
+                return null;
+
+            case "Peso":
+                return SortFunctionType.WEIGHT;
+
+            case "Media Simples":
+                return SortFunctionType.SIMPLE_AVERAGE;
+
+            case "Media Harmonica":
+                return SortFunctionType.HARMONIC_AVERAGE;
 
             default:
                 throw new IllegalArgumentException("SortFunction invalid!");
