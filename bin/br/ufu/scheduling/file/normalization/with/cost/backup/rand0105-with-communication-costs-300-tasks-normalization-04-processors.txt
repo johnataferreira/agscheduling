@@ -23,10 +23,10 @@ maxObjectiveValue1:double:3680
 minObjectiveValue1:double:1150
 #
 #Field Name: maxObjectiveValue2. Type: double. Description: enter the maximum value for objective 2.
-maxObjectiveValue2:double:1.072316905
+maxObjectiveValue2:double:1.147448426
 #
 #Field Name: minObjectiveValue2. Type: double. Description: enter the minimum value for objective 2.
-minObjectiveValue2:double:1.000454256
+minObjectiveValue2:double:1.000286889
 #
 #Field Name: maxObjectiveValue3. Type: double. Description: enter the maximum value for objective 3.
 maxObjectiveValue3:double:510459
@@ -41,8 +41,8 @@ maxObjectiveValue4:double:29256
 minObjectiveValue4:double:11877
 #
 #Field Name: maxObjectiveValue5. Type: double. Description: enter the maximum value for objective 5.
-maxObjectiveValue5:double:90795
+maxObjectiveValue5:double:102620
 #
 #Field Name: minObjectiveValue5. Type: double. Description: enter the minimum value for objective 5.
-minObjectiveValue5:double:35491
+minObjectiveValue5:double:30046
 #
