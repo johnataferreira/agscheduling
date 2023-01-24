@@ -41,7 +41,7 @@ maxObjectiveValue4:double:36586
 minObjectiveValue4:double:16665
 #
 #Field Name: maxObjectiveValue5. Type: double. Description: enter the maximum value for objective 5.
-maxObjectiveValue5:double:57488
+maxObjectiveValue5:double:59663
 #
 #Field Name: minObjectiveValue5. Type: double. Description: enter the minimum value for objective 5.
 minObjectiveValue5:double:16444
