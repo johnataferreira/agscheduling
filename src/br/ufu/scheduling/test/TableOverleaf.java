@@ -13,21 +13,22 @@ public class TableOverleaf {
 
     public static void main(String [] args) throws Exception {
         TableOverleaf t = new TableOverleaf();
-        int totalObjectives = 5;
+        int totalObjectives = 2;
         Map<Integer, Line> lines = t.readFile();
         
-        t.generateIntervalValues(lines);
+//        t.generateIntervalValues(lines);
         
         //Old Generation
-        //t.generatePercentualByObjective(lines);
-        //t.generateBestObjectiveByAGMO(lines, totalObjectives);
-        //t.generateAverageBestObjectiveByAGMO(lines, totalObjectives);
-        //t.generateBestChromosomeByAGMOBySimpleAverage(lines);
-        //t.generateBestChromosomeByAGMOByHarmonicAverage(lines);
+//        t.generatePercentualByObjective(lines);
+//        t.generateBestObjectiveByAGMO(lines, totalObjectives);
+//        t.generateAverageBestObjectiveByAGMO(lines, totalObjectives);
+//        t.generateBestChromosomeByAGMOBySimpleAverage(lines);
+//        t.generateBestChromosomeByAGMOByHarmonicAverage(lines);
         
         //New Generation
-        //t.generateBestAndAverageChromosomeByAGMOBySimpleAverage(lines, totalObjectives);
-        //t.generateBestAndAverageChromosomeByAGMOByHarmonicAverage(lines, totalObjectives);
+//        t.generateBestAndAverageObjectiveByAGMO(lines, totalObjectives);
+        t.generateBestAndAverageChromosomeByAGMOBySimpleAverage(lines, totalObjectives);
+//        t.generateBestAndAverageChromosomeByAGMOByHarmonicAverage(lines, totalObjectives);
     }
 
     private void generateBestAndAverageChromosomeByAGMOByHarmonicAverage(Map<Integer, Line> lines, int totalObjectives) {
@@ -43,18 +44,19 @@ public class TableOverleaf {
                     sb.append(" \\centering" + LINE_BREAK);
                     sb.append(" \\caption[Melhores indivíduos com média harmônica encontrados por AGMO em um DAG de " + line.task + " tarefas]{Melhores indivíduos com média harmônica encontrados por AGMO em um DAG de " + line.task + " tarefas.}" + LINE_BREAK);
                     sb.append(" \\label{tabBestAndAverageChromosomeByHarmonicAverageForAGMO" + line.task + "Task}" + LINE_BREAK);
-                    sb.append(" \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Obj}} &" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Proc}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c|}{\\textbf{AEMMT2}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
-                    sb.append("  & & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
-                    sb.append("  & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
-                    sb.append("  & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND} \\\\ \\hline" + LINE_BREAK);
+                    sb.append(" \\resizebox{25cm}{!}{%" + LINE_BREAK);
+                    sb.append("  \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{O}} &" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{P}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c|}{\\textbf{AEMMT2}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
+                    sb.append("   & & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
+                    sb.append("   & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
+                    sb.append("   & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND} \\\\ \\hline" + LINE_BREAK);
                 }
 
-                sb.append("  " + totalObjectives + " ");
+                sb.append("   " + totalObjectives + " ");
                 sb.append("& " + line.processors + " ");
 
                 int algorithms[] = {2, 3, 4};
@@ -76,8 +78,9 @@ public class TableOverleaf {
                 sb.append("& " + line.objectives.get(4).averageTotalChromosomesNonDominated + " ");
 
                 if ("16".equals(line.processors)) {
-                    sb.append("\\\\" + LINE_BREAK);
-                    sb.append(" \\end{tabular}" + LINE_BREAK);
+                    sb.append(" \\\\" + LINE_BREAK);
+                    sb.append("  \\end{tabular}" + LINE_BREAK);
+                    sb.append(" }" + LINE_BREAK);
                     sb.append("\\end{sidewaystable}" + LINE_BREAK);
                     System.out.println(sb.toString() + LINE_BREAK);
                     sb.setLength(0);
@@ -104,18 +107,19 @@ public class TableOverleaf {
                     sb.append(" \\centering" + LINE_BREAK);
                     sb.append(" \\caption[Melhores indivíduos com média simples encontrados por AGMO em um DAG de " + line.task + " tarefas]{Melhores indivíduos com média simples encontrados por AGMO em um DAG de " + line.task + " tarefas.}" + LINE_BREAK);
                     sb.append(" \\label{tabBestAndAverageChromosomeBySimpleAverageForAGMO" + line.task + "Task}" + LINE_BREAK);
-                    sb.append(" \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Obj}} &" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Proc}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c|}{\\textbf{AEMMT1}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{4}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
-                    sb.append("  & & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
-                    sb.append("  & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
-                    sb.append("  & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND} \\\\ \\hline" + LINE_BREAK);
+                    sb.append(" \\resizebox{25cm}{!}{%" + LINE_BREAK);
+                    sb.append("  \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{O}} &" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{P}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c|}{\\textbf{AEMMT1}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{4}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
+                    sb.append("   & & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
+                    sb.append("   & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND}" + LINE_BREAK);
+                    sb.append("   & \\textbf{MI1} & \\textbf{MI2} & \\textbf{DPI} & \\textbf{TIND} \\\\ \\hline" + LINE_BREAK);
                 }
 
-                sb.append("  " + totalObjectives + " ");
+                sb.append("   " + totalObjectives + " ");
                 sb.append("& " + line.processors + " ");
 
                 int algorithms[] = {1, 3, 4};
@@ -137,68 +141,14 @@ public class TableOverleaf {
                 sb.append("& " + line.objectives.get(4).averageTotalChromosomesNonDominated + " ");
 
                 if ("16".equals(line.processors)) {
-                    sb.append("\\\\" + LINE_BREAK);
-                    sb.append(" \\end{tabular}" + LINE_BREAK);
+                    sb.append(" \\\\" + LINE_BREAK);
+                    sb.append("  \\end{tabular}" + LINE_BREAK);
+                    sb.append(" }" + LINE_BREAK);
                     sb.append("\\end{sidewaystable}" + LINE_BREAK);
                     System.out.println(sb.toString() + LINE_BREAK);
                     sb.setLength(0);
                 } else {
                     sb.append("\\\\ \\hline" + LINE_BREAK);
-                }
-
-                oldTask = line.task;
-                oldProcessor = line.processors;
-            }
-        }
-    }
-
-    private void generateBestAndAverageChromosomeByAGMOBySimpleAverageBKP(Map<Integer, Line> lines, int totalObjectives) {
-        StringBuilder sb = new StringBuilder();
-        String oldTask = null;
-        String oldProcessor = null;
-
-        for (Line line : lines.values()) {
-            if ("90-100".equals(line.interval) && (oldProcessor == null || !oldProcessor.equals(line.processors))) {
-                if (oldTask == null || !oldTask.equals(line.task)) {
-                    sb.append("\\begin{table}[htb]" + LINE_BREAK);
-                    sb.append(" \\footnotesize" + LINE_BREAK);
-                    sb.append(" \\centering" + LINE_BREAK);
-                    sb.append(" \\caption[Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas com " + totalObjectives + " objetivos]{Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas com " + totalObjectives + ".}" + LINE_BREAK);
-                    sb.append(" \\label{tabBestAndAverageChromosomeBySimpleAverageForAGMO" + line.task + "Task" + totalObjectives + "Objective}" + LINE_BREAK);
-                    sb.append(" \\begin{tabular}{c|c|c|c|c|c|c}" + LINE_BREAK);
-                    sb.append("  \\textbf{Proc} &" + LINE_BREAK);
-                    sb.append("  \\textbf{Algoritmo} &" + LINE_BREAK);
-                    sb.append("  \\textbf{TIND} &" + LINE_BREAK);
-                    sb.append("  \\textbf{TE} &" + LINE_BREAK);
-                    sb.append("  \\textbf{MI1} &" + LINE_BREAK);
-                    sb.append("  \\textbf{MI2} &" + LINE_BREAK);
-                    sb.append("  \\textbf{DPI} \\\\ \\hline" + LINE_BREAK);
-                }
-
-                int algorithms[] = {1, 3, 4};
-                double bestResult = getBestChromossome(line.objectives, algorithms, SortFunctionType.SIMPLE_AVERAGE);
-
-                
-                for (int i = 0; i < algorithms.length; i++) {
-                    Objective objective = line.objectives.get(algorithms[i]);
-
-                    sb.append("  " + line.processors + " ");
-                    sb.append("& " + handleAlgorithm(objective.algorithm) + " ");
-                    sb.append("& " + objective.averageTotalChromosomesNonDominated + " ");
-                    sb.append("& " + objective.averageRuntime + " ");
-                    sb.append("& " + handleBestValue(bestResult, objective.bestSolutionSimpleAverage) + " ");
-                    sb.append("& " + objective.averageBestSolutionSimpleAverage + " ");
-                    sb.append("& " + objective.standardDeviationAverageBestSolutionSimpleAverage + " ");
-                    
-                    if (i == algorithms.length - 1 && "16".equals(line.processors)) {
-                        sb.append("\\\\" + LINE_BREAK);
-                        sb.append(" \\end{tabular}" + LINE_BREAK);
-                        sb.append("\\end{table}" + LINE_BREAK);
-                        System.out.println(sb.toString() + LINE_BREAK);
-                        sb.setLength(0);
-                    } else {
-                        sb.append("\\\\ \\hline" + LINE_BREAK);
-                    }
                 }
 
                 oldTask = line.task;
@@ -237,22 +187,23 @@ public class TableOverleaf {
                     sb.append("\\begin{sidewaystable}[htb]" + LINE_BREAK);
                     sb.append(" \\footnotesize" + LINE_BREAK);
                     sb.append(" \\centering" + LINE_BREAK);
-                    sb.append(" \\caption[Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas]{Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas.}" + LINE_BREAK);
+                    sb.append(" \\caption[Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas na execução com " + totalObjectives + " objetivos]{Melhores objetivos encontrados por AGMO em um DAG de " + line.task + " tarefas na execução com " + totalObjectives + " objetivos.}" + LINE_BREAK);
                     sb.append(" \\label{tabBestAndAverageObjectiveForAGMO" + line.task + "Task}" + LINE_BREAK);
-                    sb.append(" \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Proc}} &" + LINE_BREAK);
-                    sb.append("  \\multirow{2}{*}{\\textbf{Objetivo}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{3}{c|}{\\textbf{AEMMT1}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{3}{c|}{\\textbf{AEMMT2}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{3}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
-                    sb.append("  \\multicolumn{3}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
-                    sb.append("  & & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
-                    sb.append("  & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
-                    sb.append("  & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
-                    sb.append("  & \\textbf{M1} & \\textbf{M2} & \\textbf{DP} \\\\ \\hline" + LINE_BREAK);
+                    sb.append(" \\resizebox{25cm}{!}{%" + LINE_BREAK);
+                    sb.append("  \\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{P}} &" + LINE_BREAK);
+                    sb.append("   \\multirow{2}{*}{\\textbf{Obj}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{3}{c|}{\\textbf{AEMMT1}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{3}{c|}{\\textbf{AEMMT2}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{3}{c|}{\\textbf{AEMMD}} &" + LINE_BREAK);
+                    sb.append("   \\multicolumn{3}{c}{\\textbf{NSGA-II}} \\\\" + LINE_BREAK);
+                    sb.append("   & & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
+                    sb.append("   & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
+                    sb.append("   & \\textbf{M1} & \\textbf{M2} & \\textbf{DP}" + LINE_BREAK);
+                    sb.append("   & \\textbf{M1} & \\textbf{M2} & \\textbf{DP} \\\\ \\hline" + LINE_BREAK);
                 }
 
-                sb.append("  " + line.processors + " ");
+                sb.append("   " + line.processors + " ");
                 sb.append("& " + handleAcronymObjective(line.objective) + " ");
 
                 double bestResult = getBestObjective(line.objectives);
@@ -275,7 +226,8 @@ public class TableOverleaf {
 
                 if (getMetricByNumberOfObjectives(totalObjectives).equals(line.objective) && "16".equals(line.processors)) {
                     sb.append("\\\\" + LINE_BREAK);
-                    sb.append(" \\end{tabular}" + LINE_BREAK);
+                    sb.append("  \\end{tabular}" + LINE_BREAK);
+                    sb.append(" }" + LINE_BREAK);
                     sb.append("\\end{sidewaystable}" + LINE_BREAK);
                     System.out.println(sb.toString() + LINE_BREAK);
                     sb.setLength(0);
@@ -488,7 +440,7 @@ public class TableOverleaf {
                 sb.append("  " + line.bestValue + " & " + line.worstValue + " & " + line.interval + " & " + line.bottomLimit + " & " + line.topLimit + " \\\\" + LINE_BREAK);
                 sb.append(" \\end{tabular}" + LINE_BREAK);
                 sb.append("\\end{table}" + LINE_BREAK);
-                System.out.println(sb.toString() + LINE_BREAK);
+                System.out.println(sb.toString());
                 sb.setLength(0);
             } else {
                 sb.append("  " + line.bestValue + " & " + line.worstValue + " & " + line.interval + " & " + line.bottomLimit + " & " + line.topLimit + " \\\\ \\hline" + LINE_BREAK);                
