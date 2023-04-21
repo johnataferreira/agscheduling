@@ -2,8 +2,10 @@ package br.ufu.scheduling.model;
 
 import java.io.BufferedWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import br.ufu.scheduling.agmo.Table;
 import br.ufu.scheduling.enums.AlgorithmType;
 import br.ufu.scheduling.utils.Configuration;
 import br.ufu.scheduling.utils.Constants;
@@ -333,6 +335,50 @@ public class AGMOResultModel {
         }
     }
 
+    private double getWorstValue(String objectiveName, boolean useWorstValueFromGeneration) {
+        if (useWorstValueFromGeneration) {
+            switch (objectiveName) {
+                case "SLength":
+                    return bestResult.getWorstSlength();
+    
+                case "LoadBalance":
+                    return bestResult.getWorstLoadBalance();
+    
+                case "FlowTime":
+                    return bestResult.getWorstFlowTime();
+    
+                case "CommunicationCost":
+                    return bestResult.getWorstCommunicationCost();
+    
+                case "WaitingTime":
+                    return bestResult.getWorstWaitingTime();
+    
+                default:
+                    throw new IllegalArgumentException("Objective invalid!");
+            }
+        } else {
+            switch (objectiveName) {
+                case "SLength":
+                    return worstSLength;
+    
+                case "LoadBalance":
+                    return worstLoadBalance;
+    
+                case "FlowTime":
+                    return worstFlowTime;
+    
+                case "CommunicationCost":
+                    return worstCommunicationCost;
+    
+                case "WaitingTime":
+                    return worstWaitingTime;
+    
+                default:
+                    throw new IllegalArgumentException("Objective invalid!");
+            }
+        }
+    }
+
     private String getStringValue(double source) {
         return Double.toString(source).replace(".", ",");
     }
@@ -393,5 +439,40 @@ public class AGMOResultModel {
         double t = 1.424528302;
         System.out.println(t);
         System.out.println(Double.toString(t).replace(".", ","));
+    }
+
+    public void calculateHiperVolume(Configuration config, Table resultTable) {
+        double hiperVolume = 0.0;
+
+        for (int i = 0; i < resultTable.getTotalChromosomes(); i++) {
+            hiperVolume += calculateHiperVolumeForChromossome(config, resultTable.getChromosomeFromIndex(i));
+        }
+
+        bestResult.setHiperVolume(hiperVolume);
+    }
+
+    public void calculateHiperVolume(Configuration config, List<Chromosome> chromosomeList) {
+        double hiperVolume = 0.0;
+
+        for (int i = 0; i < chromosomeList.size(); i++) {
+            hiperVolume += calculateHiperVolumeForChromossome(config, chromosomeList.get(i));
+        }
+
+        bestResult.setHiperVolume(hiperVolume);
+    }
+    
+    private double calculateHiperVolumeForChromossome(Configuration config, Chromosome chromosome) {
+        double hiperVolume = 0.0;
+
+        for (int objective = 1; objective <= config.getTotalObjectives(); objective++) {
+            double objectiveValue = chromosome.getRealObjectiveValue(Utils.getActualObjectiveIndex(config, objective));
+
+            //If you want to use the worst metric value found in the generation, fill the variable with true, 
+            //now if you want to use the worst metric value found in general, fill the variable with false
+            boolean useWorstValueFromGeneration = false;
+            hiperVolume += Math.abs(objectiveValue - getWorstValue(Utils.getObjectiveName(Utils.getActualObjectiveIndex(config, objective)), useWorstValueFromGeneration));
+        }
+
+        return hiperVolume;
     }
 }

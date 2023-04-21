@@ -129,6 +129,7 @@ public class Printer {
             resultModel.processChromosome(chromosomeList.get(i));
         }
 
+        resultModel.calculateHiperVolume(config, chromosomeList);
         resultModel.showResult(config, mapDataForSpreadsheet, finalResultWriter);
 
         double runtime = getRuntime(initialTime);
@@ -181,6 +182,7 @@ public class Printer {
             resultModel.processChromosome(resultTable.getChromosomeFromIndex(i));
         }
 
+        resultModel.calculateHiperVolume(config, resultTable);
         resultModel.showResult(config, mapDataForSpreadsheet, finalResultWriter);
 
         double runtime = getRuntime(initialTime);

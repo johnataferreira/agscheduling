@@ -463,6 +463,61 @@ public class Graph {
         return graph;
     }
 
+    public static Graph initializeGraphFromDissertation() {
+        Graph graph = new Graph();
+
+        Vertex vertex1 = graph.addVertex(1, 3);
+        vertex1.setEntries(null);
+        graph.firstTask = vertex1.getTask();
+
+        Vertex vertex2 = graph.addVertex(2, 2);
+        vertex2.setEntries(null);
+
+        Vertex vertex3 = graph.addVertex(3, 1);
+        vertex3.setEntries(Arrays.asList(1));
+
+        Vertex vertex4 = graph.addVertex(4, 2);
+        vertex4.setEntries(Arrays.asList(1));
+
+        Vertex vertex5 = graph.addVertex(5, 1);
+        vertex5.setEntries(Arrays.asList(2));
+
+        Vertex vertex6 = graph.addVertex(6, 1);
+        vertex6.setEntries(Arrays.asList(1, 3));
+
+        Vertex vertex7 = graph.addVertex(7, 1);
+        vertex7.setEntries(Arrays.asList(4, 5));
+
+        Vertex vertex8 = graph.addVertex(8, 2);
+        vertex8.setEntries(Arrays.asList(4, 6, 7));
+
+        //Building Edges: sources and destinations
+        //Vertex 1
+        graph.addEdge(vertex1, vertex3, 1);
+        graph.addEdge(vertex1, vertex4, 2);
+
+        //Vertex 2
+        graph.addEdge(vertex2, vertex5, 1);
+
+        //Vertex 3
+        graph.addEdge(vertex3, vertex6, 2);
+
+        //Vertex 4
+        graph.addEdge(vertex4, vertex7, 2);
+        graph.addEdge(vertex4, vertex8, 2);
+
+        //Vertex 5
+        graph.addEdge(vertex5, vertex7, 1);
+
+        //Vertex 6
+        graph.addEdge(vertex6, vertex8, 1);
+
+        //Vertex 7
+        graph.addEdge(vertex7, vertex8, 1);
+
+        return graph;
+    }
+    
     public String toString() {
         String formattedText = "";
 

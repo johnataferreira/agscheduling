@@ -33,28 +33,32 @@ public class ExecuteAG {
             System.out.println("Erro: " + e);
             System.out.println("Tempo de execução com erro: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.");
         } finally {
+            System.out.println("Tempo de execução total: " + ((double) (System.currentTimeMillis() - initialTime) / 1000) + " segundos.");
             System.out.println("## FINISHED ##");
         }
     }
 
     public static void generateDataBase() throws Exception {
-        //String[] dags = { "rand0000-with-communication-costs-50-tasks.stg" };
+        //String[] dags = { "rand0000-with-communication-costs-50-tasks.stg"};
         String[] dags = {"rand0000-with-communication-costs-50-tasks.stg", "rand0055-with-communication-costs-100-tasks.stg", "rand0105-with-communication-costs-300-tasks.stg"};
 
         //int[] tasks = {50};
         int[] tasks = {50, 100, 300};
 
-        //int[] processors = { 2, 4 };
+        //int[] processors = { 2 };
         int[] processors = {2, 4, 8, 16};
 
-        //int[] seeds = { 918118122 };
+        //int[] seeds = { -1995383100 };
         int[] seeds = {-1995383100, -1989726638, -1949695351, -813009771, -609065737, 64083307, 866349162, 918118122, 983153476, 1793184929};
 
         //int[] algorithms = { 3 };
         int[] algorithms = {3, -3, 4, 1};
 
         //int[] objectives = { 5 };
-        int[] objectives = {3};
+        int[] objectives = {5, 4, 3, 2};
+
+        boolean headerPrinted = false;
+        boolean isPrintHiperVolumeInConsole = false;
 
         for (int objective = 0; objective < objectives.length; objective++) {
             for (int dag = 0; dag < dags.length; dag++) {
@@ -67,7 +71,7 @@ public class ExecuteAG {
                     file.createNewFile();
                 }
 
-                System.out.println("Inicio: " + finalResultName);
+                //System.out.println("Inicio: " + finalResultName);
 
                 try (BufferedWriter finalResultWriterForSpreadsheet = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
                     for (int processor = 0; processor < processors.length; processor++) {
@@ -103,8 +107,20 @@ public class ExecuteAG {
                                 }
 
                                 long initialTime = System.currentTimeMillis();
+                                AGScheduling scheduling = null;
 
-                                AGScheduling scheduling = new AGScheduling(config, finalResultWriterForSpreadsheet);
+                                if (config.isPrintHiperVolumeInConsole()) {
+                                    if (!headerPrinted) {
+                                        System.out.println("Objectives,DAG,Processor,Seed,Algorithm,HiperVolume");
+                                        headerPrinted = true;
+                                    }
+
+                                    isPrintHiperVolumeInConsole = true;
+                                    scheduling = new AGScheduling(config, null);
+                                } else {
+                                    scheduling = new AGScheduling(config, finalResultWriterForSpreadsheet);
+                                }
+
                                 Map<String, DataForSpreadsheet> newMapDataForSpreadsheet = scheduling.executeForSpreadsheet(initialTime);
 
                                 for (Map.Entry<String, DataForSpreadsheet> mapData : newMapDataForSpreadsheet.entrySet()) {
@@ -128,10 +144,11 @@ public class ExecuteAG {
                         }
                     }
 
-                    for (Map.Entry<String, DataForSpreadsheet> mapData : mapDataForSpreadsheet.entrySet()) {
-                        DataForSpreadsheet dataForSpreadsheet = mapData.getValue();
-                        Utils.print(dataForSpreadsheet.toString(), finalResultWriterForSpreadsheet);
-
+                    if (!isPrintHiperVolumeInConsole) {
+                        for (Map.Entry<String, DataForSpreadsheet> mapData : mapDataForSpreadsheet.entrySet()) {
+                            DataForSpreadsheet dataForSpreadsheet = mapData.getValue();
+                            Utils.print(dataForSpreadsheet.toString(), finalResultWriterForSpreadsheet);
+                        }
                     }
                 } catch (Exception e) {
                     Exception e2 = new Exception("Error generating .txt file from FinalResult: " + e);
@@ -140,7 +157,7 @@ public class ExecuteAG {
                     throw e2;
                 }
                 
-                System.out.println("Fim: " + finalResultName);
+                //System.out.println("Fim: " + finalResultName);
             }
         }
     }

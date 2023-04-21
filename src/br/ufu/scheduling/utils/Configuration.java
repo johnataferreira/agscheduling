@@ -46,6 +46,7 @@ public class Configuration {
 	private Boolean printBestResultsByObjectives;
 	private Integer seed;
 	private Boolean systemOutPrintInFile;
+	private Boolean printHiperVolumeInConsole;
 
 	//AGMO
 	private Boolean executeMultiObjectiveGA;
@@ -222,6 +223,10 @@ public class Configuration {
 
     public Boolean isSystemOutPrintInFile() {
         return systemOutPrintInFile;
+    }
+
+    public Boolean isPrintHiperVolumeInConsole() {
+        return printHiperVolumeInConsole;
     }
 
     public Boolean isExecuteMultiObjectiveGA() {
@@ -607,6 +612,10 @@ public class Configuration {
 
     public void setSystemOutPrintInFile(Boolean systemOutPrintInFile) {
         this.systemOutPrintInFile = systemOutPrintInFile;
+    }
+
+    public void setPrintHiperVolumeInConsole(Boolean printHiperVolumeInConsole) {
+        this.printHiperVolumeInConsole = printHiperVolumeInConsole;
     }
 
     public void setExecuteMultiObjectiveGA(Boolean executeMultiObjectiveGA) {

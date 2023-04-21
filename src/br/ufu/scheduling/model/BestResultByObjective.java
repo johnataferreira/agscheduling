@@ -22,6 +22,8 @@ public class BestResultByObjective {
     private double worstCommunicationCost = Double.MIN_VALUE;
     private double worstWaitingTime = Double.MIN_VALUE;
 
+    private double hiperVolume = 0.0;
+
     private Chromosome bestSolutionBySimpleAverage;
     private Chromosome bestSolutionByHarmonicAverage;
 
@@ -49,6 +51,30 @@ public class BestResultByObjective {
 
     public double getBestWaitingTime() {
         return bestWaitingTime;
+    }
+
+    public double getWorstSlength() {
+        return worstSlength;
+    }
+
+    public double getWorstLoadBalance() {
+        return worstLoadBalance;
+    }
+
+    public double getWorstFlowTime() {
+        return worstFlowTime;
+    }
+
+    public double getWorstCommunicationCost() {
+        return worstCommunicationCost;
+    }
+
+    public double getWorstWaitingTime() {
+        return worstWaitingTime;
+    }
+
+    public void setHiperVolume(double hiperVolume) {
+        this.hiperVolume = hiperVolume;
     }
 
     public Chromosome getBestSolutionBySimpleAverage() {
@@ -194,7 +220,19 @@ public class BestResultByObjective {
                         throw new IllegalArgumentException("Objective invalid. Value: " + objective + ".");
                 }
             }
+
             Utils.print("", finalResultWriter);
+            Utils.print("Hiper Volume: " + hiperVolume, finalResultWriter);
+            Utils.print("", finalResultWriter);
+            
+            if (config.isPrintHiperVolumeInConsole()) {
+                System.out.print(config.getTotalObjectives() + ",");
+                System.out.print(Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName() + ",");
+                System.out.print(config.getTotalProcessors() + ",");
+                System.out.print(config.getSeed() + ",");
+                System.out.print(Utils.getAlgorithmName(config) + (Utils.getAlgorithmName(config) == Constants.ALGORITHM_AEMMT ? " - " + Utils.getSortFunction(config) : "") + ",");
+                System.out.print(hiperVolume + "\n");
+            }
             
             Utils.print("Graph: " + (Constants.USE_DEFAULT_GRAPH.equals(config.getTaskGraphFileName()) ? "Graph_Omara_Arafa" : config.getTaskGraphFileName()), finalResultWriter);
             Utils.print("Processors: " + config.getTotalProcessors(), finalResultWriter);
