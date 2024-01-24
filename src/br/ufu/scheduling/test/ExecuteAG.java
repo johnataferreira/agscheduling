@@ -18,7 +18,7 @@ public class ExecuteAG {
 
     public static void main(String[] args) throws Exception {
         long initialTime = System.currentTimeMillis();
-        boolean generateDataBase = true;
+        boolean generateDataBase = false;
 
         try {
             if (generateDataBase) {
